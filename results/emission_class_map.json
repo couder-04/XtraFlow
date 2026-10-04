@@ -1,0 +1,24 @@
+{
+  "primary": {
+    "two_wheeler": "HBEFA3/LDV_G_EU4",
+    "auto_rickshaw": "HBEFA3/PC_G_EU4",
+    "car": "HBEFA3/PC_G_EU4",
+    "bus": "HBEFA3/Bus",
+    "truck": "HBEFA3/HDV"
+  },
+  "alternate": {
+    "two_wheeler": "PHEMlight/PC_G_EU4",
+    "auto_rickshaw": "PHEMlight/PC_G_EU4",
+    "car": "PHEMlight/PC_G_EU4",
+    "bus": "PHEMlight/PC_G_EU4",
+    "truck": "PHEMlight/PC_G_EU4"
+  },
+  "tested": {
+    "HBEFA3/LDV_G_EU4": true,
+    "HBEFA3/PC_G_EU4": true,
+    "HBEFA3/Bus": true,
+    "HBEFA3/HDV": true,
+    "PHEMlight/PC_G_EU4": true
+  },
+  "note": "Installed SUMO 1.21: HBEFA3/PHEMlight available; HBEFA4 not present in this build."
+}

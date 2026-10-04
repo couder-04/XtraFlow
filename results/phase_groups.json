@@ -1,0 +1,57 @@
+{
+  "n_links": 16,
+  "groups": {
+    "NS_TL": [
+      0,
+      1,
+      2,
+      8,
+      9,
+      10
+    ],
+    "NS_R": [
+      3,
+      11
+    ],
+    "EW_TL": [
+      4,
+      5,
+      6,
+      12,
+      13,
+      14
+    ],
+    "EW_R": [
+      7,
+      15
+    ]
+  },
+  "meta": [
+    "4:E_in->S_out:left",
+    "5:E_in->W_out:through",
+    "6:E_in->W_out:through",
+    "7:E_in->N_out:right",
+    "8:N_in->E_out:left",
+    "9:N_in->S_out:through",
+    "10:N_in->S_out:through",
+    "11:N_in->W_out:right",
+    "0:S_in->W_out:left",
+    "1:S_in->N_out:through",
+    "2:S_in->N_out:through",
+    "3:S_in->E_out:right",
+    "12:W_in->N_out:left",
+    "13:W_in->E_out:through",
+    "14:W_in->E_out:through",
+    "15:W_in->S_out:right"
+  ],
+  "validation": {
+    "ok": [
+      "NS_TL",
+      "NS_R",
+      "EW_TL",
+      "EW_R"
+    ],
+    "conflicts": [],
+    "empty_groups": []
+  }
+}

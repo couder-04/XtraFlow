@@ -1,0 +1,10 @@
+# Per-approach ROIs as normalized polygons (x,y in 0-1). Assumed for synthetic smoke.
+approaches:
+  N:
+    polygon: [[0.35, 0.0], [0.65, 0.0], [0.65, 0.35], [0.35, 0.35]]
+  S:
+    polygon: [[0.35, 0.65], [0.65, 0.65], [0.65, 1.0], [0.35, 1.0]]
+  E:
+    polygon: [[0.65, 0.35], [1.0, 0.35], [1.0, 0.65], [0.65, 0.65]]
+  W:
+    polygon: [[0.0, 0.35], [0.35, 0.35], [0.35, 0.65], [0.0, 0.65]]
