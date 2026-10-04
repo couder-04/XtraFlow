@@ -1,0 +1,53 @@
+{
+  "mode": "assumed_demand",
+  "label": "assumed mixed-traffic scenario",
+  "flows_veh_per_h": {
+    "balanced": {
+      "N": 480,
+      "S": 480,
+      "E": 480,
+      "W": 480
+    },
+    "peak_unbalanced": {
+      "N": 720,
+      "S": 720,
+      "E": 180,
+      "W": 180
+    },
+    "dynamic": {
+      "blocks": [
+        {
+          "duration": 1200,
+          "N": 680,
+          "S": 680,
+          "E": 200,
+          "W": 200
+        },
+        {
+          "duration": 1200,
+          "N": 200,
+          "S": 200,
+          "E": 680,
+          "W": 680
+        },
+        {
+          "duration": 1200,
+          "N": 680,
+          "S": 680,
+          "E": 200,
+          "W": 200
+        }
+      ]
+    },
+    "low_demand": {
+      "N": 150,
+      "S": 150,
+      "E": 150,
+      "W": 150
+    }
+  },
+  "geh": {},
+  "target_dos": "70-90% under fixed at peak (assumed calibration)",
+  "note": "data/observed_counts.csv absent; using assumed demand from config.yaml. Flows chosen so fixed-time sits near 70-90% degree of saturation at peak.",
+  "saturation_note": "peak_unbalanced NS 1200 veh/h vs ~3600 veh/h theoretical capacity (2 effective through lanes * 1800) => y\u22480.33 per approach; with opposing + rights, intersection Y\u22480.75\u20130.85 (assumed)."
+}

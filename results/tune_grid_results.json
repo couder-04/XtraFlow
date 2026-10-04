@@ -1,0 +1,2210 @@
+{
+  "rows": [
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.1,
+      "seed": 2001,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.1241955138815352,
+      "n_completed": 1818,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.1,
+      "seed": 2002,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.1287317403867456,
+      "n_completed": 1810,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.1,
+      "seed": 2000,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12273770833665855,
+      "n_completed": 1832,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.1,
+      "seed": 2003,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12393485672043485,
+      "n_completed": 1847,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.1,
+      "seed": 2004,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.11931666468896746,
+      "n_completed": 1869,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.15,
+      "seed": 2000,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12273770833665855,
+      "n_completed": 1832,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.15,
+      "seed": 2001,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.1241955138815352,
+      "n_completed": 1818,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.15,
+      "seed": 2002,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.1287317403867456,
+      "n_completed": 1810,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.15,
+      "seed": 2003,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12393485672043485,
+      "n_completed": 1847,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.15,
+      "seed": 2004,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.11931666468896746,
+      "n_completed": 1869,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.25,
+      "seed": 2001,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.1241955138815352,
+      "n_completed": 1818,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.25,
+      "seed": 2000,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12273770833665855,
+      "n_completed": 1832,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.25,
+      "seed": 2002,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.1287317403867456,
+      "n_completed": 1810,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.25,
+      "seed": 2003,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12393485672043485,
+      "n_completed": 1847,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.25,
+      "seed": 2004,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.11931666468896746,
+      "n_completed": 1869,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.1,
+      "seed": 2000,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12249406621937678,
+      "n_completed": 1832,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.1,
+      "seed": 2001,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12405446173945221,
+      "n_completed": 1818,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.1,
+      "seed": 2002,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12945663351636136,
+      "n_completed": 1810,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.1,
+      "seed": 2003,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12240924338100462,
+      "n_completed": 1847,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.1,
+      "seed": 2004,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.11982012581454927,
+      "n_completed": 1869,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.15,
+      "seed": 2000,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12249406621937678,
+      "n_completed": 1832,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.15,
+      "seed": 2001,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12405446173945221,
+      "n_completed": 1818,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.15,
+      "seed": 2002,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12945663351636136,
+      "n_completed": 1810,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.15,
+      "seed": 2003,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12240924338100462,
+      "n_completed": 1847,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.15,
+      "seed": 2004,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.11982012581454927,
+      "n_completed": 1869,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.25,
+      "seed": 2001,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12405446173945221,
+      "n_completed": 1818,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.25,
+      "seed": 2000,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12249406621937678,
+      "n_completed": 1832,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.25,
+      "seed": 2002,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12945663351636136,
+      "n_completed": 1810,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.25,
+      "seed": 2003,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.1227323987260132,
+      "n_completed": 1847,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.25,
+      "seed": 2004,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12012302950363034,
+      "n_completed": 1869,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2000,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12266503654519988,
+      "n_completed": 1832,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2001,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.124778357244074,
+      "n_completed": 1818,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2002,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12905382414045155,
+      "n_completed": 1810,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2003,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12220524515068504,
+      "n_completed": 1847,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2004,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.11915254174140857,
+      "n_completed": 1869,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2000,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12266503654519988,
+      "n_completed": 1832,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2001,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.124778357244074,
+      "n_completed": 1818,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2002,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.1290337855740384,
+      "n_completed": 1810,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2003,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12196359116110339,
+      "n_completed": 1847,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2004,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.11886339239209318,
+      "n_completed": 1869,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2000,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12235883740131197,
+      "n_completed": 1832,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2001,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.124778357244074,
+      "n_completed": 1818,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2002,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12934736195940202,
+      "n_completed": 1810,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2003,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12249923728882695,
+      "n_completed": 1847,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 60,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2004,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.11886339239209318,
+      "n_completed": 1869,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.1,
+      "seed": 2000,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12220923614214214,
+      "n_completed": 1832,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.1,
+      "seed": 2001,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12564855984320863,
+      "n_completed": 1818,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.1,
+      "seed": 2002,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.1281313579951156,
+      "n_completed": 1810,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.1,
+      "seed": 2003,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12273662813842744,
+      "n_completed": 1847,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.1,
+      "seed": 2004,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.11990860217311346,
+      "n_completed": 1869,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.15,
+      "seed": 2000,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12220923614214214,
+      "n_completed": 1832,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.15,
+      "seed": 2001,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12564855984320863,
+      "n_completed": 1818,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.15,
+      "seed": 2002,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.1281313579951156,
+      "n_completed": 1810,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.15,
+      "seed": 2003,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12273662813842744,
+      "n_completed": 1847,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.15,
+      "seed": 2004,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.11990860217311346,
+      "n_completed": 1869,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.25,
+      "seed": 2000,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12220923614214214,
+      "n_completed": 1832,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.25,
+      "seed": 2001,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12564855984320863,
+      "n_completed": 1818,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.25,
+      "seed": 2002,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.1281313579951156,
+      "n_completed": 1810,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.25,
+      "seed": 2003,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12273662813842744,
+      "n_completed": 1847,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.25,
+      "seed": 2004,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.11990860217311346,
+      "n_completed": 1869,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.1,
+      "seed": 2000,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12234948983932462,
+      "n_completed": 1832,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.1,
+      "seed": 2001,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12414643453831258,
+      "n_completed": 1818,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.1,
+      "seed": 2002,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12908065437764038,
+      "n_completed": 1810,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.1,
+      "seed": 2003,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12224374318764655,
+      "n_completed": 1847,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.1,
+      "seed": 2004,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.11986024243742549,
+      "n_completed": 1869,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.15,
+      "seed": 2000,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12234948983932462,
+      "n_completed": 1832,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.15,
+      "seed": 2001,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12414643453831258,
+      "n_completed": 1818,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.15,
+      "seed": 2002,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12842590766927797,
+      "n_completed": 1810,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.15,
+      "seed": 2003,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12224374318764655,
+      "n_completed": 1847,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.15,
+      "seed": 2004,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.11986024243742549,
+      "n_completed": 1869,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.25,
+      "seed": 2000,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12143678112782061,
+      "n_completed": 1832,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.25,
+      "seed": 2001,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12575597088662707,
+      "n_completed": 1818,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.25,
+      "seed": 2002,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12842590766927797,
+      "n_completed": 1810,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.25,
+      "seed": 2003,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12204908332193057,
+      "n_completed": 1847,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.25,
+      "seed": 2004,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.11986024243742549,
+      "n_completed": 1869,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2000,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12255950138344483,
+      "n_completed": 1832,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2001,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12485963390389965,
+      "n_completed": 1818,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2002,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12924237976823796,
+      "n_completed": 1810,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2003,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12161368550549038,
+      "n_completed": 1847,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2004,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.11926348734813941,
+      "n_completed": 1869,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2000,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12181483576346709,
+      "n_completed": 1832,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2001,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12457577112124896,
+      "n_completed": 1818,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2002,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12924237976823796,
+      "n_completed": 1810,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2003,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12189343981547898,
+      "n_completed": 1847,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2004,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.11957662523895601,
+      "n_completed": 1869,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2000,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12232672798811653,
+      "n_completed": 1832,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2001,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12389621033797857,
+      "n_completed": 1818,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2002,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12824815131304995,
+      "n_completed": 1810,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2003,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12189343981547898,
+      "n_completed": 1847,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 100,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2004,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.11880389236302623,
+      "n_completed": 1869,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.1,
+      "seed": 2000,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.1228932149590428,
+      "n_completed": 1832,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.1,
+      "seed": 2001,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12523717896192366,
+      "n_completed": 1818,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.1,
+      "seed": 2002,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12857535661765082,
+      "n_completed": 1810,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.1,
+      "seed": 2003,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12241554929702918,
+      "n_completed": 1847,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.1,
+      "seed": 2004,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.11967680967050484,
+      "n_completed": 1869,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.15,
+      "seed": 2000,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.1228932149590428,
+      "n_completed": 1832,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.15,
+      "seed": 2001,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12523717896192366,
+      "n_completed": 1818,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.15,
+      "seed": 2002,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12857535661765082,
+      "n_completed": 1810,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.15,
+      "seed": 2003,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12241554929702918,
+      "n_completed": 1847,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.15,
+      "seed": 2004,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.11967680967050484,
+      "n_completed": 1869,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.25,
+      "seed": 2000,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.1228932149590428,
+      "n_completed": 1832,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.25,
+      "seed": 2001,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12545796957136598,
+      "n_completed": 1818,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.25,
+      "seed": 2002,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12857535661765082,
+      "n_completed": 1810,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.25,
+      "seed": 2003,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12274833539270773,
+      "n_completed": 1847,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.2,
+      "hysteresis": 0.25,
+      "seed": 2004,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.11967680967050484,
+      "n_completed": 1869,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.1,
+      "seed": 2000,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.1228761006827384,
+      "n_completed": 1832,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.1,
+      "seed": 2001,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12540753507993477,
+      "n_completed": 1818,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.1,
+      "seed": 2002,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.1298095940153008,
+      "n_completed": 1810,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.1,
+      "seed": 2003,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12313295023227083,
+      "n_completed": 1847,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.1,
+      "seed": 2004,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.11994794953101189,
+      "n_completed": 1869,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.15,
+      "seed": 2000,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.1228761006827384,
+      "n_completed": 1832,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.15,
+      "seed": 2001,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12540753507993477,
+      "n_completed": 1818,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.15,
+      "seed": 2002,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12784550330668948,
+      "n_completed": 1810,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.15,
+      "seed": 2003,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12388668343473903,
+      "n_completed": 1847,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.15,
+      "seed": 2004,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.11929896779183491,
+      "n_completed": 1869,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.25,
+      "seed": 2000,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.1228761006827384,
+      "n_completed": 1832,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.25,
+      "seed": 2001,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.1248112989414943,
+      "n_completed": 1818,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.25,
+      "seed": 2002,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12779984497194405,
+      "n_completed": 1810,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.25,
+      "seed": 2003,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12380554991788718,
+      "n_completed": 1847,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.3,
+      "hysteresis": 0.25,
+      "seed": 2004,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.1192349094763937,
+      "n_completed": 1869,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2000,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12295898685600483,
+      "n_completed": 1832,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2001,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12385095313027975,
+      "n_completed": 1818,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2002,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12676735400394756,
+      "n_completed": 1810,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2003,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12265557237409329,
+      "n_completed": 1847,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2004,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.11824835310947526,
+      "n_completed": 1869,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2000,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.11984067558436177,
+      "n_completed": 1832,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2001,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12479313558233672,
+      "n_completed": 1818,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2002,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.1271708043381846,
+      "n_completed": 1810,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2003,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12276133173425241,
+      "n_completed": 1847,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2004,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.11826998881270873,
+      "n_completed": 1869,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2000,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12155486900098242,
+      "n_completed": 1832,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2001,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12435762083916128,
+      "n_completed": 1818,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2002,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12704767765982092,
+      "n_completed": 1810,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2003,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.12214096433922264,
+      "n_completed": 1847,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2004,
+      "stage": "screen",
+      "fuel_per_vehicle_L": 0.11759627468246446,
+      "n_completed": 1869,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2001,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12435762083916128,
+      "n_completed": 1818,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2002,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12704767765982092,
+      "n_completed": 1810,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2000,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12155486900098242,
+      "n_completed": 1832,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2003,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12214096433922264,
+      "n_completed": 1847,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2005,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.1233469664216144,
+      "n_completed": 1786,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2004,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.11759627468246446,
+      "n_completed": 1869,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2007,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12720260340985165,
+      "n_completed": 1776,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2006,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12414023452058212,
+      "n_completed": 1814,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2008,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.11873024258322774,
+      "n_completed": 1808,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2010,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12399875258888549,
+      "n_completed": 1719,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2009,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12639866447407197,
+      "n_completed": 1843,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2011,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12421226048396464,
+      "n_completed": 1860,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2012,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12386668926607758,
+      "n_completed": 1761,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2013,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12450723891140805,
+      "n_completed": 1815,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2014,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.11829425521808257,
+      "n_completed": 1712,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2015,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12121305520604665,
+      "n_completed": 1805,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2016,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12639645492634027,
+      "n_completed": 1789,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2017,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.1242269411642688,
+      "n_completed": 1834,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2018,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.1236364297118695,
+      "n_completed": 1877,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.25,
+      "seed": 2019,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12088993372016267,
+      "n_completed": 1752,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2000,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.11984067558436177,
+      "n_completed": 1832,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2001,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12479313558233672,
+      "n_completed": 1818,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2002,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.1271708043381846,
+      "n_completed": 1810,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2003,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12276133173425241,
+      "n_completed": 1847,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2004,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.11826998881270873,
+      "n_completed": 1869,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2005,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12340037546065348,
+      "n_completed": 1786,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2006,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12302253987920149,
+      "n_completed": 1814,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2007,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.1279293848203837,
+      "n_completed": 1776,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2008,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.11866290721738618,
+      "n_completed": 1808,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2009,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12642448964857111,
+      "n_completed": 1843,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2010,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.1255185612332988,
+      "n_completed": 1719,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2011,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12515461998285646,
+      "n_completed": 1860,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2012,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12653650498616784,
+      "n_completed": 1761,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2013,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12553994410912844,
+      "n_completed": 1815,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2014,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.1194674508560292,
+      "n_completed": 1712,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2015,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12094572152027447,
+      "n_completed": 1805,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2016,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12614989215168318,
+      "n_completed": 1789,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2017,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12459174893027927,
+      "n_completed": 1834,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2018,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12351328415662534,
+      "n_completed": 1877,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.15,
+      "seed": 2019,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12159661884333559,
+      "n_completed": 1752,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2000,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12295898685600483,
+      "n_completed": 1832,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2001,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12385095313027975,
+      "n_completed": 1818,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2002,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12676735400394756,
+      "n_completed": 1810,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2003,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12265557237409329,
+      "n_completed": 1847,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2004,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.11824835310947526,
+      "n_completed": 1869,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2005,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12241301588233319,
+      "n_completed": 1786,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2006,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12408478851505644,
+      "n_completed": 1814,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2007,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12768578728519084,
+      "n_completed": 1776,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2008,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.1188557893734206,
+      "n_completed": 1808,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2009,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12715101016692423,
+      "n_completed": 1843,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2010,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.1255185612332988,
+      "n_completed": 1719,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2011,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12448147483189098,
+      "n_completed": 1860,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2012,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12557303290296012,
+      "n_completed": 1761,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2013,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12571284269795616,
+      "n_completed": 1815,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2014,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.11873356463937267,
+      "n_completed": 1712,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2015,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.1214387551701792,
+      "n_completed": 1805,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2016,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12627824294594617,
+      "n_completed": 1789,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2017,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.1251559114034034,
+      "n_completed": 1834,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2019,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12214587497120569,
+      "n_completed": 1752,
+      "gridlock_flag": 0
+    },
+    {
+      "detection_distance_m": 150,
+      "alpha_moving": 0.5,
+      "hysteresis": 0.1,
+      "seed": 2018,
+      "stage": "confirm",
+      "fuel_per_vehicle_L": 0.12365092220035839,
+      "n_completed": 1877,
+      "gridlock_flag": 0
+    }
+  ],
+  "best": {
+    "detection_distance_m": 150,
+    "alpha_moving": 0.5,
+    "hysteresis": 0.25,
+    "selected_on": "VALIDATION seeds only",
+    "screen_seeds": [
+      2000,
+      2001,
+      2002,
+      2003,
+      2004
+    ],
+    "confirm_seeds": [
+      2000,
+      2001,
+      2002,
+      2003,
+      2004,
+      2005,
+      2006,
+      2007,
+      2008,
+      2009,
+      2010,
+      2011,
+      2012,
+      2013,
+      2014,
+      2015,
+      2016,
+      2017,
+      2018,
+      2019
+    ],
+    "scenario": "peak_unbalanced",
+    "mean_fuel_per_vehicle_L": 0.12318790645640529,
+    "smoke": false
+  },
+  "screen_ranking": [
+    {
+      "score": 0.12253948130433034,
+      "params": {
+        "detection_distance_m": 150,
+        "alpha_moving": 0.5,
+        "hysteresis": 0.25
+      }
+    },
+    {
+      "score": 0.12256718721036886,
+      "params": {
+        "detection_distance_m": 150,
+        "alpha_moving": 0.5,
+        "hysteresis": 0.15
+      }
+    },
+    {
+      "score": 0.12289624389476014,
+      "params": {
+        "detection_distance_m": 150,
+        "alpha_moving": 0.5,
+        "hysteresis": 0.1
+      }
+    },
+    {
+      "score": 0.12303368436353006,
+      "params": {
+        "detection_distance_m": 100,
+        "alpha_moving": 0.5,
+        "hysteresis": 0.25
+      }
+    },
+    {
+      "score": 0.12340516353439743,
+      "params": {
+        "detection_distance_m": 100,
+        "alpha_moving": 0.3,
+        "hysteresis": 0.15
+      }
+    },
+    {
+      "score": 0.1234206103414778,
+      "params": {
+        "detection_distance_m": 100,
+        "alpha_moving": 0.5,
+        "hysteresis": 0.15
+      }
+    },
+    {
+      "score": 0.12346083258330176,
+      "params": {
+        "detection_distance_m": 60,
+        "alpha_moving": 0.5,
+        "hysteresis": 0.15
+      }
+    },
+    {
+      "score": 0.12350559708861635,
+      "params": {
+        "detection_distance_m": 100,
+        "alpha_moving": 0.3,
+        "hysteresis": 0.25
+      }
+    },
+    {
+      "score": 0.12350773758184244,
+      "params": {
+        "detection_distance_m": 100,
+        "alpha_moving": 0.5,
+        "hysteresis": 0.1
+      }
+    },
+    {
+      "score": 0.12353611287606991,
+      "params": {
+        "detection_distance_m": 100,
+        "alpha_moving": 0.3,
+        "hysteresis": 0.1
+      }
+    },
+    {
+      "score": 0.12356943725714162,
+      "params": {
+        "detection_distance_m": 60,
+        "alpha_moving": 0.5,
+        "hysteresis": 0.25
+      }
+    },
+    {
+      "score": 0.1235710009643638,
+      "params": {
+        "detection_distance_m": 60,
+        "alpha_moving": 0.5,
+        "hysteresis": 0.1
+      }
+    },
+    {
+      "score": 0.12364690613414883,
+      "params": {
+        "detection_distance_m": 60,
+        "alpha_moving": 0.3,
+        "hysteresis": 0.1
+      }
+    },
+    {
+      "score": 0.12364690613414883,
+      "params": {
+        "detection_distance_m": 60,
+        "alpha_moving": 0.3,
+        "hysteresis": 0.15
+      }
+    },
+    {
+      "score": 0.12370554079809153,
+      "params": {
+        "detection_distance_m": 150,
+        "alpha_moving": 0.3,
+        "hysteresis": 0.25
+      }
+    },
+    {
+      "score": 0.12372687685840145,
+      "params": {
+        "detection_distance_m": 100,
+        "alpha_moving": 0.2,
+        "hysteresis": 0.1
+      }
+    },
+    {
+      "score": 0.12372687685840145,
+      "params": {
+        "detection_distance_m": 100,
+        "alpha_moving": 0.2,
+        "hysteresis": 0.15
+      }
+    },
+    {
+      "score": 0.12372687685840145,
+      "params": {
+        "detection_distance_m": 100,
+        "alpha_moving": 0.2,
+        "hysteresis": 0.25
+      }
+    },
+    {
+      "score": 0.12375962190123027,
+      "params": {
+        "detection_distance_m": 150,
+        "alpha_moving": 0.2,
+        "hysteresis": 0.1
+      }
+    },
+    {
+      "score": 0.12375962190123027,
+      "params": {
+        "detection_distance_m": 150,
+        "alpha_moving": 0.2,
+        "hysteresis": 0.15
+      }
+    },
+    {
+      "score": 0.12377211794096679,
+      "params": {
+        "detection_distance_m": 60,
+        "alpha_moving": 0.3,
+        "hysteresis": 0.25
+      }
+    },
+    {
+      "score": 0.12378329680286833,
+      "params": {
+        "detection_distance_m": 60,
+        "alpha_moving": 0.2,
+        "hysteresis": 0.1
+      }
+    },
+    {
+      "score": 0.12378329680286833,
+      "params": {
+        "detection_distance_m": 60,
+        "alpha_moving": 0.2,
+        "hysteresis": 0.15
+      }
+    },
+    {
+      "score": 0.12378329680286833,
+      "params": {
+        "detection_distance_m": 60,
+        "alpha_moving": 0.2,
+        "hysteresis": 0.25
+      }
+    },
+    {
+      "score": 0.12386295805918732,
+      "params": {
+        "detection_distance_m": 150,
+        "alpha_moving": 0.3,
+        "hysteresis": 0.15
+      }
+    },
+    {
+      "score": 0.12387033724225445,
+      "params": {
+        "detection_distance_m": 150,
+        "alpha_moving": 0.2,
+        "hysteresis": 0.25
+      }
+    },
+    {
+      "score": 0.12423482590825134,
+      "params": {
+        "detection_distance_m": 150,
+        "alpha_moving": 0.3,
+        "hysteresis": 0.1
+      }
+    }
+  ]
+}

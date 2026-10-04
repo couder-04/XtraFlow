@@ -23,14 +23,18 @@ docker run --rm -v "$PWD/results:/app/results" iocl-traffic
 
 ## Expected runtime
 
-| Stage | Approx. |
-|-------|---------|
-| setup + networks + pytest | 10–20 min |
-| smoke (7 controllers) | 5–15 min |
-| calibrate + tune (VALIDATION) | 1–3 h |
-| train_rl | 2–8 h |
-| TEST sweep (7×4×30) | 8–20 h (CPU-dependent) |
-| analyze + extras + demo + deck | 1–3 h |
+
+| Stage                          | Approx.                |
+| ------------------------------ | ---------------------- |
+| setup + networks + pytest      | 10–20 min              |
+| smoke (7 controllers)          | 5–15 min               |
+| calibrate + tune (VALIDATION)  | 1–3 h                  |
+| train_rl                       | 2–8 h                  |
+| TEST sweep (7×4×30)            | 8–20 h (CPU-dependent) |
+| analyze + extras + demo + deck | 1–3 h                  |
+
+
+
 
 ## Folder guide
 
@@ -43,11 +47,15 @@ docker run --rm -v "$PWD/results:/app/results" iocl-traffic
 - `docs/DECISIONS.md` — design choices
 - `STATE.md` — pipeline checklist / resume point
 
+
+
 ## Seed protocol
 
 - TRAIN `1000–1049` (RL only)
 - VALIDATION `2000–2019` (tuning / model selection)
 - TEST `1–30` (once, after `results/config.lock`)
+
+
 
 ## Supply real video and counts
 
@@ -62,7 +70,7 @@ For demand calibration: place `data/observed_counts.csv` with columns `approach,
 
 ## Emission class mapping
 
-Runtime probe writes `results/emission_class_map.json` (HBEFA4 preferred, HBEFA3 fallback). See README note after first `make networks`.
+Runtime probe writes `results/emission_class_map.json`. On `eclipse-sumo==1.21.0` the wheel provides **HBEFA3** and **PHEMlight** (not HBEFA4). Primary mapping uses HBEFA3; emission cross-check uses PHEMlight when available.
 
 ## Makefile targets
 

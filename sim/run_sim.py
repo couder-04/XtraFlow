@@ -82,6 +82,8 @@ def run_one(
     net_path: Optional[Path] = None,
     routes_path: Optional[Path] = None,
     tls_ids: Optional[List[str]] = None,
+    params: Optional[Dict[str, Any]] = None,
+    run_id: Optional[str] = None,
 ) -> Dict[str, Any]:
     cfg = cfg or load_config()
     ensure_dirs()
@@ -103,6 +105,8 @@ def run_one(
         routes = routes_path
 
     tag = f"{scenario}_{controller}_seed{seed}_{emission_model}"
+    if run_id:
+        tag = f"{tag}_{run_id}"
     if smoke:
         tag = "smoke_" + tag
     raw_dir = ROOT / "results" / "raw"
@@ -145,7 +149,13 @@ def run_one(
         sumo_cmd += ["--tls.all-off", "false"]
 
     t0 = time.time()
-    traci.start(sumo_cmd)
+    label = f"{tag}_{os.getpid()}"
+    try:
+        traci.start(sumo_cmd, label=label)
+        traci.switch(label)
+    except Exception:
+        # fallback without label
+        traci.start(sumo_cmd, numRetries=10)
 
     # Select TLS program
     try:
@@ -156,7 +166,9 @@ def run_one(
     except Exception:
         pass
 
-    ctrl = make_controller(controller, cfg=cfg, scenario=scenario, noise=noise, model=model)
+    ctrl = make_controller(
+        controller, cfg=cfg, scenario=scenario, noise=noise, model=model, params=params
+    )
     # For non-actuated, take over via setPhase / setRYG each step
 
     idle_vehicle_seconds = 0.0
@@ -226,23 +238,25 @@ def run_one(
                     break
             except Exception:
                 break
-            # gridlock heuristic: many halted and no completions progress
-            if halted > 40:
+            # gridlock heuristic: many halted with no progress for a long time
+            if halted > 50:
                 stuck_steps += 1
             else:
                 stuck_steps = 0
-            if stuck_steps > 300:
+            if stuck_steps > 600:
                 gridlock_flag = 1
                 break
 
-    # final departed count
+    # final departed count from route file (controller-independent demand size)
     try:
-        # recount from route file
         n_departed = routes.read_text(encoding="utf-8").count("<vehicle ")
     except Exception:
         pass
 
-    traci.close()
+    try:
+        traci.close()
+    except Exception:
+        pass
     wall = time.time() - t0
 
     metrics = parse_tripinfo(tripinfo, cfg)

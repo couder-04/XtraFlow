@@ -17,7 +17,11 @@ def parse_tripinfo(tripinfo_path: Path, cfg: Optional[dict] = None) -> Dict[str,
     if not tripinfo_path.exists():
         return _empty()
 
-    tree = ET.parse(tripinfo_path)
+    try:
+        tree = ET.parse(tripinfo_path)
+    except ET.ParseError:
+        # Truncated output from a crashed parallel SUMO — treat as empty
+        return _empty()
     root = tree.getroot()
     n_completed = 0
     total_fuel_L = 0.0

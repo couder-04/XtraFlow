@@ -57,6 +57,16 @@ All non-sourced parameters are labelled **assumed**. Choices below record engine
 **Choice:** `r = -fuel_weighted_waiting - λ_switch * switch`; λ_switch tuned lightly on validation.  
 **Rationale:** Aligns RL with energy-aware objective while discouraging chatter.
 
+## D010b — RL training budget
+
+**Choice:** Train with short episodes (600 s) up to 50k timesteps; select checkpoint by VALIDATION fuel via `run_one`.  
+**Rationale:** Full 3600 s × 200k SUMO steps is wall-clock prohibitive; protocol (VAL selection, TEST untouched) preserved.
+
+## D010c — Hyperparameter search
+
+**Choice:** Screen tune grid on first 5 VALIDATION seeds; confirm top-3 on all 20 VALIDATION seeds.  
+**Rationale:** Same seed split; reduces redundant full-grid × 20 cost while keeping selection VAL-only.
+
 ## D011 — Perception without user video
 
 **Choice:** Synthetic smoke + assumed noise model (miss≈0.15, mild class confusion); clearly labelled assumed.  
@@ -76,3 +86,13 @@ All non-sourced parameters are labelled **assumed**. Choices below record engine
 
 **Choice:** Demand files keyed only by scenario+seed; regenerated identically for every controller.  
 **Rationale:** Spec rule 4 — fair comparison.
+
+## D015 — Demand flow levels
+
+**Choice:** Lower approach flows (e.g. balanced 480 veh/h, peak NS 720 / EW 180) after full-horizon runs at higher rates showed `gridlock_flag=1` and large n_completed gaps.  
+**Rationale:** Target ~70–90% DoS under fixed without systemic incompletion; still labelled assumed.
+
+## D016 — Pressure turn filtering
+
+**Choice:** Phase pressure counts only vehicles whose route turn matches the phase (through+left vs right), not all vehicles on the approach.  
+**Rationale:** Without this, NS_TL and NS_R pressures were nearly identical, starving EW and causing gridlock (observed on VAL seed 2000).

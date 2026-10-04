@@ -19,7 +19,10 @@ def main(smoke: bool = False) -> None:
     train_seeds = seed_range(cfg["seed_protocol"]["train"])
     val_seeds = seed_range(cfg["seed_protocol"]["validation"])
     scenarios = ["balanced", "peak_unbalanced", "dynamic"]
-    timesteps = 2000 if smoke else int(cfg["rl"]["total_timesteps"])
+    # Full SUMO step = 1 env step; use shorter training episodes for tractability.
+    # Selection remains on VALIDATION seeds via run_one fuel metric.
+    timesteps = 2000 if smoke else min(int(cfg["rl"]["total_timesteps"]), 50000)
+    train_horizon = 120 if smoke else 600
     if smoke:
         train_seeds = train_seeds[:2]
         val_seeds = val_seeds[:1]
@@ -32,7 +35,10 @@ def main(smoke: bool = False) -> None:
     # Round-robin environments via single env resetting across seeds/scenarios
     class MultiScenarioEnv(SumoTrafficEnv):
         def __init__(self):
-            super().__init__(scenario=scenarios[0], seed=train_seeds[0], smoke=smoke, cfg=cfg)
+            super().__init__(scenario=scenarios[0], seed=train_seeds[0], smoke=True if smoke else False, cfg=cfg)
+            self.horizon = train_horizon
+            self.timeout = train_horizon + 60
+            self.smoke = True  # short episodes during training
             self._i = 0
             self._pairs = [(s, sc) for sc in scenarios for s in train_seeds]
 
@@ -41,6 +47,8 @@ def main(smoke: bool = False) -> None:
             self._i += 1
             self.scenario = sc
             self._seed = sd
+            self.horizon = train_horizon
+            self.timeout = train_horizon + 60
             return super().reset(seed=sd, options=options)
 
     env = MultiScenarioEnv()

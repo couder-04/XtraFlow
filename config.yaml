@@ -120,28 +120,29 @@ turn_ratios:
   right: 0.20
 
 # Demand flows (veh/h per approach) — calibrated toward 70-90% DoS under fixed; assumed until observed
+# Cap lowered after smoke full-runs showed gridlock at higher rates (see DECISIONS D015).
 demand:
   balanced:
-    N: 700
-    S: 700
-    E: 700
-    W: 700
+    N: 480
+    S: 480
+    E: 480
+    W: 480
   peak_unbalanced:
-    N: 1200
-    S: 1200
-    E: 300
-    W: 300
+    N: 720
+    S: 720
+    E: 180
+    W: 180
   dynamic:
     # blocks of 1200 s: NS high -> EW high -> NS high
     blocks:
-      - {duration: 1200, N: 1100, S: 1100, E: 350, W: 350}
-      - {duration: 1200, N: 350, S: 350, E: 1100, W: 1100}
-      - {duration: 1200, N: 1100, S: 1100, E: 350, W: 350}
+      - {duration: 1200, N: 680, S: 680, E: 200, W: 200}
+      - {duration: 1200, N: 200, S: 200, E: 680, W: 680}
+      - {duration: 1200, N: 680, S: 680, E: 200, W: 200}
   low_demand:
-    N: 200
-    S: 200
-    E: 200
-    W: 200
+    N: 150
+    S: 150
+    E: 150
+    W: 150
 
 emission:
   primary: HBEFA4

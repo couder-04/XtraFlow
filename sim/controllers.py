@@ -139,13 +139,29 @@ class BaseController:
                 continue
             for vid in ids:
                 try:
+                    lane_id = traci_mod.vehicle.getLaneID(vid)
                     lane_pos = traci_mod.vehicle.getLanePosition(vid)
-                    lane_len = traci_mod.lane.getLength(traci_mod.vehicle.getLaneID(vid))
+                    lane_len = traci_mod.lane.getLength(lane_id)
                     dist_to_stop = lane_len - lane_pos
                     if dist_to_stop > distance_m:
                         continue
                     speed = traci_mod.vehicle.getSpeed(vid)
                     vtype = traci_mod.vehicle.getTypeID(vid)
+                    # Lane index on edge: 0 leftish, 1 through, 2 rightish (assumed geometry)
+                    try:
+                        lane_index = int(lane_id.rsplit("_", 1)[-1])
+                    except ValueError:
+                        lane_index = 1
+                    # Prefer route destination for turn class when available
+                    turn = "through"
+                    try:
+                        route = traci_mod.vehicle.getRoute(vid)
+                        if len(route) >= 2:
+                            dest = route[-1].replace("_out", "")
+                            from sim.build_network import _classify_turn
+                            turn = _classify_turn(approach, dest)
+                    except Exception:
+                        turn = {0: "left", 1: "through", 2: "right"}.get(lane_index, "through")
                     halting = speed < 0.1
                     vehicles.append({
                         "id": vid,
@@ -153,6 +169,8 @@ class BaseController:
                         "vtype": vtype,
                         "halting": halting,
                         "dist": dist_to_stop,
+                        "lane_index": lane_index,
+                        "turn": turn,
                     })
                 except Exception:
                     continue
@@ -177,12 +195,16 @@ class BaseController:
     def pressure(self, vehicles: List[Dict[str, Any]], phase_name: str,
                  use_weights: bool, alpha: float, downstream_penalty: float = 0.0) -> float:
         approaches = {"NS_TL": ("N", "S"), "NS_R": ("N", "S"), "EW_TL": ("E", "W"), "EW_R": ("E", "W")}
-        turns_right = phase_name.endswith("_R")
-        # Approximate: all vehicles on approach contribute; right phase slightly filters by lane later
         aps = approaches[phase_name]
+        want_right = phase_name.endswith("_R")
         p = 0.0
         for v in vehicles:
             if v["approach"] not in aps:
+                continue
+            turn = v.get("turn", "through")
+            if want_right and turn != "right":
+                continue
+            if not want_right and turn == "right":
                 continue
             w = float(self.weights.get(v["vtype"], 1.0)) if use_weights else 1.0
             p += w * (1.0 if v["halting"] else alpha)
