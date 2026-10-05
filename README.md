@@ -5,6 +5,26 @@ Fuel-weighted traffic signals. Reproducible SUMO study for an IndianOil presenta
 **Label:** Simulation-based estimate; not a real-world deployment result.  
 **Traffic mix:** assumed mixed-traffic scenario unless you supply observed counts.
 
+![Same demand, fixed time beside XtraFlow](results/demo/demo.gif)
+
+## Results
+
+Test seeds 1–30, after the config lock. Fuel per completed vehicle versus fixed time:
+
+![Percent fuel reduction of XtraFlow versus fixed time, with bootstrap 95% intervals](results/figures/ii_pct_reduction.png)
+
+Fuel, CO₂, waiting, and queue for every controller:
+
+![Mean fuel, CO2, waiting time, and queue by scenario and controller](results/figures/i_grouped_bars.png)
+
+The fuel saving holds when the detector misses vehicles (peak scenario):
+
+![Fuel per vehicle as the detection miss rate rises from 0 to 30 percent](results/figures/vii_robustness.png)
+
+On a 2×2 grid the same controller uses more fuel than fixed time and actuated. Coordination does not change that:
+
+![Mean fuel per vehicle on the 2x2 grid](results/figures/x_grid_results.png)
+
 ## One-command reproduction
 
 ```bash
