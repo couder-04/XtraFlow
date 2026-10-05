@@ -183,7 +183,16 @@ We evaluate an adaptive, fuel-weighted pressure traffic signal controller (ours_
 ## Where ours_fuel loses or ties
 
 
-No non-positive mean fuel reductions found against listed baselines in loaded runs.
+
+### Single-junction TEST fuel metric
+
+No non-positive mean fuel reductions vs listed baselines on the single intersection.
+
+### 2×2 grid study (where it does **not** help)
+
+- Mean fuel/veh: fixed=0.1831, actuated=0.1448, ours_fuel=0.2694, ours_fuel_coord=0.2694.
+- Coordination reduces fuel? **False**.
+- Interpretation: controller tuned for a single junction does not transfer well to the uncoordinated/coordinated grid OD pattern used here (simulation-based).
 
 
 ## Ablations
