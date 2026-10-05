@@ -37,7 +37,15 @@ def main(smoke: bool = False) -> None:
     val = seed_range(cfg["seed_protocol"]["validation"])
     seeds = val[:1] if smoke else val[:5]
     scenarios = ["balanced"] if smoke else list(SCENARIOS)
-    controller = "fixed_tuned" if (ROOT / "results" / "fixed_tuned.json").exists() else "fixed"
+    # Calibration runs before the green search. A smoke plan only covers one
+    # scenario, so it must not be treated as the tuned baseline.
+    controller = "fixed"
+    tuned_path = ROOT / "results" / "fixed_tuned.json"
+    if tuned_path.exists():
+        tuned = load_json(tuned_path)
+        plans = tuned.get("plans") or {}
+        if not tuned.get("smoke") and all(s in plans for s in scenarios):
+            controller = "fixed_tuned"
     obs_path = ROOT / "data" / "observed_counts.csv"
     scales: Dict[str, float] = {}
     mode = "measured_on_validation"
