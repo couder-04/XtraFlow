@@ -5,6 +5,9 @@ Output files differ by run_id so a 10% miss run does not overwrite a 0% run.
 """
 from __future__ import annotations
 
+import os
+from multiprocessing import get_context
+
 from sim.controllers import PerceptionNoise
 from sim.util import ROOT, load_config, save_json, seed_range
 

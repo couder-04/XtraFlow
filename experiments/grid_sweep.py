@@ -5,6 +5,9 @@ Until a non-smoke run finishes, published text must not claim a grid result.
 """
 from __future__ import annotations
 
+import os
+from multiprocessing import get_context
+
 from sim.build_grid import junction_specs
 from sim.gen_demand import generate_grid
 from sim.util import ROOT, load_config, load_json, save_json, seed_range
@@ -68,21 +71,31 @@ def run_grid(controller: str, seed: int, smoke: bool = False) -> dict:
     }
 
 
+def _grid_task(task):
+    ctrl, seed, smoke = task
+    try:
+        return run_grid(ctrl, seed, smoke=smoke)
+    except Exception as e:  # noqa: BLE001
+        return {
+            "controller": ctrl, "seed": seed, "status": "error", "error": str(e),
+            "fuel_per_vehicle_L": float("nan"), "mean_waiting_s": float("nan"),
+            "n_completed": 0, "n_departed": 0, "n_unfinished": 0, "wall_time_s": -1,
+        }
+
+
 def main(smoke: bool = False) -> None:
     cfg = load_config()
     seeds = [1] if smoke else seed_range(cfg["seed_protocol"]["test"])
     controllers = ["fixed", "fixed_tuned", "actuated", "XtraFlow", "XtraFlow_coord"]
-    rows = []
-    for ctrl in controllers:
-        for seed in seeds:
-            try:
-                rows.append(run_grid(ctrl, seed, smoke=smoke))
-            except Exception as e:  # noqa: BLE001
-                rows.append({
-                    "controller": ctrl, "seed": seed, "status": "error", "error": str(e),
-                    "fuel_per_vehicle_L": float("nan"), "mean_waiting_s": float("nan"),
-                    "n_completed": 0, "n_departed": 0, "n_unfinished": 0, "wall_time_s": -1,
-                })
+    tasks = [(ctrl, seed, smoke) for ctrl in controllers for seed in seeds]
+    workers = 1 if smoke else min(4, max(1, (os.cpu_count() or 2) - 1))
+    if workers <= 1:
+        rows = [_grid_task(t) for t in tasks]
+    else:
+        print(f"grid tasks={len(tasks)} workers={workers}", flush=True)
+        ctx = get_context("spawn")
+        with ctx.Pool(workers) as pool:
+            rows = list(pool.imap_unordered(_grid_task, tasks, chunksize=1))
 
     import numpy as np
     import pandas as pd

@@ -48,7 +48,7 @@ def main(smoke: bool = False) -> Dict[str, Any]:
     if smoke:
         combos = combos[:2]
 
-    n_workers = 1 if smoke else min(3, max(1, (os.cpu_count() or 2) - 1))
+    n_workers = 1 if smoke else min(6, max(1, (os.cpu_count() or 2) - 1))
 
     def run_batch(param_list, seeds, stage):
         tasks = [(p, sc, s, smoke) for p in param_list for sc in scenarios for s in seeds]
