@@ -51,18 +51,24 @@ def locate_sumo() -> Tuple[str, str]:
     tools = os.path.join(sumo_home, "tools")
     if tools not in sys.path:
         sys.path.insert(0, tools)
-    binary = shutil.which("sumo")
-    if binary is None:
-        cand = Path(sumo_home) / "bin" / "sumo"
-        if cand.exists():
-            binary = str(cand)
-        else:
-            # eclipse-sumo sometimes puts binaries under sumo/bin relative to package
-            for rel in ["bin/sumo", "../bin/sumo"]:
-                c = Path(sumo_home) / rel
-                if c.exists():
-                    binary = str(c.resolve())
-                    break
+    candidates = []
+    which = shutil.which("sumo")
+    if which:
+        candidates.append(Path(which))
+    candidates.extend([
+        Path(sumo_home) / "bin" / "sumo",
+        Path(sumo_home).resolve().parent.parent.parent / "bin" / "sumo",
+        ROOT / ".venv" / "bin" / "sumo",
+        Path(sys.prefix) / "bin" / "sumo",
+    ])
+    binary = None
+    for c in candidates:
+        try:
+            if c is not None and Path(c).exists():
+                binary = str(Path(c).resolve())
+                break
+        except OSError:
+            continue
     if binary is None:
         raise RuntimeError(f"sumo binary not found under SUMO_HOME={sumo_home}")
     # ensure bin on PATH

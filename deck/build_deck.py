@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 from pptx import Presentation
-from pptx.dml.color import RgbColor
+from pptx.dml.color import RGBColor
 from pptx.enum.text import PP_ALIGN
 from pptx.util import Emu, Inches, Pt
 
@@ -28,7 +28,7 @@ def add_title(slide, text, top=0.3, size=32):
     p.text = text
     p.font.size = Pt(size)
     p.font.bold = True
-    p.font.color.rgb = RgbColor(20, 40, 60)
+    p.font.color.rgb = RGBColor(20, 40, 60)
 
 
 def add_body(slide, lines, top=1.3, size=18):
@@ -39,7 +39,7 @@ def add_body(slide, lines, top=1.3, size=18):
         p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
         p.text = line
         p.font.size = Pt(size)
-        p.font.color.rgb = RgbColor(30, 30, 30)
+        p.font.color.rgb = RGBColor(30, 30, 30)
         p.space_after = Pt(8)
 
 

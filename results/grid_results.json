@@ -1,0 +1,186 @@
+{
+  "rows": [
+    {
+      "controller": "fixed",
+      "seed": 1,
+      "fuel_per_vehicle_L": 0.18038311514752287,
+      "mean_waiting_s": 40.01086956521739,
+      "n_completed": 184,
+      "wall_time_s": 0.4088277816772461
+    },
+    {
+      "controller": "fixed",
+      "seed": 2,
+      "fuel_per_vehicle_L": 0.19571375043476683,
+      "mean_waiting_s": 45.38164251207729,
+      "n_completed": 207,
+      "wall_time_s": 0.41196393966674805
+    },
+    {
+      "controller": "fixed",
+      "seed": 3,
+      "fuel_per_vehicle_L": 0.17200010066812443,
+      "mean_waiting_s": 43.6875,
+      "n_completed": 192,
+      "wall_time_s": 0.40558600425720215
+    },
+    {
+      "controller": "fixed",
+      "seed": 4,
+      "fuel_per_vehicle_L": 0.18225459931391746,
+      "mean_waiting_s": 40.56603773584906,
+      "n_completed": 159,
+      "wall_time_s": 0.3892688751220703
+    },
+    {
+      "controller": "fixed",
+      "seed": 5,
+      "fuel_per_vehicle_L": 0.18534411166336426,
+      "mean_waiting_s": 43.36040609137056,
+      "n_completed": 197,
+      "wall_time_s": 0.4092719554901123
+    },
+    {
+      "controller": "actuated",
+      "seed": 1,
+      "fuel_per_vehicle_L": 0.14853727812552173,
+      "mean_waiting_s": 19.128342245989305,
+      "n_completed": 187,
+      "wall_time_s": 0.1568138599395752
+    },
+    {
+      "controller": "actuated",
+      "seed": 2,
+      "fuel_per_vehicle_L": 0.15045234445512923,
+      "mean_waiting_s": 17.578199052132703,
+      "n_completed": 211,
+      "wall_time_s": 0.16177105903625488
+    },
+    {
+      "controller": "actuated",
+      "seed": 3,
+      "fuel_per_vehicle_L": 0.13174738948202958,
+      "mean_waiting_s": 17.237623762376238,
+      "n_completed": 202,
+      "wall_time_s": 0.15846610069274902
+    },
+    {
+      "controller": "actuated",
+      "seed": 4,
+      "fuel_per_vehicle_L": 0.14191593952604145,
+      "mean_waiting_s": 17.26993865030675,
+      "n_completed": 163,
+      "wall_time_s": 0.15192389488220215
+    },
+    {
+      "controller": "actuated",
+      "seed": 5,
+      "fuel_per_vehicle_L": 0.15158022894460368,
+      "mean_waiting_s": 19.587064676616915,
+      "n_completed": 201,
+      "wall_time_s": 0.16217923164367676
+    },
+    {
+      "controller": "ours_fuel",
+      "seed": 1,
+      "fuel_per_vehicle_L": 0.2714619232611139,
+      "mean_waiting_s": 114.61581920903954,
+      "n_completed": 177,
+      "wall_time_s": 1.9202568531036377
+    },
+    {
+      "controller": "ours_fuel",
+      "seed": 2,
+      "fuel_per_vehicle_L": 0.2722023018005137,
+      "mean_waiting_s": 125.1875,
+      "n_completed": 192,
+      "wall_time_s": 1.829901933670044
+    },
+    {
+      "controller": "ours_fuel",
+      "seed": 3,
+      "fuel_per_vehicle_L": 0.2691155565445909,
+      "mean_waiting_s": 127.02173913043478,
+      "n_completed": 184,
+      "wall_time_s": 1.799536943435669
+    },
+    {
+      "controller": "ours_fuel",
+      "seed": 4,
+      "fuel_per_vehicle_L": 0.2650722384469183,
+      "mean_waiting_s": 110.61073825503355,
+      "n_completed": 149,
+      "wall_time_s": 1.7747387886047363
+    },
+    {
+      "controller": "ours_fuel",
+      "seed": 5,
+      "fuel_per_vehicle_L": 0.2689299050190488,
+      "mean_waiting_s": 116.19021739130434,
+      "n_completed": 184,
+      "wall_time_s": 1.7851362228393555
+    },
+    {
+      "controller": "ours_fuel_coord",
+      "seed": 1,
+      "fuel_per_vehicle_L": 0.2714619232611139,
+      "mean_waiting_s": 114.61581920903954,
+      "n_completed": 177,
+      "wall_time_s": 1.8435909748077393
+    },
+    {
+      "controller": "ours_fuel_coord",
+      "seed": 2,
+      "fuel_per_vehicle_L": 0.2722023018005137,
+      "mean_waiting_s": 125.1875,
+      "n_completed": 192,
+      "wall_time_s": 1.8013279438018799
+    },
+    {
+      "controller": "ours_fuel_coord",
+      "seed": 3,
+      "fuel_per_vehicle_L": 0.2691155565445909,
+      "mean_waiting_s": 127.02173913043478,
+      "n_completed": 184,
+      "wall_time_s": 1.8755676746368408
+    },
+    {
+      "controller": "ours_fuel_coord",
+      "seed": 4,
+      "fuel_per_vehicle_L": 0.2650722384469183,
+      "mean_waiting_s": 110.61073825503355,
+      "n_completed": 149,
+      "wall_time_s": 1.7674212455749512
+    },
+    {
+      "controller": "ours_fuel_coord",
+      "seed": 5,
+      "fuel_per_vehicle_L": 0.2689299050190488,
+      "mean_waiting_s": 116.19021739130434,
+      "n_completed": 184,
+      "wall_time_s": 2.020195245742798
+    }
+  ],
+  "summary_means": {
+    "fuel_per_vehicle_L": {
+      "actuated": 0.14484663610666512,
+      "fixed": 0.18313913544553917,
+      "ours_fuel": 0.2693563850144371,
+      "ours_fuel_coord": 0.2693563850144371
+    },
+    "mean_waiting_s": {
+      "actuated": 18.16023367748438,
+      "fixed": 42.60129118090286,
+      "ours_fuel": 118.72520279716245,
+      "ours_fuel_coord": 118.72520279716245
+    },
+    "n_completed": {
+      "actuated": 192.8,
+      "fixed": 187.8,
+      "ours_fuel": 177.2,
+      "ours_fuel_coord": 177.2
+    }
+  },
+  "coordination_reduces_fuel": false,
+  "label": "Simulation-based estimate"
+}

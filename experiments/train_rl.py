@@ -17,15 +17,17 @@ def main(smoke: bool = False) -> None:
     from stable_baselines3 import PPO
 
     train_seeds = seed_range(cfg["seed_protocol"]["train"])
-    val_seeds = seed_range(cfg["seed_protocol"]["validation"])
+    val_seeds_all = seed_range(cfg["seed_protocol"]["validation"])
+    # During training loop use a small VAL subset; final selection uses all VAL seeds.
+    val_seeds = val_seeds_all[:1] if smoke else val_seeds_all[:3]
     scenarios = ["balanced", "peak_unbalanced", "dynamic"]
     # Full SUMO step = 1 env step; use shorter training episodes for tractability.
     # Selection remains on VALIDATION seeds via run_one fuel metric.
-    timesteps = 2000 if smoke else min(int(cfg["rl"]["total_timesteps"]), 50000)
-    train_horizon = 120 if smoke else 600
+    timesteps = 2000 if smoke else min(int(cfg["rl"]["total_timesteps"]), 30000)
+    train_horizon = 120 if smoke else 400
     if smoke:
         train_seeds = train_seeds[:2]
-        val_seeds = val_seeds[:1]
+        val_seeds = val_seeds_all[:1]
         scenarios = ["balanced"]
 
     out_dir = ROOT / "results" / "rl"
@@ -40,7 +42,7 @@ def main(smoke: bool = False) -> None:
             self.timeout = train_horizon + 60
             self.smoke = True  # short episodes during training
             self._i = 0
-            self._pairs = [(s, sc) for sc in scenarios for s in train_seeds]
+            self._pairs = [(sc, s) for sc in scenarios for s in train_seeds]
 
         def reset(self, *, seed=None, options=None):
             sc, sd = self._pairs[self._i % len(self._pairs)]
@@ -74,13 +76,12 @@ def main(smoke: bool = False) -> None:
     while done_steps < timesteps:
         model.learn(total_timesteps=chunk, reset_num_timesteps=False)
         done_steps += chunk
-        # validation
+        # validation (short smoke-length for loop speed; final confirm below)
         val_fuels = []
+        tmp = out_dir / "ppo_latest.zip"
+        model.save(str(tmp))
         for sd in val_seeds:
-            # save temp and evaluate with run_one
-            tmp = out_dir / "ppo_latest.zip"
-            model.save(str(tmp))
-            row = run_one("balanced", "rl_ppo", sd, cfg=cfg, smoke=True if smoke else False, model=model)
+            row = run_one("balanced", "rl_ppo", sd, cfg=cfg, smoke=True, model=model)
             val_fuels.append(row["fuel_per_vehicle_L"])
         mean_val = float(np.mean(val_fuels))
         curves.append({"timesteps": done_steps, "val_fuel_per_vehicle_L": mean_val})
@@ -92,17 +93,30 @@ def main(smoke: bool = False) -> None:
         else:
             stale += 1
             if stale >= patience:
-                print("Early stop on VALIDATION")
+                print("Early stop on VALIDATION (loop)")
                 break
 
     env.close()
-    save_json(out_dir / "training_curve.json", {"curve": curves, "best_val_fuel": best_val})
+    # Final selection confirm on all VALIDATION seeds with full horizon
+    if best_path.exists():
+        model = PPO.load(str(best_path))
+    final_fuels = []
+    confirm_seeds = val_seeds_all[:1] if smoke else val_seeds_all
+    for sd in confirm_seeds:
+        row = run_one("balanced", "rl_ppo", sd, cfg=cfg, smoke=smoke, model=model)
+        final_fuels.append(row["fuel_per_vehicle_L"])
+    final_mean = float(np.mean(final_fuels)) if final_fuels else best_val
+    save_json(out_dir / "training_curve.json", {"curve": curves, "best_val_fuel_loop": best_val,
+                                                "best_val_fuel_confirm": final_mean})
     meta = {
         "selected_on": "VALIDATION seeds",
-        "train_seeds": train_seeds if not smoke else list(train_seeds),
+        "train_seeds": list(train_seeds),
+        "confirm_seeds": list(confirm_seeds),
         "best_path": str(best_path),
-        "best_val_fuel_per_vehicle_L": best_val,
+        "best_val_fuel_per_vehicle_L": final_mean,
+        "loop_val_fuel_per_vehicle_L": best_val,
         "smoke": smoke,
+        "timesteps_budget": timesteps,
     }
     save_json(out_dir / "rl_selection.json", meta)
     print(meta)

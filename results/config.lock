@@ -1,5 +1,5 @@
 {
-  "sha256": "fada35547439190e9cbb145887b94ad0d2e6413039bfddbad7081209cf272552",
+  "sha256": "7bdaf158403f287e0f8d1885642227cb7d00373a4eb7eaa9c8133907baf7dfcb",
   "config_path": "/Users/par_04/code_playground/energy_hackathon/config.yaml",
   "note": "TEST sweep must use this exact config.yaml hash"
 }

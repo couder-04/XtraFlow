@@ -6,35 +6,30 @@ Last updated: 2026-10-05
 
 | Phase | Description | Status | Notes |
 |-------|-------------|--------|-------|
-| 0 | Repo scaffold, venv, deps, docs | DONE | py3.12, eclipse-sumo 1.21.0, requirements.lock |
-| 1 | Network + vehicles + demand | DONE | 4-arm LHT n_links=16; grid 2x2; HBEFA3 mapping |
-| 2 | Controllers + metrics + RL env | DONE | 7 controllers smoke OK |
-| 3 | Tests + smoke + calibrate + tune | IN_PROGRESS | pytest 15/15; smoke all 7 OK |
-| 4 | Train RL + config.lock + TEST sweep | PENDING | |
-| 5 | Analyze + robustness + sensitivity + emission + safety + grid + extrapolate | PENDING | |
-| 6 | Perception + demo + dashboard + deck + report + audit | PENDING | |
-| 7 | Acceptance checklist + headline summary | PENDING | |
+| 0 | Repo scaffold, venv, deps, docs | DONE | |
+| 1 | Network + vehicles + demand | DONE | |
+| 2 | Controllers + metrics + RL env | DONE | |
+| 3 | Tests + smoke + calibrate + tune | DONE | |
+| 4 | Train RL + config.lock + TEST sweep | DONE | 840/840 rows, 0 NaN |
+| 5 | Analyze + robustness + sensitivity + emission + safety + grid + extrapolate | DONE | |
+| 6 | Perception + demo + dashboard + deck + report + audit | DONE | |
+| 7 | Acceptance checklist | DONE | |
 
-## Commands run
+## Key artifacts
 
-```
-python3.12 -m venv .venv
-pip install -r requirements.txt
-python -m sim.build_network
-python -m sim.build_grid
-pytest tests/ -v   # 15 passed
-smoke: all 7 controllers on balanced seed 1
-```
+- `results/raw_runs.csv` — 7×4×30 complete
+- `results/weights.json`, `results/tuned_params.json`, `results/config.lock`
+- `results/summary.json`, `results/headlines.json`, `results/REPORT.md`
+- `results/figures/` — 11 figures
+- `results/demo/demo.mp4`, `results/deck.pptx`
+- `perception/noise_model.json` (ASSUMED without user video)
 
-## Open issues
+## Caveats discovered
 
-- TraCI prints "Retrying in 1 seconds" once per start (non-fatal).
-- n_completed can differ across controllers on short smoke; monitor on full TEST.
-- RL without trained weights underperforms (expected until train_rl).
-- Installed SUMO has HBEFA3/PHEMlight, not HBEFA4 (documented).
-
-## Seed protocol (frozen)
-
-- TRAIN: 1000–1049 (RL only)
-- VALIDATION: 2000–2019 (tuning / model selection)
-- TEST: 1–30 (final eval only, after config.lock)
+- HBEFA3/PHEMlight only (no HBEFA4 in SUMO 1.21 wheel)
+- SSM conflict counts all zero (device output may be empty / under-sensitive)
+- RL underperforms ours_fuel; 13.3% RL gridlock rate on TEST
+- 2×2 grid: ours_fuel worse than fixed/actuated; coordination adds nothing
+- Peak fuel reduction ~22% (above 20% band, below 30% sanity threshold)
+- Perception noise model assumed without user video
+- Assumed vehicle mix / not Indian-vehicle-calibrated emissions

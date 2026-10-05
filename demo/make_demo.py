@@ -114,9 +114,9 @@ def render(frames_a, frames_b, out_path: Path, timelapse: float = 10.0):
         fig.text(0.5, 0.02, f"Simulation-based | time-lapse ≈ {timelapse:.0f}×", ha="center", fontsize=12)
         fig.tight_layout(rect=[0, 0.04, 1, 0.96])
         fig.canvas.draw()
-        w, h = fig.canvas.get_width_height()
-        img = np.frombuffer(fig.canvas.buffer_rgba(), dtype=np.uint8).reshape(h, w, 4)[..., :3]
-        images.append(img.copy())
+        buf = np.asarray(fig.canvas.buffer_rgba())
+        img = buf[:, :, :3].copy()
+        images.append(img)
         plt.close(fig)
 
     out_path.parent.mkdir(parents=True, exist_ok=True)

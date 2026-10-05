@@ -1,0 +1,54 @@
+[
+  {
+    "scenario": "balanced",
+    "n_completed_mean_spread": 0.0,
+    "means": {
+      "actuated": 1919.6,
+      "fixed": 1919.6,
+      "maxpressure": 1919.6,
+      "ours_count": 1919.6,
+      "ours_fuel": 1919.6,
+      "rl_ppo": 1919.6,
+      "webster": 1919.6
+    }
+  },
+  {
+    "scenario": "peak_unbalanced",
+    "n_completed_mean_spread": 97.60000000000014,
+    "means": {
+      "actuated": 1796.2,
+      "fixed": 1796.2,
+      "maxpressure": 1796.2,
+      "ours_count": 1796.2,
+      "ours_fuel": 1796.2,
+      "rl_ppo": 1698.6,
+      "webster": 1796.2
+    }
+  },
+  {
+    "scenario": "dynamic",
+    "n_completed_mean_spread": 4.2000000000000455,
+    "means": {
+      "actuated": 1759.2,
+      "fixed": 1759.2,
+      "maxpressure": 1759.2,
+      "ours_count": 1759.2,
+      "ours_fuel": 1759.2,
+      "rl_ppo": 1755.0,
+      "webster": 1759.2
+    }
+  },
+  {
+    "scenario": "low_demand",
+    "n_completed_mean_spread": 0.0,
+    "means": {
+      "actuated": 599.8,
+      "fixed": 599.8,
+      "maxpressure": 599.8,
+      "ours_count": 599.8,
+      "ours_fuel": 599.8,
+      "rl_ppo": 599.8,
+      "webster": 599.8
+    }
+  }
+]

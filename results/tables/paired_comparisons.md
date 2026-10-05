@@ -1,0 +1,26 @@
+| scenario        | baseline    | metric             |   pct_reduction_mean |   pct_reduction_ci_lo |   pct_reduction_ci_hi |   wilcoxon_stat |       p_raw |   cohens_dz |   n_pairs |      p_holm |
+|:----------------|:------------|:-------------------|---------------------:|----------------------:|----------------------:|----------------:|------------:|------------:|----------:|------------:|
+| balanced        | fixed       | fuel_per_vehicle_L |             8.60644  |              8.22502  |              8.99744  |               0 | 1.86265e-09 |   -7.05272  |        30 | 4.47035e-08 |
+| balanced        | webster     | fuel_per_vehicle_L |             8.37264  |              7.9115   |              8.84512  |               0 | 1.86265e-09 |   -5.94868  |        30 | 4.47035e-08 |
+| balanced        | actuated    | fuel_per_vehicle_L |             5.569    |              5.24303  |              5.89154  |               0 | 1.86265e-09 |   -5.84537  |        30 | 4.47035e-08 |
+| balanced        | maxpressure | fuel_per_vehicle_L |             1.24649  |              0.901382 |              1.60427  |              14 | 2.04891e-07 |   -1.24561  |        30 | 1.43424e-06 |
+| balanced        | ours_count  | fuel_per_vehicle_L |             0.59857  |              0.276763 |              0.943536 |              84 | 0.00158328  |   -0.628937 |        30 | 0.00474985  |
+| balanced        | rl_ppo      | fuel_per_vehicle_L |             8.37264  |              7.9115   |              8.84512  |               0 | 1.86265e-09 |   -5.94868  |        30 | 4.47035e-08 |
+| dynamic         | fixed       | fuel_per_vehicle_L |            16.5005   |             15.7215   |             17.3068   |               0 | 1.86265e-09 |   -5.88864  |        30 | 4.47035e-08 |
+| dynamic         | webster     | fuel_per_vehicle_L |            24.7916   |             22.3321   |             27.9838   |               0 | 1.86265e-09 |   -1.57466  |        30 | 4.47035e-08 |
+| dynamic         | actuated    | fuel_per_vehicle_L |             8.90099  |              8.49399  |              9.30014  |               0 | 1.86265e-09 |   -7.54931  |        30 | 4.47035e-08 |
+| dynamic         | maxpressure | fuel_per_vehicle_L |             0.624322 |              0.219586 |              1.0281   |             105 | 0.00761214  |   -0.539318 |        30 | 0.00806359  |
+| dynamic         | ours_count  | fuel_per_vehicle_L |             0.590258 |              0.258025 |              0.954554 |              96 | 0.00403179  |   -0.59719  |        30 | 0.00806359  |
+| dynamic         | rl_ppo      | fuel_per_vehicle_L |            30.1643   |             28.0346   |             32.3621   |               0 | 1.86265e-09 |   -3.10167  |        30 | 4.47035e-08 |
+| low_demand      | fixed       | fuel_per_vehicle_L |            14.4582   |             13.9839   |             14.9079   |               0 | 1.86265e-09 |   -9.79892  |        30 | 4.47035e-08 |
+| low_demand      | webster     | fuel_per_vehicle_L |            12.741    |             12.1536   |             13.358    |               0 | 1.86265e-09 |   -6.66068  |        30 | 4.47035e-08 |
+| low_demand      | actuated    | fuel_per_vehicle_L |            11.8417   |             11.2361   |             12.4384   |               0 | 1.86265e-09 |   -6.37297  |        30 | 4.47035e-08 |
+| low_demand      | maxpressure | fuel_per_vehicle_L |             1.81716  |              1.25765  |              2.35725  |              22 | 9.98378e-07 |   -1.17635  |        30 | 4.16301e-06 |
+| low_demand      | ours_count  | fuel_per_vehicle_L |             2.5738   |              2.10363  |              3.02517  |               2 | 5.58794e-09 |   -1.88426  |        30 | 4.47035e-08 |
+| low_demand      | rl_ppo      | fuel_per_vehicle_L |            12.741    |             12.1536   |             13.358    |               0 | 1.86265e-09 |   -6.66068  |        30 | 4.47035e-08 |
+| peak_unbalanced | fixed       | fuel_per_vehicle_L |            21.7596   |             20.0481   |             23.5385   |               0 | 1.86265e-09 |   -3.21574  |        30 | 4.47035e-08 |
+| peak_unbalanced | webster     | fuel_per_vehicle_L |            11.2536   |             10.8826   |             11.6369   |               0 | 1.86265e-09 |   -9.17751  |        30 | 4.47035e-08 |
+| peak_unbalanced | actuated    | fuel_per_vehicle_L |             9.67431  |              9.3721   |              9.98495  |               0 | 1.86265e-09 |  -10.0638   |        30 | 4.47035e-08 |
+| peak_unbalanced | maxpressure | fuel_per_vehicle_L |             1.15304  |              0.820211 |              1.49334  |              17 | 3.85568e-07 |   -1.19057  |        30 | 2.31341e-06 |
+| peak_unbalanced | ours_count  | fuel_per_vehicle_L |             1.27991  |              0.9015   |              1.64624  |              21 | 8.32602e-07 |   -1.18112  |        30 | 4.16301e-06 |
+| peak_unbalanced | rl_ppo      | fuel_per_vehicle_L |            53.3305   |             50.6473   |             55.8845   |               0 | 1.86265e-09 |   -3.25268  |        30 | 4.47035e-08 |

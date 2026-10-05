@@ -1,0 +1,9 @@
+Synthetic perception smoke complete; noise model ASSUMED.
+
+To supply real data:
+  - Put videos in data/video/
+  - Put manual counts/boxes in data/video_labels/
+  - Run: python -m perception.yolo_counts --video ... --roi perception/roi.yaml
+  - Run: python -m perception.evaluate_detector
+Licensing: only use datasets you have rights to; do not download unlicensed content.
+

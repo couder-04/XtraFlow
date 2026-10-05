@@ -23,13 +23,17 @@ def run_grid(controller: str, seed: int, smoke: bool = False) -> dict:
     raw = ROOT / "results" / "raw"
     tripinfo = raw / f"{tag}.tripinfo.xml"
     sumocfg = raw / f"{tag}.sumocfg"
+    # Prefer routes that already embed types; omit vtypes if routes define them.
+    # duarouter output may already include vType definitions — only attach vtypes.add.xml
+    # when the route file lacks <vType>.
+    route_text = Path(routes).read_text(encoding="utf-8", errors="ignore")
+    add_line = f'    <additional-files value="{vtypes}"/>\n' if "<vType" not in route_text else ""
     sumocfg.write_text(
         f"""<configuration>
   <input>
     <net-file value="{net}"/>
     <route-files value="{routes}"/>
-    <additional-files value="{vtypes}"/>
-  </input>
+{add_line}  </input>
   <output>
     <tripinfo-output value="{tripinfo}"/>
   </output>

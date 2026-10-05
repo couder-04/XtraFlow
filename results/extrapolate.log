@@ -1,0 +1,13 @@
+2026-10-05 06:44:40.312 Python[18068:2851697] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/j2/9hsk1jq12rjbt8qz1vrdnbth0000gn/T/org.python.python.savedState
+{
+  "annual_litres": {
+    "median": 27737080.86558083,
+    "p05": 8997338.18625999,
+    "p95": 66756793.494768
+  },
+  "annual_tonnes_CO2": {
+    "median": 67151.4727755712,
+    "p05": 21782.555748935436,
+    "p95": 161618.19705083338
+  }
+}

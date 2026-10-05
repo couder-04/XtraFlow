@@ -96,3 +96,13 @@ All non-sourced parameters are labelled **assumed**. Choices below record engine
 
 **Choice:** Phase pressure counts only vehicles whose route turn matches the phase (through+left vs right), not all vehicles on the approach.  
 **Rationale:** Without this, NS_TL and NS_R pressures were nearly identical, starving EW and causing gridlock (observed on VAL seed 2000).
+
+## D017 — Peak headline ~22% vs fixed
+
+**Choice:** Report peak_unbalanced mean fuel reduction 21.76% (95% CI 20.0–23.5) despite “expect ~5–20%” guidance.  
+**Rationale:** Below the 30% bug threshold; n_completed matched across controllers; no ours_fuel gridlock on TEST; strong NS/EW imbalance is where adaptive control should help most. Documented as upper end of plausible range.
+
+## D018 — Grid underperformance
+
+**Choice:** Report honestly that on the 2×2 grid, independent/coordinated ours_fuel underperformed fixed and actuated (higher fuel and waiting). Coordination term did not change outcomes.  
+**Rationale:** Spec requires mixed/negative results; controller was tuned for single junction.

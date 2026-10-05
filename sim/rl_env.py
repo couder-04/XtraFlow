@@ -1,6 +1,7 @@
 """Gymnasium environment wrapping SUMO/TraCI for PPO training."""
 from __future__ import annotations
 
+import os
 from pathlib import Path
 from typing import Any, Dict, Optional, Tuple
 
@@ -63,19 +64,26 @@ class SumoTrafficEnv(gym.Env):
         tripinfo = raw / f"{tag}.tripinfo.xml"
         ssm = raw / f"{tag}.ssm.xml"
         cfg_path = raw / f"{tag}.sumocfg"
-        _write_sumocfg(net, routes, [vtypes, tls_add], cfg_path, tripinfo, ssm, end=self.timeout)
-        traci.start([self._sumo_bin, "-c", str(cfg_path), "--duration-log.disable", "true"])
+        # Do not set sumo end-time — TraCI owns termination (avoids peer shutdown mid-step).
+        _write_sumocfg(net, routes, [vtypes, tls_add], cfg_path, tripinfo, ssm, end=None)
+        label = f"rl_{self.scenario}_{self._seed}_{os.getpid()}"
+        try:
+            traci.start([self._sumo_bin, "-c", str(cfg_path), "--duration-log.disable", "true"],
+                        label=label, numRetries=10)
+            traci.switch(label)
+        except Exception:
+            traci.start([self._sumo_bin, "-c", str(cfg_path), "--duration-log.disable", "true"],
+                        numRetries=10)
         try:
             traci.trafficlight.setProgram("C", "fixed")
         except Exception:
             pass
-        self._ctrl = OursFuelController(cfg=self.cfg, weights=self.weights, params=self.params)
-        # Use RLPPOController shell for transitions
         from sim.controllers import RLPPOController
 
         self._ctrl = RLPPOController(cfg=self.cfg, weights=self.weights, params=self.params)
         self._step_count = 0
         self._prev_wait = 0.0
+        self._dead = False
         obs = self._get_obs()
         return obs, {}
 
@@ -96,26 +104,36 @@ class SumoTrafficEnv(gym.Env):
     def step(self, action: int):
         traci = self._traci
         ctrl = self._ctrl
+        if getattr(self, "_dead", False):
+            return self.observation_space.sample() * 0, 0.0, False, True, {}
         switched = 0
-        if ctrl._tick_transition():
-            ctrl.apply_state(traci)
-        else:
-            ctrl.state.time_in_phase += 1.0
-            if int(action) == 1 and ctrl.state.time_in_phase >= ctrl.min_green:
-                nxt = (ctrl.state.phase_idx + 1) % len(PHASE_ORDER)
-                ctrl._begin_switch(nxt, "rl")
-                switched = 1
-            elif ctrl.state.time_in_phase >= ctrl.max_green:
-                nxt = (ctrl.state.phase_idx + 1) % len(PHASE_ORDER)
-                ctrl._begin_switch(nxt, "max_green")
-                switched = 1
-            ctrl.apply_state(traci)
+        try:
+            if ctrl._tick_transition():
+                ctrl.apply_state(traci)
+            else:
+                ctrl.state.time_in_phase += 1.0
+                if int(action) == 1 and ctrl.state.time_in_phase >= ctrl.min_green:
+                    nxt = (ctrl.state.phase_idx + 1) % len(PHASE_ORDER)
+                    ctrl._begin_switch(nxt, "rl")
+                    switched = 1
+                elif ctrl.state.time_in_phase >= ctrl.max_green:
+                    nxt = (ctrl.state.phase_idx + 1) % len(PHASE_ORDER)
+                    ctrl._begin_switch(nxt, "max_green")
+                    switched = 1
+                ctrl.apply_state(traci)
 
-        traci.simulationStep()
+            traci.simulationStep()
+        except Exception:
+            self._dead = True
+            return np.zeros(self.observation_space.shape, dtype=np.float32), -10.0, False, True, {}
+
         self._step_count += 1
 
         # reward: negative fuel-weighted waiting + switch penalty
-        vehicles = ctrl.observe_vehicles(traci, float(self.cfg["controller"]["detection_distance_m"]))
+        try:
+            vehicles = ctrl.observe_vehicles(traci, float(self.cfg["controller"]["detection_distance_m"]))
+        except Exception:
+            vehicles = []
         wait_cost = 0.0
         for v in vehicles:
             if v["halting"]:
@@ -130,8 +148,13 @@ class SumoTrafficEnv(gym.Env):
                 if traci.simulation.getMinExpectedNumber() == 0:
                     terminated = True
             except Exception:
-                terminated = True
-        obs = self._get_obs()
+                truncated = True
+        try:
+            obs = self._get_obs()
+        except Exception:
+            self._dead = True
+            obs = np.zeros(self.observation_space.shape, dtype=np.float32)
+            truncated = True
         return obs, float(reward), terminated, truncated, {}
 
     def close(self):

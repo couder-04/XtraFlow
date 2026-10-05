@@ -1,0 +1,49 @@
+{
+  "by_controller": [
+    {
+      "controller": "actuated",
+      "mean": 0.0,
+      "std": 0.0,
+      "count": 120
+    },
+    {
+      "controller": "fixed",
+      "mean": 0.0,
+      "std": 0.0,
+      "count": 120
+    },
+    {
+      "controller": "maxpressure",
+      "mean": 0.0,
+      "std": 0.0,
+      "count": 120
+    },
+    {
+      "controller": "ours_count",
+      "mean": 0.0,
+      "std": 0.0,
+      "count": 120
+    },
+    {
+      "controller": "ours_fuel",
+      "mean": 0.0,
+      "std": 0.0,
+      "count": 120
+    },
+    {
+      "controller": "rl_ppo",
+      "mean": 0.0,
+      "std": 0.0,
+      "count": 120
+    },
+    {
+      "controller": "webster",
+      "mean": 0.0,
+      "std": 0.0,
+      "count": 120
+    }
+  ],
+  "ours_minus_fixed_mean_conflicts": 0.0,
+  "verdict": "no_increase",
+  "note": "SSM TTC<1.5s counts from SUMO device; model-based."
+}

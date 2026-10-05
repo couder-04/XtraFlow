@@ -1,0 +1,390 @@
+{
+  "n_rows": 840,
+  "controllers": [
+    "actuated",
+    "fixed",
+    "maxpressure",
+    "ours_count",
+    "ours_fuel",
+    "rl_ppo",
+    "webster"
+  ],
+  "scenarios": [
+    "balanced",
+    "dynamic",
+    "low_demand",
+    "peak_unbalanced"
+  ],
+  "headlines": [
+    {
+      "scenario": "balanced",
+      "pct_fuel_reduction_vs_fixed": 8.606437261931198,
+      "ci_lo": 8.22501997578311,
+      "ci_hi": 8.997435659549451,
+      "sanity_flag": "OK"
+    },
+    {
+      "scenario": "dynamic",
+      "pct_fuel_reduction_vs_fixed": 16.50048788855564,
+      "ci_lo": 15.72146557801056,
+      "ci_hi": 17.30676814742321,
+      "sanity_flag": "OK"
+    },
+    {
+      "scenario": "low_demand",
+      "pct_fuel_reduction_vs_fixed": 14.458181031777709,
+      "ci_lo": 13.983862977178838,
+      "ci_hi": 14.907851787963828,
+      "sanity_flag": "OK"
+    },
+    {
+      "scenario": "peak_unbalanced",
+      "pct_fuel_reduction_vs_fixed": 21.759596013455283,
+      "ci_lo": 20.048127006637706,
+      "ci_hi": 23.538508826993734,
+      "sanity_flag": "OK"
+    }
+  ],
+  "comparisons": [
+    {
+      "scenario": "balanced",
+      "baseline": "fixed",
+      "metric": "fuel_per_vehicle_L",
+      "pct_reduction_mean": 8.606437261931198,
+      "pct_reduction_ci_lo": 8.22501997578311,
+      "pct_reduction_ci_hi": 8.997435659549451,
+      "wilcoxon_stat": 0.0,
+      "p_raw": 1.862645149230957e-09,
+      "cohens_dz": -7.0527159104635775,
+      "n_pairs": 30,
+      "p_holm": 4.470348358154297e-08
+    },
+    {
+      "scenario": "balanced",
+      "baseline": "webster",
+      "metric": "fuel_per_vehicle_L",
+      "pct_reduction_mean": 8.372638519071213,
+      "pct_reduction_ci_lo": 7.911496707770846,
+      "pct_reduction_ci_hi": 8.845120249291378,
+      "wilcoxon_stat": 0.0,
+      "p_raw": 1.862645149230957e-09,
+      "cohens_dz": -5.948675441043406,
+      "n_pairs": 30,
+      "p_holm": 4.470348358154297e-08
+    },
+    {
+      "scenario": "balanced",
+      "baseline": "actuated",
+      "metric": "fuel_per_vehicle_L",
+      "pct_reduction_mean": 5.568999677955952,
+      "pct_reduction_ci_lo": 5.243034845771528,
+      "pct_reduction_ci_hi": 5.8915446010143,
+      "wilcoxon_stat": 0.0,
+      "p_raw": 1.862645149230957e-09,
+      "cohens_dz": -5.8453700667197435,
+      "n_pairs": 30,
+      "p_holm": 4.470348358154297e-08
+    },
+    {
+      "scenario": "balanced",
+      "baseline": "maxpressure",
+      "metric": "fuel_per_vehicle_L",
+      "pct_reduction_mean": 1.2464897852308818,
+      "pct_reduction_ci_lo": 0.9013821784450952,
+      "pct_reduction_ci_hi": 1.6042686586056192,
+      "wilcoxon_stat": 14.0,
+      "p_raw": 2.0489096641540527e-07,
+      "cohens_dz": -1.24560953076675,
+      "n_pairs": 30,
+      "p_holm": 1.434236764907837e-06
+    },
+    {
+      "scenario": "balanced",
+      "baseline": "ours_count",
+      "metric": "fuel_per_vehicle_L",
+      "pct_reduction_mean": 0.5985703270845827,
+      "pct_reduction_ci_lo": 0.2767632644941931,
+      "pct_reduction_ci_hi": 0.9435359238622452,
+      "wilcoxon_stat": 84.0,
+      "p_raw": 0.0015832837671041489,
+      "cohens_dz": -0.6289366065053987,
+      "n_pairs": 30,
+      "p_holm": 0.004749851301312447
+    },
+    {
+      "scenario": "balanced",
+      "baseline": "rl_ppo",
+      "metric": "fuel_per_vehicle_L",
+      "pct_reduction_mean": 8.372638519071213,
+      "pct_reduction_ci_lo": 7.911496707770846,
+      "pct_reduction_ci_hi": 8.845120249291378,
+      "wilcoxon_stat": 0.0,
+      "p_raw": 1.862645149230957e-09,
+      "cohens_dz": -5.948675441043406,
+      "n_pairs": 30,
+      "p_holm": 4.470348358154297e-08
+    },
+    {
+      "scenario": "dynamic",
+      "baseline": "fixed",
+      "metric": "fuel_per_vehicle_L",
+      "pct_reduction_mean": 16.50048788855564,
+      "pct_reduction_ci_lo": 15.72146557801056,
+      "pct_reduction_ci_hi": 17.30676814742321,
+      "wilcoxon_stat": 0.0,
+      "p_raw": 1.862645149230957e-09,
+      "cohens_dz": -5.888636451377543,
+      "n_pairs": 30,
+      "p_holm": 4.470348358154297e-08
+    },
+    {
+      "scenario": "dynamic",
+      "baseline": "webster",
+      "metric": "fuel_per_vehicle_L",
+      "pct_reduction_mean": 24.791649131395307,
+      "pct_reduction_ci_lo": 22.33209281901633,
+      "pct_reduction_ci_hi": 27.983819890139312,
+      "wilcoxon_stat": 0.0,
+      "p_raw": 1.862645149230957e-09,
+      "cohens_dz": -1.5746601527614676,
+      "n_pairs": 30,
+      "p_holm": 4.470348358154297e-08
+    },
+    {
+      "scenario": "dynamic",
+      "baseline": "actuated",
+      "metric": "fuel_per_vehicle_L",
+      "pct_reduction_mean": 8.900991227617872,
+      "pct_reduction_ci_lo": 8.493989851652335,
+      "pct_reduction_ci_hi": 9.300141794819098,
+      "wilcoxon_stat": 0.0,
+      "p_raw": 1.862645149230957e-09,
+      "cohens_dz": -7.549307277595558,
+      "n_pairs": 30,
+      "p_holm": 4.470348358154297e-08
+    },
+    {
+      "scenario": "dynamic",
+      "baseline": "maxpressure",
+      "metric": "fuel_per_vehicle_L",
+      "pct_reduction_mean": 0.6243224943541966,
+      "pct_reduction_ci_lo": 0.2195862734924203,
+      "pct_reduction_ci_hi": 1.0281032008468056,
+      "wilcoxon_stat": 105.0,
+      "p_raw": 0.007612137123942375,
+      "cohens_dz": -0.5393175667910612,
+      "n_pairs": 30,
+      "p_holm": 0.008063588291406631
+    },
+    {
+      "scenario": "dynamic",
+      "baseline": "ours_count",
+      "metric": "fuel_per_vehicle_L",
+      "pct_reduction_mean": 0.5902583727085735,
+      "pct_reduction_ci_lo": 0.25802451291094725,
+      "pct_reduction_ci_hi": 0.9545539302825108,
+      "wilcoxon_stat": 96.0,
+      "p_raw": 0.004031794145703316,
+      "cohens_dz": -0.5971896597375979,
+      "n_pairs": 30,
+      "p_holm": 0.008063588291406631
+    },
+    {
+      "scenario": "dynamic",
+      "baseline": "rl_ppo",
+      "metric": "fuel_per_vehicle_L",
+      "pct_reduction_mean": 30.16427544942934,
+      "pct_reduction_ci_lo": 28.034598868240916,
+      "pct_reduction_ci_hi": 32.3621008336314,
+      "wilcoxon_stat": 0.0,
+      "p_raw": 1.862645149230957e-09,
+      "cohens_dz": -3.101665757754099,
+      "n_pairs": 30,
+      "p_holm": 4.470348358154297e-08
+    },
+    {
+      "scenario": "low_demand",
+      "baseline": "fixed",
+      "metric": "fuel_per_vehicle_L",
+      "pct_reduction_mean": 14.458181031777709,
+      "pct_reduction_ci_lo": 13.983862977178838,
+      "pct_reduction_ci_hi": 14.907851787963828,
+      "wilcoxon_stat": 0.0,
+      "p_raw": 1.862645149230957e-09,
+      "cohens_dz": -9.798921330732258,
+      "n_pairs": 30,
+      "p_holm": 4.470348358154297e-08
+    },
+    {
+      "scenario": "low_demand",
+      "baseline": "webster",
+      "metric": "fuel_per_vehicle_L",
+      "pct_reduction_mean": 12.740994281836159,
+      "pct_reduction_ci_lo": 12.153579539433963,
+      "pct_reduction_ci_hi": 13.35798974627744,
+      "wilcoxon_stat": 0.0,
+      "p_raw": 1.862645149230957e-09,
+      "cohens_dz": -6.6606805721796665,
+      "n_pairs": 30,
+      "p_holm": 4.470348358154297e-08
+    },
+    {
+      "scenario": "low_demand",
+      "baseline": "actuated",
+      "metric": "fuel_per_vehicle_L",
+      "pct_reduction_mean": 11.841654044188093,
+      "pct_reduction_ci_lo": 11.236058187148297,
+      "pct_reduction_ci_hi": 12.438439651612127,
+      "wilcoxon_stat": 0.0,
+      "p_raw": 1.862645149230957e-09,
+      "cohens_dz": -6.372971777942299,
+      "n_pairs": 30,
+      "p_holm": 4.470348358154297e-08
+    },
+    {
+      "scenario": "low_demand",
+      "baseline": "maxpressure",
+      "metric": "fuel_per_vehicle_L",
+      "pct_reduction_mean": 1.8171566377518857,
+      "pct_reduction_ci_lo": 1.2576523075230057,
+      "pct_reduction_ci_hi": 2.3572531481389625,
+      "wilcoxon_stat": 22.0,
+      "p_raw": 9.98377799987793e-07,
+      "cohens_dz": -1.1763478515198342,
+      "n_pairs": 30,
+      "p_holm": 4.163011908531189e-06
+    },
+    {
+      "scenario": "low_demand",
+      "baseline": "ours_count",
+      "metric": "fuel_per_vehicle_L",
+      "pct_reduction_mean": 2.5737997260506584,
+      "pct_reduction_ci_lo": 2.1036311184990266,
+      "pct_reduction_ci_hi": 3.025167491273004,
+      "wilcoxon_stat": 2.0,
+      "p_raw": 5.587935447692871e-09,
+      "cohens_dz": -1.8842597386320457,
+      "n_pairs": 30,
+      "p_holm": 4.470348358154297e-08
+    },
+    {
+      "scenario": "low_demand",
+      "baseline": "rl_ppo",
+      "metric": "fuel_per_vehicle_L",
+      "pct_reduction_mean": 12.740994281836159,
+      "pct_reduction_ci_lo": 12.153579539433963,
+      "pct_reduction_ci_hi": 13.35798974627744,
+      "wilcoxon_stat": 0.0,
+      "p_raw": 1.862645149230957e-09,
+      "cohens_dz": -6.6606805721796665,
+      "n_pairs": 30,
+      "p_holm": 4.470348358154297e-08
+    },
+    {
+      "scenario": "peak_unbalanced",
+      "baseline": "fixed",
+      "metric": "fuel_per_vehicle_L",
+      "pct_reduction_mean": 21.759596013455283,
+      "pct_reduction_ci_lo": 20.048127006637706,
+      "pct_reduction_ci_hi": 23.538508826993734,
+      "wilcoxon_stat": 0.0,
+      "p_raw": 1.862645149230957e-09,
+      "cohens_dz": -3.2157392624242576,
+      "n_pairs": 30,
+      "p_holm": 4.470348358154297e-08
+    },
+    {
+      "scenario": "peak_unbalanced",
+      "baseline": "webster",
+      "metric": "fuel_per_vehicle_L",
+      "pct_reduction_mean": 11.253630375938805,
+      "pct_reduction_ci_lo": 10.88262933934426,
+      "pct_reduction_ci_hi": 11.636875434332934,
+      "wilcoxon_stat": 0.0,
+      "p_raw": 1.862645149230957e-09,
+      "cohens_dz": -9.177513788034961,
+      "n_pairs": 30,
+      "p_holm": 4.470348358154297e-08
+    },
+    {
+      "scenario": "peak_unbalanced",
+      "baseline": "actuated",
+      "metric": "fuel_per_vehicle_L",
+      "pct_reduction_mean": 9.674307325258196,
+      "pct_reduction_ci_lo": 9.372100208727032,
+      "pct_reduction_ci_hi": 9.984952430448063,
+      "wilcoxon_stat": 0.0,
+      "p_raw": 1.862645149230957e-09,
+      "cohens_dz": -10.063752782826539,
+      "n_pairs": 30,
+      "p_holm": 4.470348358154297e-08
+    },
+    {
+      "scenario": "peak_unbalanced",
+      "baseline": "maxpressure",
+      "metric": "fuel_per_vehicle_L",
+      "pct_reduction_mean": 1.1530420694870631,
+      "pct_reduction_ci_lo": 0.8202114538302343,
+      "pct_reduction_ci_hi": 1.4933350073740532,
+      "wilcoxon_stat": 17.0,
+      "p_raw": 3.855675458908081e-07,
+      "cohens_dz": -1.190567295515562,
+      "n_pairs": 30,
+      "p_holm": 2.3134052753448486e-06
+    },
+    {
+      "scenario": "peak_unbalanced",
+      "baseline": "ours_count",
+      "metric": "fuel_per_vehicle_L",
+      "pct_reduction_mean": 1.2799103048539493,
+      "pct_reduction_ci_lo": 0.9014999854458132,
+      "pct_reduction_ci_hi": 1.6462369633838319,
+      "wilcoxon_stat": 21.0,
+      "p_raw": 8.326023817062378e-07,
+      "cohens_dz": -1.1811171873583437,
+      "n_pairs": 30,
+      "p_holm": 4.163011908531189e-06
+    },
+    {
+      "scenario": "peak_unbalanced",
+      "baseline": "rl_ppo",
+      "metric": "fuel_per_vehicle_L",
+      "pct_reduction_mean": 53.33048893388155,
+      "pct_reduction_ci_lo": 50.64728254812267,
+      "pct_reduction_ci_hi": 55.88449892561049,
+      "wilcoxon_stat": 0.0,
+      "p_raw": 1.862645149230957e-09,
+      "cohens_dz": -3.252683289976593,
+      "n_pairs": 30,
+      "p_holm": 4.470348358154297e-08
+    }
+  ],
+  "ablation": [
+    {
+      "scenario": "balanced",
+      "pct_reduction_fuel_vs_count_mean": 0.5985703270845827,
+      "ci_lo": 0.2767632644941931,
+      "ci_hi": 0.9435359238622452
+    },
+    {
+      "scenario": "dynamic",
+      "pct_reduction_fuel_vs_count_mean": 0.5902583727085735,
+      "ci_lo": 0.25802451291094725,
+      "ci_hi": 0.9545539302825108
+    },
+    {
+      "scenario": "low_demand",
+      "pct_reduction_fuel_vs_count_mean": 2.5737997260506584,
+      "ci_lo": 2.1036311184990266,
+      "ci_hi": 3.025167491273004
+    },
+    {
+      "scenario": "peak_unbalanced",
+      "pct_reduction_fuel_vs_count_mean": 1.2799103048539493,
+      "ci_lo": 0.9014999854458132,
+      "ci_hi": 1.6462369633838319
+    }
+  ],
+  "gridlock_rate": 0.01904761904761905,
+  "label": "Simulation-based estimate; not a real-world deployment result"
+}
