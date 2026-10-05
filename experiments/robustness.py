@@ -19,61 +19,20 @@ def main(smoke: bool = False) -> None:
         seeds = seeds[:1]
     rates = cfg["robustness"]["detect_miss_rates"]
     scenario = "peak_unbalanced"
-    rows = []
     references = ["fixed_tuned", "actuated", "maxpressure"]
-
-    from sim.run_sim import run_one
-
-    for ctrl in references:
-        for seed in seeds:
-            row = run_one(scenario, ctrl, seed, smoke=smoke, run_id="miss0")
-            rows.append({
-                "kind": "reference",
-                "controller": ctrl,
-                "miss": 0.0,
-                "seed": seed,
-                "fuel_per_vehicle_L": row["fuel_per_vehicle_L"],
-                "mean_waiting_s": row["mean_waiting_s"],
-                "status": row.get("status"),
-                "n_unfinished": row.get("n_unfinished"),
-            })
-
-    for miss in rates:
-        noise = PerceptionNoise(detect_miss_rate=float(miss), mean_burst_s=3.0)
-        for seed in seeds:
-            row = run_one(
-                scenario, "XtraFlow", seed, smoke=smoke, noise=noise,
-                run_id=f"miss{miss}",
-            )
-            rows.append({
-                "kind": "XtraFlow",
-                "controller": "XtraFlow",
-                "miss": miss,
-                "seed": seed,
-                "fuel_per_vehicle_L": row["fuel_per_vehicle_L"],
-                "mean_waiting_s": row["mean_waiting_s"],
-                "status": row.get("status"),
-                "n_unfinished": row.get("n_unfinished"),
-            })
-
+    tasks = [("reference", ctrl, 0.0, seed, smoke) for ctrl in references for seed in seeds]
+    tasks += [("XtraFlow", "XtraFlow", float(miss), seed, smoke) for miss in rates for seed in seeds]
     emp_path = ROOT / "perception" / "noise_model.json"
     if emp_path.exists():
-        noise = PerceptionNoise.from_file(emp_path)
-        for seed in seeds:
-            row = run_one(
-                scenario, "XtraFlow", seed, smoke=smoke, noise=noise,
-                run_id="miss_empirical",
-            )
-            rows.append({
-                "kind": "empirical_noise" if noise else "noise",
-                "controller": "XtraFlow",
-                "miss": noise.detect_miss_rate,
-                "source": "empirical" if _source(emp_path) == "empirical" else "assumed",
-                "seed": seed,
-                "fuel_per_vehicle_L": row["fuel_per_vehicle_L"],
-                "mean_waiting_s": row["mean_waiting_s"],
-                "status": row.get("status"),
-            })
+        tasks += [("empirical", "XtraFlow", None, seed, smoke) for seed in seeds]
+    workers = 1 if smoke else min(6, max(1, (os.cpu_count() or 2) - 1))
+    if workers <= 1 or len(tasks) <= 1:
+        rows = [_robust_task(t) for t in tasks]
+    else:
+        print(f"robustness tasks={len(tasks)} workers={workers}", flush=True)
+        ctx = get_context("spawn")
+        with ctx.Pool(workers) as pool:
+            rows = list(pool.imap_unordered(_robust_task, tasks, chunksize=1))
 
     out = {
         "scenario": scenario,
@@ -103,6 +62,40 @@ def main(smoke: bool = False) -> None:
     fig.savefig(ROOT / "results" / "figures" / "vii_robustness.png", dpi=200)
     plt.close(fig)
     print("robustness done")
+
+
+def _robust_task(task):
+    kind, ctrl, miss, seed, smoke = task
+    from sim.run_sim import run_one
+
+    scenario = "peak_unbalanced"
+    noise = None
+    run_id = "miss0"
+    source = None
+    if kind == "XtraFlow":
+        noise = PerceptionNoise(detect_miss_rate=float(miss), mean_burst_s=3.0)
+        run_id = f"miss{miss}"
+    elif kind == "empirical":
+        path = ROOT / "perception" / "noise_model.json"
+        noise = PerceptionNoise.from_file(path)
+        run_id = "miss_empirical"
+        miss = noise.detect_miss_rate
+        source = "empirical" if _source(path) == "empirical" else "assumed"
+        kind = "empirical_noise" if noise else "noise"
+    row = run_one(scenario, ctrl, seed, smoke=smoke, noise=noise, run_id=run_id)
+    out = {
+        "kind": kind,
+        "controller": ctrl,
+        "miss": miss,
+        "seed": seed,
+        "fuel_per_vehicle_L": row["fuel_per_vehicle_L"],
+        "mean_waiting_s": row["mean_waiting_s"],
+        "status": row.get("status"),
+        "n_unfinished": row.get("n_unfinished"),
+    }
+    if source is not None:
+        out["source"] = source
+    return out
 
 
 def _source(path) -> str:

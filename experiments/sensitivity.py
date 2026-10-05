@@ -1,9 +1,11 @@
 """Demand multiplier and vehicle-mix Latin-hypercube sensitivity."""
 from __future__ import annotations
 
+import os
+from multiprocessing import get_context
+
 import numpy as np
 
-from sim.run_sim import run_one
 from sim.util import ROOT, load_config, save_json
 
 
@@ -33,32 +35,40 @@ def lhs_mixes(n: int, seed: int = 0):
     return mixes, ranges
 
 
+def _sens_task(task):
+    kind, mult, seed, ctrl, smoke, mix = task
+    from sim.run_sim import run_one
+    if kind == "demand_mult":
+        row = run_one("balanced", ctrl, seed, smoke=smoke, demand_mult=float(mult))
+        return {
+            "kind": "demand_mult", "mult": mult, "controller": ctrl, "seed": seed,
+            "fuel_per_vehicle_L": row["fuel_per_vehicle_L"],
+            "mean_waiting_s": row["mean_waiting_s"],
+        }
+    row = run_one("balanced", ctrl, seed=seed, smoke=smoke, mix_override=mix)
+    return {
+        "kind": "mix_lhs", "mix_id": seed - 1, "mix": mix, "controller": ctrl,
+        "fuel_per_vehicle_L": row["fuel_per_vehicle_L"],
+    }
+
+
 def main(smoke: bool = False) -> None:
     cfg = load_config()
     mults = cfg["sensitivity"]["demand_multipliers"]
     n_mix = 3 if smoke else int(cfg["sensitivity"]["mix_lhs_samples"])
     seeds = [1, 2] if smoke else [1, 2, 3, 4, 5]
     scenario = "balanced"
-    rows = []
-
-    for m in mults:
-        for seed in seeds:
-            for ctrl in ["fixed", "XtraFlow"]:
-                row = run_one(scenario, ctrl, seed, smoke=smoke, demand_mult=float(m))
-                rows.append({
-                    "kind": "demand_mult", "mult": m, "controller": ctrl, "seed": seed,
-                    "fuel_per_vehicle_L": row["fuel_per_vehicle_L"],
-                    "mean_waiting_s": row["mean_waiting_s"],
-                })
-
     mixes, ranges = lhs_mixes(n_mix)
-    for i, mix in enumerate(mixes):
-        for ctrl in ["fixed", "XtraFlow"]:
-            row = run_one(scenario, ctrl, seed=1 + i, smoke=smoke, mix_override=mix)
-            rows.append({
-                "kind": "mix_lhs", "mix_id": i, "mix": mix, "controller": ctrl,
-                "fuel_per_vehicle_L": row["fuel_per_vehicle_L"],
-            })
+    tasks = [("demand_mult", m, seed, ctrl, smoke, None) for m in mults for seed in seeds for ctrl in ["fixed", "XtraFlow"]]
+    tasks += [("mix_lhs", None, 1 + i, ctrl, smoke, mix) for i, mix in enumerate(mixes) for ctrl in ["fixed", "XtraFlow"]]
+    workers = 1 if smoke else min(6, max(1, (os.cpu_count() or 2) - 1))
+    if workers <= 1 or len(tasks) <= 1:
+        rows = [_sens_task(t) for t in tasks]
+    else:
+        print(f"sensitivity tasks={len(tasks)} workers={workers}", flush=True)
+        ctx = get_context("spawn")
+        with ctx.Pool(workers) as pool:
+            rows = list(pool.imap_unordered(_sens_task, tasks, chunksize=1))
 
     # saturation proxy vs gain
     gains = []

@@ -5,10 +5,28 @@ compares confidence intervals, not only the sign of the mean.
 """
 from __future__ import annotations
 
+import os
+from multiprocessing import get_context
+
 import numpy as np
 
 from experiments.analyze import bootstrap_ci
 from sim.util import ROOT, SCENARIOS, load_config, load_json, save_json, seed_range
+
+
+def _emis_task(task):
+    scenario, emis, ctrl, seed, smoke = task
+    from sim.run_sim import run_one
+    row = run_one(scenario, ctrl, seed, smoke=smoke, emission_model=emis, run_id=f"emis_{emis}")
+    return {
+        "scenario": scenario,
+        "emission_model": emis,
+        "controller": ctrl,
+        "seed": seed,
+        "fuel_per_vehicle_L": row["fuel_per_vehicle_L"],
+        "total_CO2_kg": row["total_CO2_kg"],
+        "status": row.get("status"),
+    }
 
 
 def _paired_pct(rows, emis, scenario):
@@ -45,23 +63,22 @@ def main(smoke: bool = False) -> None:
     cfg = load_config()
     seeds = seed_range(cfg["seed_protocol"]["test"])[:1] if smoke else seed_range(cfg["seed_protocol"]["test"])
     scenarios = ["balanced"] if smoke else list(SCENARIOS)
-    from sim.run_sim import run_one
 
-    rows = []
-    for scenario in scenarios:
-        for emis in ["primary", "alternate"]:
-            for ctrl in ["fixed", "XtraFlow"]:
-                for seed in seeds:
-                    row = run_one(scenario, ctrl, seed, smoke=smoke, emission_model=emis, run_id=f"emis_{emis}")
-                    rows.append({
-                        "scenario": scenario,
-                        "emission_model": emis,
-                        "controller": ctrl,
-                        "seed": seed,
-                        "fuel_per_vehicle_L": row["fuel_per_vehicle_L"],
-                        "total_CO2_kg": row["total_CO2_kg"],
-                        "status": row.get("status"),
-                    })
+    tasks = [
+        (scenario, emis, ctrl, seed, smoke)
+        for scenario in scenarios
+        for emis in ["primary", "alternate"]
+        for ctrl in ["fixed", "XtraFlow"]
+        for seed in seeds
+    ]
+    workers = 1 if smoke else min(6, max(1, (os.cpu_count() or 2) - 1))
+    if workers <= 1 or len(tasks) <= 1:
+        rows = [_emis_task(t) for t in tasks]
+    else:
+        print(f"emission tasks={len(tasks)} workers={workers}", flush=True)
+        ctx = get_context("spawn")
+        with ctx.Pool(workers) as pool:
+            rows = list(pool.imap_unordered(_emis_task, tasks, chunksize=1))
 
     by_model = {}
     for emis in ["primary", "alternate"]:
