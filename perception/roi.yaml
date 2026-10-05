@@ -1,4 +1,6 @@
-# Per-approach ROIs as normalized polygons (x,y in 0-1). Assumed for synthetic smoke.
+# Per-camera approach polygons. x,y are fractions of the frame (0-1), origin top-left.
+# Draw each polygon on a still from that camera so it covers one approach up to the stop line.
+# Copy this file per camera if the geometry differs. The synthetic boxes below are placeholders.
 approaches:
   N:
     polygon: [[0.35, 0.0], [0.65, 0.0], [0.65, 0.35], [0.35, 0.35]]

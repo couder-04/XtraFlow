@@ -1,0 +1,31 @@
+{
+  "selected_on": "VALIDATION seeds only",
+  "green_grid_s": [
+    15,
+    20,
+    25,
+    30,
+    35,
+    40,
+    45
+  ],
+  "min_green_s": 15,
+  "smoke": true,
+  "plans": {
+    "balanced": {
+      "greens": [
+        15,
+        15,
+        20,
+        15
+      ],
+      "cycle_s": 85.0,
+      "mean_fuel_per_vehicle_L": 0.09069317292366251,
+      "selected_on": "VALIDATION",
+      "screen_seeds": [
+        2000
+      ]
+    }
+  },
+  "label": "Simulation-based estimate; assumed traffic mix"
+}

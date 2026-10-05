@@ -2,28 +2,44 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Dict, List, Tuple
 
-from sim.util import ROOT, ensure_dirs, load_config, locate_sumo, run_cmd, save_json
+from sim.build_network import infer_tls, validate_phase_conflicts
+from sim.util import ROOT, ensure_dirs, load_config, locate_sumo, rel_to_root, run_cmd, save_json, tool_cmd
 
 
-def build(cfg=None) -> Path:
+def junction_specs(net_path: Path | None = None) -> dict:
+    """Per-TLS phase groups from the grid net. Does not write results files."""
+    import sumolib
+
+    net_path = net_path or (ROOT / "results" / "networks" / "grid2x2.net.xml")
+    net = sumolib.net.readNet(str(net_path))
+    tls_ids = [t.getID() for t in net.getTrafficLights()]
+    junctions = {}
+    for tid in tls_ids:
+        spec = infer_tls(net, tid)
+        report = validate_phase_conflicts(net_path, spec["groups"], spec["n_links"], tls_id=tid)
+        spec["validation"] = report
+        neighbors = [x for x in tls_ids if x != tid]
+        spec["neighbor_ids"] = neighbors
+        junctions[tid] = spec
+    return {"tls_ids": tls_ids, "junctions": junctions}
+
+
+def build(cfg=None, out_dir: Path | None = None) -> Path:
     cfg = cfg or load_config()
     ensure_dirs()
     locate_sumo()
     L = float(cfg["simulation"]["grid_link_length_m"])
-    net_dir = ROOT / "results" / "networks"
+    net_dir = out_dir or (ROOT / "results" / "networks")
+    net_dir.mkdir(parents=True, exist_ok=True)
     nod_path = net_dir / "grid2x2.nod.xml"
     edg_path = net_dir / "grid2x2.edg.xml"
     net_path = net_dir / "grid2x2.net.xml"
 
-    # Junctions at (0,0),(1,0),(0,1),(1,1) plus external stubs
     nodes = []
-    # Internal TL nodes
     for iy in range(2):
         for ix in range(2):
             nodes.append((f"J{ix}{iy}", ix * L, iy * L, "traffic_light"))
-    # External nodes for demand entry/exit
     externals = [
         ("N0", 0 * L, 2 * L), ("N1", 1 * L, 2 * L),
         ("S0", 0 * L, -L), ("S1", 1 * L, -L),
@@ -39,15 +55,12 @@ def build(cfg=None) -> Path:
     nod.append("</nodes>")
 
     edges = []
-    # Horizontal links between junctions
     for iy in range(2):
         edges.append((f"H_{0}_{iy}_e", f"J0{iy}", f"J1{iy}"))
         edges.append((f"H_{1}_{iy}_w", f"J1{iy}", f"J0{iy}"))
-    # Vertical links
     for ix in range(2):
         edges.append((f"V_{ix}_{0}_n", f"J{ix}0", f"J{ix}1"))
         edges.append((f"V_{ix}_{1}_s", f"J{ix}1", f"J{ix}0"))
-    # Externals
     stubs = [
         ("N0_in", "N0", "J01"), ("N0_out", "J01", "N0"),
         ("N1_in", "N1", "J11"), ("N1_out", "J11", "N1"),
@@ -70,10 +83,7 @@ def build(cfg=None) -> Path:
     nod_path.write_text("\n".join(nod), encoding="utf-8")
     edg_path.write_text("\n".join(edg), encoding="utf-8")
 
-    lat = cfg["simulation"].get("lateral_resolution", 0.4)
-    use_sublane = cfg["simulation"].get("use_sublane", True)
-    cmd = [
-        "netconvert",
+    cmd = tool_cmd("netconvert") + [
         "--node-files", str(nod_path),
         "--edge-files", str(edg_path),
         "--lefthand", "true",
@@ -82,25 +92,32 @@ def build(cfg=None) -> Path:
         "--no-turnarounds", "true",
         "--output-file", str(net_path),
     ]
-    if use_sublane and lat:
-        cmd += ["--lateral-resolution", str(lat)]
     proc = run_cmd(cmd, check=False)
     if proc.returncode != 0:
-        cmd = [c for c in cmd if c not in ("--lateral-resolution", str(lat))]
-        run_cmd(cmd, check=True)
+        raise RuntimeError("grid netconvert failed:\n" + (proc.stderr or "")[-2000:])
 
-    # Validate each TLS has no empty program
-    import sumolib
-
-    net = sumolib.net.readNet(str(net_path))
-    tls_ids = [t.getID() for t in net.getTrafficLights()]
-    save_json(ROOT / "results" / "grid_info.json", {
-        "net": str(net_path),
-        "tls_ids": tls_ids,
+    info = junction_specs(net_path)
+    payload = {
+        "net": rel_to_root(net_path) if out_dir is None else net_path.name,
+        "tls_ids": info["tls_ids"],
         "link_length_m": L,
         "lefthand": True,
-    })
-    print(f"Built grid: {net_path} tls={tls_ids}")
+        "junctions": {
+            tid: {
+                "n_links": spec["n_links"],
+                "groups": spec["groups"],
+                "approach_edges": spec["approach_edges"],
+                "downstream_edges": spec["downstream_edges"],
+                "turn_lookup": spec["turn_lookup"],
+                "neighbor_ids": spec["neighbor_ids"],
+                "validation": spec["validation"],
+            }
+            for tid, spec in info["junctions"].items()
+        },
+    }
+    if out_dir is None:
+        save_json(ROOT / "results" / "grid_info.json", payload)
+    print(f"Built grid: {net_path} tls={info['tls_ids']}")
     return net_path
 
 

@@ -1,64 +1,111 @@
-"""Rerun key comparisons with alternate emission model."""
+"""Fuel reduction under the primary emission map and a distinct alternate map.
+
+The alternate keeps bus and truck off passenger-car classes. The verdict
+compares confidence intervals, not only the sign of the mean.
+"""
 from __future__ import annotations
 
 import numpy as np
 
-from sim.run_sim import run_one
-from sim.util import ROOT, load_config, load_json, save_json
+from experiments.analyze import bootstrap_ci
+from sim.util import ROOT, SCENARIOS, load_config, load_json, save_json, seed_range
+
+
+def _paired_pct(rows, emis, scenario):
+    fmap = {
+        r["seed"]: r["fuel_per_vehicle_L"]
+        for r in rows
+        if r["emission_model"] == emis and r["controller"] == "fixed" and r["scenario"] == scenario
+    }
+    omap = {
+        r["seed"]: r["fuel_per_vehicle_L"]
+        for r in rows
+        if r["emission_model"] == emis and r["controller"] == "XtraFlow" and r["scenario"] == scenario
+    }
+    vals = []
+    for s, fv in fmap.items():
+        if s in omap and fv:
+            vals.append((fv - omap[s]) / fv * 100.0)
+    return np.asarray(vals, dtype=float)
+
+
+def _verdict(lo_a, hi_a, lo_b, hi_b) -> str:
+    if not all(np.isfinite(x) for x in (lo_a, hi_a, lo_b, hi_b)):
+        return "insufficient_data"
+    overlap = not (hi_a < lo_b or hi_b < lo_a)
+    if overlap:
+        return "ci_overlap"
+    same_sign = (lo_a > 0 and lo_b > 0) or (hi_a < 0 and hi_b < 0)
+    if same_sign:
+        return "same_sign_magnitudes_differ"
+    return "sign_disagrees"
 
 
 def main(smoke: bool = False) -> None:
     cfg = load_config()
-    seeds = [1, 2] if smoke else list(range(1, 11))
-    scenario = "peak_unbalanced"
+    seeds = seed_range(cfg["seed_protocol"]["test"])[:1] if smoke else seed_range(cfg["seed_protocol"]["test"])
+    scenarios = ["balanced"] if smoke else list(SCENARIOS)
+    from sim.run_sim import run_one
+
     rows = []
+    for scenario in scenarios:
+        for emis in ["primary", "alternate"]:
+            for ctrl in ["fixed", "XtraFlow"]:
+                for seed in seeds:
+                    row = run_one(scenario, ctrl, seed, smoke=smoke, emission_model=emis, run_id=f"emis_{emis}")
+                    rows.append({
+                        "scenario": scenario,
+                        "emission_model": emis,
+                        "controller": ctrl,
+                        "seed": seed,
+                        "fuel_per_vehicle_L": row["fuel_per_vehicle_L"],
+                        "total_CO2_kg": row["total_CO2_kg"],
+                        "status": row.get("status"),
+                    })
+
+    by_model = {}
     for emis in ["primary", "alternate"]:
-        for ctrl in ["fixed", "XtraFlow"]:
-            for seed in seeds:
-                row = run_one(scenario, ctrl, seed, smoke=smoke, emission_model=emis)
-                rows.append({
-                    "emission_model": emis,
-                    "controller": ctrl,
-                    "seed": seed,
-                    "fuel_per_vehicle_L": row["fuel_per_vehicle_L"],
-                    "total_CO2_kg": row["total_CO2_kg"],
-                })
+        all_pct = []
+        per_scenario = {}
+        for scenario in scenarios:
+            pct = _paired_pct(rows, emis, scenario)
+            mean, lo, hi = bootstrap_ci(pct, n_resamples=500 if smoke else 5000)
+            per_scenario[scenario] = {"mean": mean, "ci_lo": lo, "ci_hi": hi, "n": int(len(pct))}
+            all_pct.append(pct)
+        stacked = np.concatenate(all_pct) if all_pct else np.asarray([])
+        mean, lo, hi = bootstrap_ci(stacked, n_resamples=500 if smoke else 5000)
+        by_model[emis] = {"mean": mean, "ci_lo": lo, "ci_hi": hi, "per_scenario": per_scenario}
 
-    def pct(emis):
-        f = [r["fuel_per_vehicle_L"] for r in rows if r["emission_model"] == emis and r["controller"] == "fixed"]
-        o = [r["fuel_per_vehicle_L"] for r in rows if r["emission_model"] == emis and r["controller"] == "XtraFlow"]
-        paired = []
-        # pair by seed order
-        fmap = {r["seed"]: r["fuel_per_vehicle_L"] for r in rows if r["emission_model"] == emis and r["controller"] == "fixed"}
-        omap = {r["seed"]: r["fuel_per_vehicle_L"] for r in rows if r["emission_model"] == emis and r["controller"] == "XtraFlow"}
-        for s in fmap:
-            if s in omap and fmap[s]:
-                paired.append((fmap[s] - omap[s]) / fmap[s] * 100)
-        return float(np.mean(paired)) if paired else float("nan")
-
-    primary_pct = pct("primary")
-    alt_pct = pct("alternate")
     emap = load_json(ROOT / "results" / "emission_class_map.json") if (ROOT / "results" / "emission_class_map.json").exists() else {}
-    verdict = "unchanged_direction" if (np.isfinite(primary_pct) and np.isfinite(alt_pct) and (primary_pct * alt_pct > 0)) else "changed_or_inconclusive"
+    a = by_model["primary"]
+    b = by_model["alternate"]
+    verdict = _verdict(a["ci_lo"], a["ci_hi"], b["ci_lo"], b["ci_hi"])
     out = {
         "rows": rows,
-        "pct_reduction_primary": primary_pct,
-        "pct_reduction_alternate": alt_pct,
+        "by_model": by_model,
+        "pct_reduction_primary": a["mean"],
+        "pct_reduction_alternate": b["mean"],
         "verdict": verdict,
         "emission_map": emap,
-        "note": "Alternate uses HBEFA3 fallback set if PHEMlight unavailable.",
+        "note": (
+            "Alternate bus and truck classes are heavy-duty or bus, not a passenger car. "
+            "auto-rickshaw uses a passenger-car proxy. two-wheeler uses LDV_G_EU4 when that class loads. "
+            "Idle-fuel weights inherit the primary classes. "
+            "Simulation-based estimate; assumed traffic mix."
+        ),
+        "label": "Simulation-based estimate; assumed traffic mix",
     }
     save_json(ROOT / "results" / "emission_xcheck.json", out)
 
     import matplotlib.pyplot as plt
     fig, ax = plt.subplots(figsize=(6, 4))
-    ax.bar(["primary", "alternate"], [primary_pct, alt_pct])
+    ax.bar(["primary", "alternate"], [a["mean"], b["mean"]])
     ax.set_ylabel("% fuel reduction XtraFlow vs fixed")
     ax.set_title(f"Emission cross-check ({verdict})")
     fig.tight_layout()
     fig.savefig(ROOT / "results" / "figures" / "ix_emission_xcheck.png", dpi=200)
     plt.close(fig)
-    print(out["verdict"], primary_pct, alt_pct)
+    print(verdict)
 
 
 if __name__ == "__main__":

@@ -1,59 +1,39 @@
-"""Grid-search XtraFlow hyperparameters on VALIDATION seeds only."""
+"""Grid-search XtraFlow hyperparameters on VALIDATION seeds only.
+
+The search covers balanced, peak_unbalanced, dynamic, and low_demand.
+The spread of combo scores is stored so the report can state it from data.
+"""
 from __future__ import annotations
 
 import itertools
 import os
 from multiprocessing import get_context
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List
 
-from sim.util import ROOT, load_config, save_json, seed_range
+from sim.util import ROOT, SCENARIOS, load_config, save_json, seed_range
 
 
-def _eval_one(args: Tuple) -> Dict[str, Any]:
-    params, scenario, seed, smoke = args
+def _eval_task(task, stage):
+    params, scenario, seed, smoke = task
     from sim.run_sim import run_one
-    # isolate params via explicit kwargs path: write temp not shared
-    # Controllers load tuned_params.json; use params override by writing per-process file is racy.
-    # Instead patch make_controller via run_one after setting env-specific file.
-    save_json(ROOT / "results" / f"tuned_params_{os.getpid()}.json", params)
-    # Monkey-patch load path by temporarily writing tuned_params.json under a lock-less approach:
-    # For correctness under MP, pass params by writing then reading in controller via env var.
-    os.environ["TUNED_PARAMS_PATH"] = str(ROOT / "results" / f"tuned_params_{os.getpid()}.json")
-    # Ensure controllers pick it up
-    import sim.controllers as C
-    C._load_tuned = lambda: params  # type: ignore
-    row = run_one(scenario, "XtraFlow", seed, smoke=smoke, params=params)
-    return {**params, "seed": seed, "fuel_per_vehicle_L": row["fuel_per_vehicle_L"],
-            "n_completed": row["n_completed"], "gridlock_flag": row["gridlock_flag"]}
+    run_id = "tune_" + "_".join(f"{k}{params[k]}" for k in sorted(params))
+    row = run_one(scenario, "XtraFlow", seed, smoke=smoke, params=params, run_id=run_id)
+    return {
+        **params,
+        "seed": seed,
+        "scenario": scenario,
+        "stage": stage,
+        "fuel_per_vehicle_L": row["fuel_per_vehicle_L"],
+        "n_completed": row["n_completed"],
+        "n_unfinished": row.get("n_unfinished", 0),
+        "status": row.get("status", ""),
+        "gridlock_flag": row["gridlock_flag"],
+    }
 
 
-# Extend run_one to accept params — patch here if needed
-def _ensure_run_one_params():
-    import sim.run_sim as rs
-    orig = rs.run_one
-
-    def wrapped(*args, params=None, **kwargs):
-        if params is not None:
-            import sim.controllers as C
-            old = C._load_tuned
-            C._load_tuned = lambda: params  # type: ignore
-            try:
-                # also pass through make_controller
-                from sim import controllers
-                old_make = controllers.make_controller
-
-                def make_controller(name, cfg=None, scenario="balanced", noise=None, weights=None, params=None, model=None):
-                    return old_make(name, cfg=cfg, scenario=scenario, noise=noise, weights=weights,
-                                    params=params if params is not None else kwargs.get("params"), model=model)
-
-                # simpler: just set default tuned
-                return orig(*args, **{k: v for k, v in kwargs.items() if k != "params"})
-            finally:
-                C._load_tuned = old
-        return orig(*args, **kwargs)
-
-    # Actually patch make_controller usage inside run_one by setting _load_tuned before call
-    return orig
+def _eval_task_mp(args):
+    task, stage = args
+    return _eval_task(task, stage)
 
 
 def main(smoke: bool = False) -> Dict[str, Any]:
@@ -64,15 +44,14 @@ def main(smoke: bool = False) -> Dict[str, Any]:
     grid = cfg["tune"]
     keys = list(grid.keys())
     combos = [dict(zip(keys, c)) for c in itertools.product(*[grid[k] for k in keys])]
+    scenarios = ["balanced"] if smoke else list(SCENARIOS)
     if smoke:
         combos = combos[:2]
 
-    scenario = "peak_unbalanced"
-    # Keep concurrency modest — SUMO/TraCI is fragile under heavy parallel load.
     n_workers = 1 if smoke else min(3, max(1, (os.cpu_count() or 2) - 1))
 
     def run_batch(param_list, seeds, stage):
-        tasks = [(p, scenario, s, smoke) for p in param_list for s in seeds]
+        tasks = [(p, sc, s, smoke) for p in param_list for sc in scenarios for s in seeds]
         rows = []
         if n_workers == 1:
             for t in tasks:
@@ -84,53 +63,55 @@ def main(smoke: bool = False) -> Dict[str, Any]:
                     rows.append(r)
         return rows
 
-    print(f"Tune screen: {len(combos)} combos × {len(screen_seeds)} seeds, workers={n_workers}")
+    def score_rows(rows: List[Dict[str, Any]]):
+        scores: Dict[tuple, List[float]] = {}
+        for r in rows:
+            if r.get("status") not in ("ok", "") or r.get("gridlock_flag"):
+                continue
+            key = tuple(r[k] for k in keys)
+            if r["fuel_per_vehicle_L"] == r["fuel_per_vehicle_L"]:
+                scores.setdefault(key, []).append(r["fuel_per_vehicle_L"])
+        return scores
+
+    print(f"Tune screen: {len(combos)} combos × {len(scenarios)} scenarios × {len(screen_seeds)} seeds")
     screen_rows = run_batch(combos, screen_seeds, "screen")
-    # score
-    scores = {}
-    for r in screen_rows:
-        key = tuple(r[k] for k in keys)
-        scores.setdefault(key, []).append(r["fuel_per_vehicle_L"])
-    ranked = sorted(((sum(v) / len(v), dict(zip(keys, k))) for k, v in scores.items()), key=lambda x: x[0])
+    scores = score_rows(screen_rows)
+    ranked = sorted(
+        ((sum(v) / len(v), dict(zip(keys, k))) for k, v in scores.items() if v),
+        key=lambda x: x[0],
+    )
+    if not ranked:
+        raise RuntimeError("Tuning produced no successful rows")
+    score_values = [s for s, _ in ranked]
+    span = None
+    if min(score_values) > 0 and len(score_values) > 1:
+        span = (max(score_values) - min(score_values)) / min(score_values)
     finalists = [p for _, p in ranked[: 1 if smoke else 3]]
 
     print(f"Confirm top {len(finalists)} on {len(confirm_seeds)} VAL seeds")
     confirm_rows = run_batch(finalists, confirm_seeds, "confirm")
-    cscores = {}
-    for r in confirm_rows:
-        key = tuple(r[k] for k in keys)
-        cscores.setdefault(key, []).append(r["fuel_per_vehicle_L"])
+    cscores = score_rows(confirm_rows)
     best_key = min(cscores, key=lambda k: sum(cscores[k]) / len(cscores[k]))
     best = dict(zip(keys, best_key))
     best_score = sum(cscores[best_key]) / len(cscores[best_key])
     best["selected_on"] = "VALIDATION seeds only"
+    best["scenarios"] = scenarios
     best["screen_seeds"] = screen_seeds
     best["confirm_seeds"] = confirm_seeds
-    best["scenario"] = scenario
     best["mean_fuel_per_vehicle_L"] = best_score
+    best["screen_relative_span"] = span
+    best["n_screen_combos"] = len(combos)
     best["smoke"] = smoke
     save_json(ROOT / "results" / "tuned_params.json", best)
     save_json(ROOT / "results" / "tune_grid_results.json", {
         "rows": screen_rows + confirm_rows,
         "best": best,
         "screen_ranking": [{"score": s, "params": p} for s, p in ranked],
+        "screen_relative_span": span,
+        "note": "Span is (max-min)/min of mean fuel across the screened combos. Selection uses VALIDATION only.",
     })
     print(f"Best params: {best}")
     return best
-
-
-def _eval_task(task, stage):
-    params, scenario, seed, smoke = task
-    from sim.run_sim import run_one
-    run_id = "tune_" + "_".join(f"{k}{params[k]}" for k in sorted(params))
-    row = run_one(scenario, "XtraFlow", seed, smoke=smoke, params=params, run_id=run_id)
-    return {**params, "seed": seed, "stage": stage, "fuel_per_vehicle_L": row["fuel_per_vehicle_L"],
-            "n_completed": row["n_completed"], "gridlock_flag": row["gridlock_flag"]}
-
-
-def _eval_task_mp(args):
-    task, stage = args
-    return _eval_task(task, stage)
 
 
 if __name__ == "__main__":

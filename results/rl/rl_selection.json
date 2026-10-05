@@ -1,0 +1,26 @@
+{
+  "selected_on": "VALIDATION smoke horizon",
+  "train_seeds": [
+    1000,
+    1001
+  ],
+  "confirm_seeds": [
+    2000
+  ],
+  "scenarios": [
+    "balanced"
+  ],
+  "best_path": "results/rl/ppo_best.zip",
+  "best_val_fuel_per_vehicle_L": null,
+  "smoke": true,
+  "timesteps_budget": 256,
+  "config_total_timesteps": 200000,
+  "sha256": "383e83dded2d283a3a2ade7320f1b9e8ccb7ae45e76b3da7aa2ea403aad51150",
+  "scored_checkpoints": [
+    {
+      "checkpoint": "ppo_step256.zip",
+      "val_fuel_per_vehicle_L": Infinity
+    }
+  ],
+  "note": "Smoke checkpoint only. timesteps_budget is 256, not config_total_timesteps. Do not quote this zip as the study result."
+}

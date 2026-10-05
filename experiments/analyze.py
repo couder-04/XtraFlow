@@ -11,7 +11,17 @@ import pandas as pd
 import seaborn as sns
 from scipy import stats
 
-from sim.util import CONTROLLER_NAMES, ROOT, SCENARIOS, assert_config_locked, ensure_dirs, load_config, save_json
+from sim.util import (
+    CONTROLLER_NAMES,
+    HEADLINE_BASELINES,
+    ROOT,
+    SCENARIOS,
+    assert_config_locked,
+    ensure_dirs,
+    load_config,
+    load_json,
+    save_json,
+)
 
 sns.set_palette("colorblind")
 plt.rcParams["figure.dpi"] = 200
@@ -61,6 +71,28 @@ def load_runs(path: Path) -> pd.DataFrame:
     return df
 
 
+def headline_frame(df: pd.DataFrame) -> pd.DataFrame:
+    """Paired headline stats exclude errors and runs that left vehicles unfinished."""
+    out = df
+    if "status" in out.columns:
+        out = out[out["status"] == "ok"]
+    if "n_unfinished" in out.columns:
+        out = out[out["n_unfinished"].fillna(0).astype(float) == 0]
+    return out
+
+
+def best_baseline(df: pd.DataFrame, scenario: str) -> str | None:
+    means = []
+    for name in HEADLINE_BASELINES:
+        sub = df[(df.scenario == scenario) & (df.controller == name)]
+        if len(sub) == 0 or not np.isfinite(sub["fuel_per_vehicle_L"].mean()):
+            continue
+        means.append((float(sub["fuel_per_vehicle_L"].mean()), name))
+    if not means:
+        return None
+    return min(means)[1]
+
+
 def paired_pct(df: pd.DataFrame, scenario: str, a: str, b: str, metric: str = "fuel_per_vehicle_L"):
     da = df[(df.scenario == scenario) & (df.controller == a)][["seed", metric]].rename(columns={metric: "a"})
     db = df[(df.scenario == scenario) & (df.controller == b)][["seed", metric]].rename(columns={metric: "b"})
@@ -79,19 +111,21 @@ def main(smoke: bool = False) -> None:
     if not raw_path.exists():
         raise SystemExit(f"Missing {raw_path}")
 
-    df = load_runs(raw_path)
+    df_all = load_runs(raw_path)
+    df = headline_frame(df_all)
     fig_dir = ROOT / "results" / "figures"
     tab_dir = ROOT / "results" / "tables"
 
     # Mean ± std per cell
     summary_rows = []
     metrics = [
-        "fuel_per_vehicle_L", "total_CO2_kg", "mean_waiting_s", "mean_queue_veh",
-        "n_completed", "gridlock_flag", "ssm_conflicts",
+        "fuel_per_vehicle_L", "total_CO2_kg", "mean_waiting_s", "p95_waiting_s", "mean_queue_veh",
+        "n_completed", "n_unfinished", "gridlock_flag", "ssm_conflicts",
     ]
-    for sc in df.scenario.unique():
-        for ctrl in df.controller.unique():
-            sub = df[(df.scenario == sc) & (df.controller == ctrl)]
+    metrics = [m for m in metrics if m in df_all.columns]
+    for sc in df_all.scenario.unique():
+        for ctrl in df_all.controller.unique():
+            sub = df_all[(df_all.scenario == sc) & (df_all.controller == ctrl)]
             row = {"scenario": sc, "controller": ctrl, "n": len(sub)}
             for m in metrics:
                 row[f"{m}_mean"] = float(sub[m].mean())
@@ -138,18 +172,48 @@ def main(smoke: bool = False) -> None:
     comp_df = pd.DataFrame(comparisons)
     comp_df.to_csv(tab_dir / "paired_comparisons.csv", index=False)
 
-    # Ablation ours_count vs XtraFlow
+    wait_rows = []
+    for sc in sorted(df.scenario.unique()):
+        for other in CONTROLLER_NAMES:
+            if other == "XtraFlow" or other not in set(df.controller):
+                continue
+            for metric in ("mean_waiting_s", "p95_waiting_s"):
+                if metric not in df.columns:
+                    continue
+                pct, merged = paired_pct(df, sc, "XtraFlow", other, metric=metric)
+                mean, lo, hi = bootstrap_ci(pct, n_resamples=2000 if smoke else 4000)
+                wait_rows.append({
+                    "scenario": sc,
+                    "baseline": other,
+                    "metric": metric,
+                    "pct_reduction_mean": mean,
+                    "pct_reduction_ci_lo": lo,
+                    "pct_reduction_ci_hi": hi,
+                    "n_pairs": int(len(merged)),
+                })
+    pd.DataFrame(wait_rows).to_csv(tab_dir / "waiting_comparisons.csv", index=False)
+
+    # Ablation: XtraFlow (fuel weights) versus ours_count (counts only).
     abl_rows = []
     for sc in sorted(df.scenario.unique()):
         if "ours_count" not in set(df.controller):
             continue
         pct, merged = paired_pct(df, sc, "XtraFlow", "ours_count")
         mean, lo, hi = bootstrap_ci(pct, n_resamples=10000 if not smoke else 200)
+        if not np.isfinite(lo) or not np.isfinite(hi):
+            statement = "insufficient_data"
+        elif lo > 0:
+            statement = "fuel_weights_lower_fuel"
+        elif hi < 0:
+            statement = "fuel_weights_higher_fuel"
+        else:
+            statement = "no_detectable_difference"
         abl_rows.append({
             "scenario": sc,
             "pct_reduction_fuel_vs_count_mean": mean,
             "ci_lo": lo,
             "ci_hi": hi,
+            "statement": statement,
         })
     pd.DataFrame(abl_rows).to_csv(tab_dir / "ablation_fuel_vs_count.csv", index=False)
 
@@ -162,23 +226,34 @@ def main(smoke: bool = False) -> None:
         comp_flags.append({"scenario": sc, "n_completed_mean_spread": spread, "means": means.to_dict()})
     save_json(ROOT / "results" / "n_completed_check.json", comp_flags)
 
-    # Headline sanity: XtraFlow vs fixed
+    # Headline: XtraFlow vs the best non-oracle baseline. Legacy fixed is secondary.
+    # The >30% flag applies to the tuned baseline, not the legacy plan.
     headlines = []
     for sc in sorted(df.scenario.unique()):
-        if "fixed" not in set(df.controller):
-            continue
-        pct, _ = paired_pct(df, sc, "XtraFlow", "fixed")
-        mean, lo, hi = bootstrap_ci(pct, n_resamples=10000 if not smoke else 200)
-        flag = "OK"
-        if np.isfinite(mean) and mean > 30:
-            flag = "INVESTIGATE_GT_30PCT"
-        headlines.append({
-            "scenario": sc,
-            "pct_fuel_reduction_vs_fixed": mean,
-            "ci_lo": lo,
-            "ci_hi": hi,
-            "sanity_flag": flag,
-        })
+        base = best_baseline(df, sc)
+        entry = {"scenario": sc, "best_baseline": base}
+        if base is not None:
+            pct, _ = paired_pct(df, sc, "XtraFlow", base)
+            mean, lo, hi = bootstrap_ci(pct, n_resamples=10000 if not smoke else 200)
+            flag = "OK"
+            if np.isfinite(mean) and mean > 30:
+                flag = "INVESTIGATE_GT_30PCT"
+            entry.update({
+                "pct_fuel_reduction_vs_best": mean,
+                "ci_lo": lo,
+                "ci_hi": hi,
+                "sanity_flag": flag,
+            })
+        if "fixed" in set(df.controller):
+            pct_f, _ = paired_pct(df, sc, "XtraFlow", "fixed")
+            mean_f, lo_f, hi_f = bootstrap_ci(pct_f, n_resamples=2000 if smoke else 4000)
+            entry["pct_fuel_reduction_vs_fixed_legacy"] = mean_f
+            entry["legacy_ci_lo"] = lo_f
+            entry["legacy_ci_hi"] = hi_f
+        # Keep the old key only as an alias of the headline comparison so figures
+        # that still read it show the tuned comparison when that is the headline.
+        entry["pct_fuel_reduction_vs_fixed"] = entry.get("pct_fuel_reduction_vs_best", entry.get("pct_fuel_reduction_vs_fixed_legacy"))
+        headlines.append(entry)
     save_json(ROOT / "results" / "headlines.json", headlines)
 
     # summary.json
@@ -189,8 +264,11 @@ def main(smoke: bool = False) -> None:
         "headlines": headlines,
         "comparisons": comparisons,
         "ablation": abl_rows,
-        "gridlock_rate": float(df["gridlock_flag"].mean()) if "gridlock_flag" in df else None,
-        "label": "Simulation-based estimate; not a real-world deployment result",
+        "waiting": wait_rows,
+        "excluded_unfinished_or_not_ok": int(len(df_all) - len(df)),
+        "gridlock_rate": float(df_all["gridlock_flag"].mean()) if "gridlock_flag" in df_all else None,
+        "error_rows": int((df_all["status"] == "error").sum()) if "status" in df_all.columns else 0,
+        "label": "Simulation-based estimate; assumed traffic mix",
     }
     save_json(ROOT / "results" / "summary.json", summary)
 
@@ -215,7 +293,7 @@ def main(smoke: bool = False) -> None:
     if curve_path.exists():
         _fig_rl_curve(curve_path, fig_dir / "viii_rl_training.png")
 
-    write_report(df, summary_df, comp_df, headlines, abl_rows, cfg)
+    write_report(df, summary_df, comp_df, headlines, abl_rows, cfg, wait_rows)
     # markdown tables
     summary_df.to_markdown(tab_dir / "summary_mean_std.md", index=False)
     comp_df.to_markdown(tab_dir / "paired_comparisons.md", index=False)
@@ -251,15 +329,35 @@ def _fig_grouped_bars(df, path):
 def _fig_pct_reduction(comp_df, path):
     if comp_df.empty:
         return
+    show = [b for b in ("fixed_tuned", "actuated", "maxpressure", "queue_pressure") if b in set(comp_df.baseline)]
+    sub = comp_df[comp_df.baseline.isin(show)] if show else comp_df
     fig, ax = plt.subplots(figsize=(10, 6))
-    # XtraFlow vs fixed primarily
-    sub = comp_df[comp_df.baseline == "fixed"] if "fixed" in set(comp_df.baseline) else comp_df
-    ax.bar(sub.scenario, sub.pct_reduction_mean,
-           yerr=[sub.pct_reduction_mean - sub.pct_reduction_ci_lo, sub.pct_reduction_ci_hi - sub.pct_reduction_mean],
-           capsize=4)
+    scenarios = list(sub.scenario.unique())
+    baselines = list(sub.baseline.unique())
+    x = np.arange(len(scenarios))
+    width = 0.8 / max(len(baselines), 1)
+    for i, base in enumerate(baselines):
+        means, yerr_lo, yerr_hi = [], [], []
+        for s in scenarios:
+            row = sub[(sub.scenario == s) & (sub.baseline == base)]
+            if len(row) == 0:
+                means.append(np.nan)
+                yerr_lo.append(0)
+                yerr_hi.append(0)
+                continue
+            m = float(row.pct_reduction_mean.iloc[0])
+            lo = float(row.pct_reduction_ci_lo.iloc[0])
+            hi = float(row.pct_reduction_ci_hi.iloc[0])
+            means.append(m)
+            yerr_lo.append(m - lo if np.isfinite(m) and np.isfinite(lo) else 0)
+            yerr_hi.append(hi - m if np.isfinite(m) and np.isfinite(hi) else 0)
+        ax.bar(x + i * width, means, width, yerr=[yerr_lo, yerr_hi], capsize=3, label=base)
     ax.axhline(0, color="k", lw=0.8)
+    ax.set_xticks(x + width * max(len(baselines) - 1, 0) / 2)
+    ax.set_xticklabels(scenarios, rotation=20, ha="right")
     ax.set_ylabel("% fuel reduction of XtraFlow vs baseline")
-    ax.set_title("Percent reduction with bootstrap 95% CI")
+    ax.set_title("Reduction versus tuned baselines")
+    ax.legend(fontsize=8)
     fig.tight_layout()
     fig.savefig(path)
     plt.close(fig)
@@ -366,7 +464,7 @@ def _fig_rl_curve(curve_path, path):
     plt.close(fig)
 
 
-def write_report(df, summary_df, comp_df, headlines, abl_rows, cfg):
+def write_report(df, summary_df, comp_df, headlines, abl_rows, cfg, wait_rows=None):
     # Load optional experiment artifacts
     def _load(p):
         return json.loads(Path(p).read_text()) if Path(p).exists() else None
@@ -393,20 +491,29 @@ def write_report(df, summary_df, comp_df, headlines, abl_rows, cfg):
     lines.append("## Abstract\n")
     lines.append(
         "We evaluate an adaptive, fuel-weighted pressure traffic signal controller "
-        "(XtraFlow) against fixed-time, Webster, SUMO-actuated, max-pressure, count-only "
-        "ablation, and PPO baselines under mixed Indian urban traffic in SUMO "
-        "(left-hand traffic, sublane-capable). "
+        "(XtraFlow) against legacy fixed-time, a validation-tuned fixed plan, Webster, "
+        "SUMO-actuated, queue-pressure, max-pressure, a count-only ablation, and PPO. "
+        "Controllers use an oracle detector (SUMO speed, class, and route turn) unless "
+        "info_mode is camera. Emission classes are proxies. "
+        "Simulation-based estimate; assumed traffic mix. "
     )
+    if sublane:
+        lines.append(f"Sublane actually used: {sublane.get('used_sublane')}. ")
     for h in headlines:
+        base = h.get("best_baseline")
+        mean = h.get("pct_fuel_reduction_vs_best")
+        if base is None or mean is None or not np.isfinite(mean):
+            lines.append(f" On `{h['scenario']}`, no tuned baseline comparison was available.")
+            continue
         lines.append(
-            f" On scenario `{h['scenario']}`, mean fuel reduction vs fixed was "
-            f"{h['pct_fuel_reduction_vs_fixed']:.2f}% "
-            f"(95% CI [{h['ci_lo']:.2f}, {h['ci_hi']:.2f}]; flag={h['sanity_flag']})."
+            f" On `{h['scenario']}`, mean fuel change versus `{base}` was "
+            f"{mean:.2f}% (95% CI [{h['ci_lo']:.2f}, {h['ci_hi']:.2f}]; flag={h['sanity_flag']})."
         )
     lines.append("\n")
 
     lines.append("## Method\n")
-    lines.append("- Single 4-arm intersection + 2×2 grid; left-hand traffic; yellow 3 s; all-red 2 s.\n")
+    lines.append("- Single 4-arm intersection; left-hand traffic; yellow 3 s; all-red 2 s. "
+                 "Grid numbers are reported only from results/grid_results.json.\n")
     lines.append("- Seed protocol: TRAIN 1000–1049, VALIDATION 2000–2019, TEST 1–30 after config.lock.\n")
     lines.append("- Metrics from tripinfo with device.emissions.probability=1; fuel mg→L via densities.\n")
     if sublane:
@@ -438,15 +545,28 @@ def write_report(df, summary_df, comp_df, headlines, abl_rows, cfg):
 
     # Honest losses
     lines.append("\n## Where XtraFlow loses or ties\n\n")
-    losses = [c for c in comp_df.to_dict("records") if np.isfinite(c.get("pct_reduction_mean", np.nan)) and c["pct_reduction_mean"] <= 0]
-    if not losses:
-        lines.append("No non-positive mean fuel reductions found against listed baselines in loaded runs.\n")
-    else:
-        for c in losses:
-            lines.append(
-                f"- vs `{c['baseline']}` on `{c['scenario']}`: "
-                f"{c['pct_reduction_mean']:.2f}% (CI [{c['pct_reduction_ci_lo']:.2f}, {c['pct_reduction_ci_hi']:.2f}])\n"
-            )
+    losses = [
+        c for c in comp_df.to_dict("records")
+        if np.isfinite(c.get("pct_reduction_mean", np.nan)) and c["pct_reduction_mean"] <= 0
+    ]
+    wait_losses = []
+    if wait_rows:
+        wait_losses = [
+            c for c in wait_rows
+            if np.isfinite(c.get("pct_reduction_mean", np.nan)) and c["pct_reduction_mean"] <= 0
+        ]
+    if not losses and not wait_losses:
+        lines.append("No non-positive mean fuel or waiting reductions against listed baselines in the loaded runs.\n")
+    for c in losses:
+        lines.append(
+            f"- fuel vs `{c['baseline']}` on `{c['scenario']}`: "
+            f"{c['pct_reduction_mean']:.2f}% (CI [{c['pct_reduction_ci_lo']:.2f}, {c['pct_reduction_ci_hi']:.2f}])\n"
+        )
+    for c in wait_losses:
+        lines.append(
+            f"- {c['metric']} vs `{c['baseline']}` on `{c['scenario']}`: "
+            f"{c['pct_reduction_mean']:.2f}% (CI [{c['pct_reduction_ci_lo']:.2f}, {c['pct_reduction_ci_hi']:.2f}])\n"
+        )
 
     lines.append("\n## Ablations\n\n")
     lines.append(pd.DataFrame(abl_rows).to_markdown(index=False) if abl_rows else "n/a")
@@ -477,20 +597,34 @@ def write_report(df, summary_df, comp_df, headlines, abl_rows, cfg):
     lines.append("- Construct: HBEFA proxies idle/fuel; SSM conflicts are model-based.\n")
     lines.append("- External: Indian arterial heterogeneity not fully represented.\n")
 
-    lines.append("\n## Q&A cheat sheet\n\n")
-    lines.append("**How is fuel computed?** SUMO emission devices (HBEFA classes mapped at runtime); "
-                 "mg converted to litres via petrol/diesel densities in config.\n\n")
-    lines.append("**Is it AI?** Perception path uses YOLO; controller is fuel-weighted pressure "
-                 "(interpretable). RL-PPO is an additional baseline.\n\n")
-    lines.append("**Why not RL?** See RL comparison tables; PPO is trained/selected on TRAIN/VALIDATION "
-                 "and reported honestly if it underperforms XtraFlow.\n\n")
-    lines.append("**What about deployment?** Requires detectors (or camera+YOLO), TraCI/edge controller, "
-                 "and local calibration; results are simulation-based estimates.\n\n")
-    lines.append("**What about Indian traffic?** Assumed mix with 2W/auto; sublane model when stable; "
-                 "left-hand traffic.\n\n")
-    lines.append("**Biggest limitation?** Emission classes and mix are not field-calibrated.\n\n")
-    lines.append("**Did you tune on test data?** No. Tuning and RL selection use VALIDATION seeds only; "
-                 "TEST seeds touched after config.lock.\n\n")
+    tune_path = ROOT / "results" / "tune_grid_results.json"
+    if tune_path.exists():
+        tune = load_json(tune_path)
+        span = tune.get("screen_relative_span")
+        lines.append("\n## Tuning landscape\n\n")
+        if span is None:
+            lines.append("Screen span was not computed.\n")
+        else:
+            lines.append(
+                f"Relative span of screened hyperparameter means, (max-min)/min, was {span:.4f}. "
+                "Selection used VALIDATION seeds across the scenarios listed in tuned_params.json.\n"
+            )
+
+    lines.append("\n## Q&A\n\n")
+    lines.append("**How is fuel computed?** SUMO emission devices using the classes in "
+                 "results/emission_class_map.json; milligrams converted with the densities in config. "
+                 "Fuel per vehicle uses departed vehicles, including unfinished trips.\n\n")
+    lines.append("**What do the controllers see?** Default info_mode is oracle: SUMO speed, class, and route turn. "
+                 "Camera mode applies perception/noise_model.json. The noise source field says whether that "
+                 "model is empirical or assumed.\n\n")
+    lines.append("**What is the headline comparison?** XtraFlow versus the lowest-fuel controller among "
+                 "fixed_tuned, actuated, queue_pressure, and maxpressure, with a paired bootstrap interval. "
+                 "Legacy fixed is a secondary row. Numbers are in results/headlines.json.\n\n")
+    lines.append("**Did you tune on test data?** Tuning, fixed-plan search, and RL checkpoint selection "
+                 "use VALIDATION seeds only. TEST seeds run once after the config lock.\n\n")
+    lines.append("**What should not be claimed from this file?** Any sentence whose number is not in a "
+                 "results JSON or CSV loaded above. Grid, safety, and robustness verdicts are the fields "
+                 "in those JSON files.\n\n")
 
     (ROOT / "results" / "REPORT.md").write_text("\n".join(lines), encoding="utf-8")
 

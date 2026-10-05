@@ -73,6 +73,68 @@ def scan_file(path: Path) -> list:
     return issues
 
 
+BANNED_CLAIMS = [
+    "Conflicts did not rise",
+    "A missed vehicle does not erase",
+    "flat in the third decimal",
+    "53% better",
+    "upper end of plausible",
+    "SSM conflict counts all zero",
+    "sublane-capable",
+    "did not erase the saving",
+]
+
+TEXT_SCAN = [
+    ROOT / "README.md",
+    ROOT / "results" / "REPORT.md",
+    ROOT / "docs" / "DECISIONS.md",
+    ROOT / "STATE.md",
+    ROOT / "deck" / "build_deck.py",
+    ROOT / "results" / "CHANGES.md",
+]
+
+
+def _strip_ignored(text: str) -> str:
+    out = []
+    skipping = False
+    for line in text.splitlines(keepends=True):
+        if "audit:ignore-start" in line:
+            skipping = True
+            continue
+        if "audit:ignore-end" in line:
+            skipping = False
+            continue
+        if not skipping:
+            out.append(line)
+    return "".join(out)
+
+
+def scan_claims() -> list:
+    issues = []
+    percent = re.compile(r"\d+(?:\.\d+)?\s*%")
+    for path in TEXT_SCAN:
+        if not path.exists():
+            continue
+        text = _strip_ignored(path.read_text(encoding="utf-8"))
+        for phrase in BANNED_CLAIMS:
+            if phrase.lower() in text.lower():
+                issues.append((path, 0, phrase, "banned_claim"))
+        if path.name == "README.md":
+            # Result percentages do not belong in the README. They belong in results files.
+            body = []
+            fence = False
+            for line in text.splitlines():
+                if line.strip().startswith("```"):
+                    fence = not fence
+                    continue
+                if not fence:
+                    body.append(line)
+            prose = "\n".join(body)
+            for match in percent.finditer(prose):
+                issues.append((path, 0, match.group(0), "readme_percentage"))
+    return issues
+
+
 def main() -> int:
     all_issues = []
     for p in SCAN_PATHS:
@@ -89,10 +151,10 @@ def main() -> int:
     report = ROOT / "results" / "REPORT.md"
     headlines = ROOT / "results" / "headlines.json"
     if report.exists() and headlines.exists():
-        # ensure report mentions it reads from files — structural check
         rt = report.read_text(encoding="utf-8")
         if "Simulation-based" not in rt:
             hard.append((report, 0, "missing Simulation-based label", "label"))
+    hard.extend(scan_claims())
 
     if hard:
         print("AUDIT FAILED:")

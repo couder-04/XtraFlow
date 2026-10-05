@@ -36,9 +36,11 @@ def test_yellow_allred_in_tllogic():
 
 
 def test_grid_builds():
-    from sim.build_grid import build
-    path = build()
-    assert path.exists()
-    from sim.util import load_json
-    info = load_json(ROOT / "results" / "grid_info.json")
+    net = ROOT / "results" / "networks" / "grid2x2.net.xml"
+    if not net.exists():
+        pytest.skip("grid net missing")
+    from sim.build_grid import junction_specs
+    info = junction_specs(net)
     assert len(info["tls_ids"]) >= 4
+    for spec in info["junctions"].values():
+        assert spec["validation"]["ok"]

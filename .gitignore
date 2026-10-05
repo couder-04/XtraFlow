@@ -9,7 +9,11 @@ results/networks/
 results/demand/
 results/raw/
 results/timeseries/
-results/rl/
+*.log
+results/raw_runs_*backup*.csv
+results/rl/*
+!results/rl/ppo_best.zip
+!results/rl/rl_selection.json
 results/*.xml
 results/*.tripinfo.xml
 results/*.out

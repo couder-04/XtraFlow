@@ -1,4 +1,4 @@
-.PHONY: setup test smoke calibrate tune train_rl sweep analyze robustness \
+.PHONY: setup test smoke calibrate tune fixed_tuned train_rl sweep analyze robustness \
 	sensitivity emission_xcheck safety perception grid extrapolate demo \
 	dashboard deck report audit all freeze_config networks
 
@@ -36,7 +36,10 @@ train_rl: tune
 freeze_config:
 	$(PYTHON) -c "from sim.util import freeze_config; freeze_config()"
 
-sweep: freeze_config
+fixed_tuned:
+	$(PYTHON) -m experiments.fixed_tuned
+
+sweep:
 	$(PYTHON) -m experiments.sweep
 
 analyze:

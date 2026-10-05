@@ -1,11 +1,23 @@
 """Build a single 4-arm left-hand-traffic signalized intersection for SUMO."""
 from __future__ import annotations
 
+import math
+import os
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Dict, List, Set, Tuple
 
-from sim.util import ROOT, ensure_dirs, load_config, locate_sumo, probe_hbefa_classes, run_cmd, save_json
+from sim.util import (
+    ROOT,
+    ensure_dirs,
+    load_config,
+    locate_sumo,
+    probe_hbefa_classes,
+    rel_to_root,
+    run_cmd,
+    save_json,
+    tool_cmd,
+)
 
 APPROACHES = ["N", "S", "E", "W"]
 
@@ -179,28 +191,90 @@ def _classify_turn(approach: str, dest: str) -> str:
     return table.get((approach, dest), "through")
 
 
+def _approach_of_edge(edge) -> str:
+    fn = edge.getFromNode().getCoord()
+    tn = edge.getToNode().getCoord()
+    dx = fn[0] - tn[0]
+    dy = fn[1] - tn[1]
+    if abs(dx) >= abs(dy):
+        return "E" if dx > 0 else "W"
+    return "N" if dy > 0 else "S"
+
+
+def _heading(edge) -> float:
+    fn = edge.getFromNode().getCoord()
+    tn = edge.getToNode().getCoord()
+    return math.atan2(tn[1] - fn[1], tn[0] - fn[0])
+
+
+def _turn_from_headings(h_in: float, h_out: float) -> str:
+    d = h_out - h_in
+    while d > math.pi:
+        d -= 2 * math.pi
+    while d < -math.pi:
+        d += 2 * math.pi
+    if d > math.pi / 4:
+        return "left"
+    if d < -math.pi / 4:
+        return "right"
+    return "through"
+
+
+def infer_tls(net, tls_id: str) -> Dict:
+    """Per-junction phase groups, approach edges, and downstream edges from geometry."""
+    tls = net.getTLS(tls_id)
+    groups: Dict[str, List[int]] = {k: [] for k in ["NS_TL", "NS_R", "EW_TL", "EW_R"]}
+    approach_edges: Dict[str, List[str]] = {a: [] for a in ["N", "S", "E", "W"]}
+    downstream: Dict[str, List[str]] = {k: [] for k in groups}
+    turn_lookup: Dict[str, str] = {}
+    meta: List[str] = []
+    max_idx = -1
+    for conn in tls.getConnections():
+        in_lane, out_lane, idx = conn[0], conn[1], conn[2]
+        if idx is None:
+            continue
+        max_idx = max(max_idx, int(idx))
+        in_edge = in_lane.getEdge()
+        out_edge = out_lane.getEdge()
+        approach = _approach_of_edge(in_edge)
+        turn = _turn_from_headings(_heading(in_edge), _heading(out_edge))
+        key = ("NS_R" if turn == "right" else "NS_TL") if approach in ("N", "S") else (
+            "EW_R" if turn == "right" else "EW_TL"
+        )
+        groups[key].append(int(idx))
+        eid = in_edge.getID()
+        if eid not in approach_edges[approach]:
+            approach_edges[approach].append(eid)
+        oid = out_edge.getID()
+        if oid not in downstream[key]:
+            downstream[key].append(oid)
+        turn_lookup[f"{eid}|{oid}"] = turn
+        meta.append(f"{idx}:{eid}->{oid}:{turn}:{approach}")
+    for k in groups:
+        groups[k] = sorted(set(groups[k]))
+    return {
+        "tls_id": tls_id,
+        "n_links": max_idx + 1,
+        "groups": groups,
+        "approach_edges": approach_edges,
+        "downstream_edges": downstream,
+        "turn_lookup": turn_lookup,
+        "meta": meta,
+    }
+
+
 def validate_phase_conflicts(net_path: Path, link_groups: Dict[str, List[int]],
-                             n_links: int) -> Dict[str, List[str]]:
+                             n_links: int, tls_id: str = "C") -> Dict[str, List[str]]:
     """Assert each green state grants intended movements with no internal conflicts
     using SUMO foe information from the network."""
     import sumolib
 
-    net = sumolib.net.readNet(str(net_path))
-    tls = net.getTLS("C")
-    connections = list(tls.getConnections())
-    # Build foe matrix from connection foes if available
     foes: Dict[int, Set[int]] = {i: set() for i in range(n_links)}
-    # sumolib may expose getFoes on TLS
-    try:
-        foe_str = tls.getFoes(0)  # may not exist for all versions
-    except Exception:
-        foe_str = None
-
-    # Prefer reading from XML connection foe attributes
+    # Foes come from the net.xml connection attributes for this TLS.
     tree = ET.parse(net_path)
     root = tree.getroot()
     for conn in root.findall("connection"):
-        if conn.get("tl") != "C":
+        if conn.get("tl") != tls_id:
             continue
         link_index = conn.get("linkIndex")
         foe = conn.get("foes")
@@ -266,11 +340,8 @@ def build(cfg=None) -> Path:
     nod_path.write_text(nod, encoding="utf-8")
     edg_path.write_text(edg, encoding="utf-8")
 
-    # First pass netconvert with lefthand
-    lat = cfg["simulation"].get("lateral_resolution", 0.4)
-    use_sublane = cfg["simulation"].get("use_sublane", True)
-    cmd = [
-        "netconvert",
+    # Lateral resolution is a SUMO simulation option, not a netconvert 1.21 flag.
+    cmd = tool_cmd("netconvert") + [
         "--node-files", str(nod_path),
         "--edge-files", str(edg_path),
         "--lefthand", "true",
@@ -280,25 +351,15 @@ def build(cfg=None) -> Path:
         "--no-turnarounds", "true",
         "--output-file", str(net_path),
     ]
-    if use_sublane and lat:
-        cmd += ["--lateral-resolution", str(lat)]
     proc = run_cmd(cmd, check=False)
     if proc.returncode != 0:
-        # fall back without sublane
-        cfg["simulation"]["use_sublane"] = False
-        cmd = [c for c in cmd if c != "--lateral-resolution" and c != str(lat)]
-        proc = run_cmd(cmd, check=True)
-        save_json(ROOT / "results" / "sublane_fallback.json", {
-            "used_sublane": False,
-            "reason": proc.stderr[-2000:] if proc.stderr else "netconvert failed with sublane",
-        })
-    else:
-        save_json(ROOT / "results" / "sublane_fallback.json", {"used_sublane": use_sublane})
+        raise RuntimeError("netconvert failed:\n" + (proc.stderr or "")[-2000:])
 
     import sumolib
 
     net = sumolib.net.readNet(str(net_path))
-    n_links, groups, meta = _infer_link_groups(net)
+    spec = infer_tls(net, "C")
+    n_links, groups, meta = spec["n_links"], spec["groups"], spec["meta"]
     if n_links == 0:
         raise RuntimeError("No TLS links found at junction C")
 
@@ -312,10 +373,13 @@ def build(cfg=None) -> Path:
         groups["NS_TL"].extend(missing)
         groups["NS_TL"] = sorted(set(groups["NS_TL"]))
 
-    report = validate_phase_conflicts(net_path, groups, n_links)
+    report = validate_phase_conflicts(net_path, groups, n_links, tls_id="C")
     save_json(ROOT / "results" / "phase_groups.json", {
         "n_links": n_links,
         "groups": groups,
+        "approach_edges": spec["approach_edges"],
+        "downstream_edges": spec["downstream_edges"],
+        "turn_lookup": spec["turn_lookup"],
         "meta": meta,
         "validation": report,
     })
@@ -337,12 +401,12 @@ def build(cfg=None) -> Path:
     )
 
     write_additional_vtypes(cfg, emission_map, add_path)
+    probe_sublane(net_path, add_path, cfg)
 
-    # Write a ready sumocfg template pieces
     save_json(ROOT / "results" / "network_info.json", {
-        "net": str(net_path),
-        "vtypes": str(add_path),
-        "tls_additional": str(tll_path),
+        "net": rel_to_root(net_path),
+        "vtypes": rel_to_root(add_path),
+        "tls_additional": rel_to_root(tll_path),
         "n_links": n_links,
         "groups": groups,
         "lefthand": True,
@@ -353,6 +417,69 @@ def build(cfg=None) -> Path:
     })
     print(f"Built network: {net_path} n_links={n_links} groups={groups}")
     return net_path
+
+
+def probe_sublane(net_path: Path, vtypes: Path, cfg=None) -> dict:
+    """Run a 60 s sim with lateral-resolution in the sumocfg. Fail if SUMO errors."""
+    cfg = cfg or load_config()
+    if not cfg["simulation"].get("use_sublane", True):
+        info = {"used_sublane": False, "reason": "use_sublane is false in config.yaml"}
+        save_json(ROOT / "results" / "sublane_fallback.json", info)
+        return info
+    raw = ROOT / "results" / "raw"
+    raw.mkdir(parents=True, exist_ok=True)
+    net_path = Path(net_path).resolve()
+    vtypes = Path(vtypes).resolve()
+    rou = raw / "sublane_probe.rou.xml"
+    rou.write_text(
+        '<routes><vehicle id="p0" type="car" depart="0" departLane="best" departSpeed="max">'
+        '<route edges="N_in S_out"/></vehicle></routes>\n',
+        encoding="utf-8",
+    )
+    trip = raw / "sublane_probe.tripinfo.xml"
+    scfg = raw / "sublane_probe.sumocfg"
+    lat = float(cfg["simulation"].get("lateral_resolution", 0.4))
+
+    def _cfg_rel(path: Path) -> str:
+        return os.path.relpath(path, scfg.parent)
+
+    scfg.write_text(
+        f"""<configuration>
+  <input>
+    <net-file value="{_cfg_rel(net_path)}"/>
+    <route-files value="{_cfg_rel(rou)}"/>
+    <additional-files value="{_cfg_rel(vtypes)}"/>
+  </input>
+  <output><tripinfo-output value="{trip}"/></output>
+  <time><begin value="0"/><end value="60"/></time>
+  <processing>
+    <lateral-resolution value="{lat}"/>
+    <time-to-teleport value="-1"/>
+  </processing>
+  <report><no-step-log value="true"/></report>
+</configuration>
+""",
+        encoding="utf-8",
+    )
+    proc = run_cmd(
+        tool_cmd("sumo") + ["-c", str(scfg), "--duration-log.disable", "true"],
+        check=False,
+    )
+    err = (proc.stderr or "") + (proc.stdout or "")
+    bad = proc.returncode != 0 or "Error:" in err or "Quitting (on error)" in err
+    if bad:
+        raise RuntimeError(
+            "Sublane probe failed. lateral-resolution lives in the sumocfg, "
+            "and this build does not fall back silently.\n" + err[-2000:]
+        )
+    info = {
+        "used_sublane": True,
+        "lateral_resolution": lat,
+        "probe_s": 60,
+        "where": "sumocfg processing/lateral-resolution",
+    }
+    save_json(ROOT / "results" / "sublane_fallback.json", info)
+    return info
 
 
 if __name__ == "__main__":

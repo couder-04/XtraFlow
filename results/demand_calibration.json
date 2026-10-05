@@ -1,53 +1,29 @@
 {
-  "mode": "assumed_demand",
-  "label": "assumed mixed-traffic scenario",
-  "flows_veh_per_h": {
+  "mode": "measured_on_validation",
+  "label": "Simulation-based estimate; assumed traffic mix",
+  "controller": "fixed",
+  "seeds": [
+    2000
+  ],
+  "seed_split": "VALIDATION",
+  "smoke": true,
+  "measured_approach_veh_h": {
     "balanced": {
-      "N": 480,
-      "S": 480,
-      "E": 480,
-      "W": 480
-    },
-    "peak_unbalanced": {
-      "N": 720,
-      "S": 720,
-      "E": 180,
-      "W": 180
-    },
-    "dynamic": {
-      "blocks": [
-        {
-          "duration": 1200,
-          "N": 680,
-          "S": 680,
-          "E": 200,
-          "W": 200
-        },
-        {
-          "duration": 1200,
-          "N": 200,
-          "S": 200,
-          "E": 680,
-          "W": 680
-        },
-        {
-          "duration": 1200,
-          "N": 680,
-          "S": 680,
-          "E": 200,
-          "W": 200
-        }
-      ]
-    },
-    "low_demand": {
-      "N": 150,
-      "S": 150,
-      "E": 150,
-      "W": 150
+      "N": 435.0,
+      "S": 450.0,
+      "E": 660.0,
+      "W": 480.0
     }
   },
+  "degree_of_saturation": {
+    "balanced": {
+      "NS_TL": 0.27668539325842695,
+      "EW_TL": 0.6019444444444444
+    }
+  },
+  "saturation_assumption_veh_h": 3600.0,
   "geh": {},
-  "target_dos": "70-90% under fixed at peak (assumed calibration)",
-  "note": "data/observed_counts.csv absent; using assumed demand from config.yaml. Flows chosen so fixed-time sits near 70-90% degree of saturation at peak.",
-  "saturation_note": "peak_unbalanced NS 1200 veh/h vs ~3600 veh/h theoretical capacity (2 effective through lanes * 1800) => y\u22480.33 per approach; with opposing + rights, intersection Y\u22480.75\u20130.85 (assumed)."
+  "geh_target": 5.0,
+  "scales": {},
+  "note": "Approach veh/h are counts of vehicles seen on each incoming edge, scaled to an hour from the simulated duration. Degree of saturation uses an assumed 1800 veh/h/lane and the green fraction served. The config demand table is not copied into measured_approach_veh_h."
 }

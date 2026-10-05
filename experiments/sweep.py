@@ -1,4 +1,8 @@
-"""Full TEST sweep / smoke sweep over controllers × scenarios × seeds."""
+"""Full TEST sweep / smoke sweep over controllers × scenarios × seeds.
+
+The sweep only checks the config lock. Create the lock with `make freeze_config`
+before a non-smoke run. It does not rewrite the lock.
+"""
 from __future__ import annotations
 
 import argparse
@@ -17,8 +21,8 @@ from sim.util import (
     SCENARIOS,
     assert_config_locked,
     ensure_dirs,
-    freeze_config,
     load_config,
+    rel_to_root,
     seed_range,
 )
 
@@ -29,22 +33,31 @@ def _existing_keys(path: Path) -> set:
     keys = set()
     with open(path, newline="", encoding="utf-8") as f:
         r = csv.DictReader(f)
+        if r.fieldnames and list(r.fieldnames) != RAW_FIELDS:
+            raise SystemExit(
+                f"{path} schema does not match RAW_FIELDS. Archive it before resuming."
+            )
         for row in r:
             keys.add((row["scenario"], row["controller"], str(row["seed"]), row.get("emission_model", "primary")))
     return keys
 
 
-def _worker(task: Tuple) -> Optional[Dict[str, Any]]:
+def _load_rl_model():
+    best = ROOT / "results" / "rl" / "ppo_best.zip"
+    if not best.exists():
+        raise FileNotFoundError(
+            f"results/rl/ppo_best.zip is missing. Refusing to run rl_ppo as always-keep. Missing: {best.name}"
+        )
+    from stable_baselines3 import PPO
+    return PPO.load(str(best))
+
+
+def _worker(task: Tuple) -> Dict[str, Any]:
     scenario, controller, seed, smoke, emission_model, save_ts = task
     try:
-        # Load RL model if needed
         model = None
         if controller == "rl_ppo":
-            from stable_baselines3 import PPO
-
-            best = ROOT / "results" / "rl" / "ppo_best.zip"
-            if best.exists():
-                model = PPO.load(str(best))
+            model = _load_rl_model()
         row = run_one(
             scenario,
             controller,
@@ -54,6 +67,8 @@ def _worker(task: Tuple) -> Optional[Dict[str, Any]]:
             save_timeseries=save_ts,
             model=model,
         )
+        row["status"] = row.get("status") or "ok"
+        row["error"] = row.get("error") or ""
         return row
     except Exception as e:  # noqa: BLE001
         return {
@@ -63,11 +78,15 @@ def _worker(task: Tuple) -> Optional[Dict[str, Any]]:
             "emission_model": emission_model,
             "n_departed": 0,
             "n_completed": 0,
+            "n_unfinished": 0,
+            "status": "error",
+            "error": f"{type(e).__name__}: {e}",
             "total_fuel_L": float("nan"),
             "fuel_per_vehicle_L": float("nan"),
             "fuel_per_person_L": float("nan"),
             "total_CO2_kg": float("nan"),
             "mean_waiting_s": float("nan"),
+            "p95_waiting_s": float("nan"),
             "mean_timeLoss_s": float("nan"),
             "person_delay_s": float("nan"),
             "mean_travel_time_s": float("nan"),
@@ -77,10 +96,21 @@ def _worker(task: Tuple) -> Optional[Dict[str, Any]]:
             "max_queue_veh": float("nan"),
             "fuel_L_by_type": "{}",
             "ssm_conflicts": -1,
-            "gridlock_flag": 1,
+            "conflicts_per_1000_veh": float("nan"),
+            "gridlock_flag": 0,
             "wall_time_s": -1,
-            "error": str(e),
         }
+
+
+def _fail_if_errors(path: Path) -> None:
+    if not path.exists():
+        return
+    with open(path, newline="", encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+    bad = [r for r in rows if r.get("status") == "error"]
+    if bad:
+        sample = "; ".join(f"{r['controller']}/{r['scenario']}/seed{r['seed']}: {r.get('error')}" for r in bad[:5])
+        raise SystemExit(f"Sweep has {len(bad)} error rows. First: {sample}")
 
 
 def main() -> None:
@@ -94,27 +124,27 @@ def main() -> None:
     cfg = load_config()
     ensure_dirs()
 
-    # Ensure network exists
     net = ROOT / "results" / "networks" / "intersection.net.xml"
     if not net.exists():
         from sim.build_network import build
         build()
-        from sim.build_grid import build as build_grid
-        build_grid()
 
     if args.smoke:
         controllers = args.controllers or CONTROLLER_NAMES
         scenarios = args.scenarios or ["balanced"]
         seeds = [1]
         out_csv = ROOT / "results" / "raw_runs_smoke.csv"
-        # smoke may run before freeze
     else:
-        freeze_config()
         assert_config_locked()
         controllers = args.controllers or CONTROLLER_NAMES
         scenarios = args.scenarios or SCENARIOS
         seeds = seed_range(cfg["seed_protocol"]["test"])
         out_csv = ROOT / "results" / "raw_runs.csv"
+
+    if "rl_ppo" in controllers and not (ROOT / "results" / "rl" / "ppo_best.zip").exists():
+        raise SystemExit(
+            "results/rl/ppo_best.zip is missing. Sweep will not run rl_ppo as an always-keep controller."
+        )
 
     existing = _existing_keys(out_csv)
     tasks = []
@@ -124,29 +154,25 @@ def main() -> None:
                 key = (sc, ctrl, str(seed), "primary")
                 if key in existing:
                     continue
-                save_ts = (not args.smoke) and seed == 1
+                save_ts = (not args.smoke) and seed == seeds[0]
                 tasks.append((sc, ctrl, seed, args.smoke, "primary", save_ts))
 
     n_workers = args.workers or max(1, (os.cpu_count() or 2) - 1)
-    # TraCI/SUMO often unstable with high parallelism; cap
     n_workers = min(n_workers, 4 if args.smoke else 6)
 
     print(f"Sweep tasks={len(tasks)} workers={n_workers} smoke={args.smoke}")
     if not tasks:
+        _fail_if_errors(out_csv)
         print("Nothing to do (resumable: all keys present).")
         return
 
-    # Use spawn for safety with SUMO
     ctx = mp.get_context("spawn")
     with ctx.Pool(n_workers) as pool:
         for row in tqdm(pool.imap_unordered(_worker, tasks), total=len(tasks)):
-            if row is None:
-                continue
-            # strip error field for CSV
-            row = {k: row.get(k, "") for k in RAW_FIELDS}
             append_raw_row(row, out_csv)
 
-    print(f"Wrote/updated {out_csv}")
+    _fail_if_errors(out_csv)
+    print(f"Wrote/updated {rel_to_root(out_csv)}")
 
 
 if __name__ == "__main__":

@@ -14,7 +14,7 @@ simulation:
   step_length: 1.0
   demand_horizon_s: 3600
   drain_timeout_multiplier: 2.0
-  lateral_resolution: 0.4     # sublane; may fall back to 0 (standard)
+  lateral_resolution: 0.4     # sumocfg only; probe must succeed or the build stops
   use_sublane: true
   speed_limit_kmh: 50
   approach_length_m: 300
@@ -27,7 +27,7 @@ signals:
   yellow_s: 3
   all_red_s: 2
   starvation_s: 120
-  # fixed-time greens (NS_TL, NS_R, EW_TL, EW_R) — assumed; calibrated toward 70-90% DoS
+  # legacy equal greens (NS_TL, NS_R, EW_TL, EW_R). The tuned plan is results/fixed_tuned.json.
   fixed_greens_s: [30, 12, 30, 12]
 
 controller:
@@ -36,6 +36,8 @@ controller:
   hysteresis: 0.15
   switch_penalty_rl: 0.05
   neighbor_pressure_weight: 0.25   # grid coordination
+  # oracle: SUMO ground truth (speed, class, route turn). camera: noise model + class map.
+  info_mode: oracle
 
 # Assumed mixed-traffic scenario (not calibrated unless observed_counts provided)
 vehicle_mix:
@@ -119,8 +121,8 @@ turn_ratios:
   through: 0.60
   right: 0.20
 
-# Demand flows (veh/h per approach) — calibrated toward 70-90% DoS under fixed; assumed until observed
-# Cap lowered after smoke full-runs showed gridlock at higher rates (see DECISIONS D015).
+# Demand flows (veh/h per approach). Assumed until observed_counts.csv is supplied.
+# Degree of saturation is measured on VALIDATION into results/demand_calibration.json (see DECISIONS D015).
 demand:
   balanced:
     N: 480
@@ -145,9 +147,10 @@ demand:
     W: 150
 
 emission:
-  primary: HBEFA4
-  # fallbacks filled at runtime into results/emission_class_map.json
-  crosscheck: auto   # PHEMlight if available else alternate HBEFA
+  # This SUMO 1.21 build provides HBEFA3 and PHEMlight, not HBEFA4.
+  # Runtime probe writes results/emission_class_map.json; primary must match that file.
+  primary: HBEFA3
+  crosscheck: auto   # alternate heavy-duty/bus classes; see emission_class_map.json
 
 perception:
   detect_miss_rate: 0.0
@@ -171,6 +174,12 @@ extrapolation:  # low/base/high ranges — simulation-based estimate inputs
     low: 50
     base: 200
     high: 1000
+  # Explicit assumption: equal weight on each single-intersection scenario.
+  scenario_weights:
+    balanced: 0.25
+    peak_unbalanced: 0.25
+    dynamic: 0.25
+    low_demand: 0.25
   n_monte_carlo: 10000
 
 rl:

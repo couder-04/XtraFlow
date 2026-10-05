@@ -4,7 +4,7 @@
 
 ## Abstract
 
-We evaluate an adaptive, fuel-weighted pressure traffic signal controller (XtraFlow) against fixed-time, Webster, SUMO-actuated, max-pressure, count-only ablation, and PPO baselines under mixed Indian urban traffic in SUMO (left-hand traffic, sublane-capable). 
+We evaluate an adaptive, fuel-weighted pressure traffic signal controller (XtraFlow) against fixed-time, Webster, SUMO-actuated, max-pressure, count-only ablation, and PPO baselines under mixed Indian urban traffic in SUMO (left-hand traffic). Whether sublane ran is `results/sublane_fallback.json`. 
  On scenario `balanced`, mean fuel reduction vs fixed was 8.61% (95% CI [8.23, 9.00]; flag=OK).
  On scenario `dynamic`, mean fuel reduction vs fixed was 16.50% (95% CI [15.72, 17.31]; flag=OK).
  On scenario `low_demand`, mean fuel reduction vs fixed was 14.46% (95% CI [13.98, 14.91]; flag=OK).
@@ -201,7 +201,7 @@ No non-positive mean fuel reductions found against listed baselines in loaded ru
 ## RL comparison
 
 
-RL selected on VALIDATION: `{"selected_on": "VALIDATION seeds", "confirm_seeds": [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019], "best_path": "/Users/par_04/code_playground/XtraFlow/results/rl/ppo_best.zip", "best_val_fuel_per_vehicle_L": 0.14054192781091826, "fuels": [0.13778186558313338, 0.14475136100664854, 0.1422604947379443, 0.13727005318522195, 0.1387308904741657, 0.13832981558301768, 0.13630073085460376, 0.1388412717943669, 0.14070995857927754, 0.1420681128651021, 0.14339000560338883, 0.14726891456061725, 0.14077461501748376, 0.14176600660923588, 0.1395943082612321, 0.14027819270704772, 0.13823100367183688, 0.1428328530378117, 0.14232536536795087, 0.1373327367182782]}`.
+RL selected on VALIDATION: `{"selected_on": "VALIDATION seeds", "confirm_seeds": [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019], "best_path": "results/rl/ppo_best.zip", "best_val_fuel_per_vehicle_L": 0.14054192781091826, "fuels": [0.13778186558313338, 0.14475136100664854, 0.1422604947379443, 0.13727005318522195, 0.1387308904741657, 0.13832981558301768, 0.13630073085460376, 0.1388412717943669, 0.14070995857927754, 0.1420681128651021, 0.14339000560338883, 0.14726891456061725, 0.14077461501748376, 0.14176600660923588, 0.1395943082612321, 0.14027819270704772, 0.13823100367183688, 0.1428328530378117, 0.14232536536795087, 0.1373327367182782]}`.
 
 | scenario        | baseline   | metric             |   pct_reduction_mean |   pct_reduction_ci_lo |   pct_reduction_ci_hi |   wilcoxon_stat |       p_raw |   cohens_dz |   n_pairs |      p_holm |
 |:----------------|:-----------|:-------------------|---------------------:|----------------------:|----------------------:|----------------:|------------:|------------:|----------:|------------:|

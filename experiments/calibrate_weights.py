@@ -91,7 +91,12 @@ def measure_idle_fuel(duration_s: float = 60.0) -> dict:
         "w_type": w_type,
         "reference": "car",
         "duration_s": duration_s,
-        "note": "Measured via TraCI getFuelConsumption while stopped; assumed emission classes.",
+        "note": (
+            "Measured via TraCI getFuelConsumption while stopped. "
+            "auto-rickshaw uses a passenger-car emission class and two-wheeler uses LDV_G_EU4 "
+            "when that class loads; these idle-fuel weights inherit those proxies. "
+            "Simulation-based estimate; assumed traffic mix."
+        ),
     }
     path = ROOT / "results" / "weights.json"
     save_json(path, out)

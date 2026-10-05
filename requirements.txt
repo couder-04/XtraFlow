@@ -1,4 +1,4 @@
-# Pinned for reproducibility (Python 3.12, macOS arm64)
+# Pinned for reproducibility (Python 3.12, Linux and macOS)
 eclipse-sumo==1.21.0
 traci==1.21.0
 sumolib==1.21.0

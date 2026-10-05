@@ -7,7 +7,7 @@ from pathlib import Path
 
 import numpy as np
 
-from sim.util import ROOT, save_json
+from sim.util import ROOT, rel_to_root, save_json
 
 
 def write_assumed_noise(miss: float = 0.15) -> dict:
@@ -23,6 +23,7 @@ def write_assumed_noise(miss: float = 0.15) -> dict:
         "detect_miss_rate": miss,
         "class_confusion": confusion,
         "count_jitter_std": 0.5,
+        "mean_burst_s": 3.0,
         "source": "assumed",
         "note": (
             "ASSUMED noise model (no user video/labels). "
@@ -36,32 +37,80 @@ def write_assumed_noise(miss: float = 0.15) -> dict:
     return out
 
 
-def evaluate_from_labels(video_dir: Path, label_dir: Path) -> dict:
-    # Expect labels as JSON list of {frame, class, count} or YOLO txt — simple count CSV/JSON
-    label_files = list(label_dir.glob("*"))
+def evaluate_from_labels(video_dir: Path, label_dir: Path, out_path: Path | None = None) -> dict:
+    """Manual per-class counts paired with detections -> recall, miss rate, confusion.
+
+    Each JSON label file is either
+    {"counts": {"car": 10}, "detections": {"car": 8, "bus": 1}}
+    or {"frames": [{"counts": {...}, "detections": {...}}]}.
+    source is empirical only when at least one paired detection block exists.
+    """
+    label_files = [p for p in label_dir.glob("*.json")]
+    dest = out_path or (ROOT / "perception" / "noise_model.json")
     if not label_files:
-        return write_assumed_noise()
-    # Placeholder empirical derivation: if manual counts JSON present
-    # Format: {"frames":[{"class_counts":{"car":n,...}}]}
-    miss_rates = []
-    confusion_counts = {}
+        out = write_assumed_noise()
+        if out_path is not None:
+            save_json(out_path, out)
+        return out
+    true_tot: dict = {}
+    det_tot: dict = {}
+    paired = 0
     for lf in label_files:
-        if lf.suffix not in (".json",):
-            continue
         data = json.loads(lf.read_text())
-        for fr in data.get("frames", []):
-            # without paired detections, cannot compute; skip
-            pass
-    # If insufficient, fall back but mark instructions
-    out = write_assumed_noise(0.12)
-    out["source"] = "partial_labels_fallback_assumed"
-    out["instructions"] = (
-        "Provide paired detection outputs or use yolo_counts.py then compare to "
-        "manual counts per class to fill precision/recall. "
-        "Optional fine-tune: place a licensed Indian road dataset under data/ and "
-        "run ultralytics train; do not download unlicensed content."
-    )
-    save_json(ROOT / "perception" / "noise_model.json", out)
+        blocks = data.get("frames") or [data]
+        for block in blocks:
+            counts = block.get("counts") or block.get("true")
+            detections = block.get("detections") or block.get("detected")
+            if not counts or not detections:
+                continue
+            paired += 1
+            for k, v in counts.items():
+                true_tot[k] = true_tot.get(k, 0) + float(v)
+            for k, v in detections.items():
+                det_tot[k] = det_tot.get(k, 0) + float(v)
+    if paired == 0:
+        out = write_assumed_noise()
+        out["source"] = "assumed"
+        out["note"] = (
+            "Labels were present but had no paired counts and detections, so the noise model stays assumed."
+        )
+        save_json(dest, out)
+        return out
+    classes = sorted(set(true_tot) | set(det_tot))
+    recall = {}
+    miss = {}
+    for c in classes:
+        t = true_tot.get(c, 0.0)
+        d = det_tot.get(c, 0.0)
+        recall[c] = (d / t) if t else None
+        miss[c] = (1.0 - d / t) if t else None
+    true_sum = sum(true_tot.values()) or 1.0
+    det_sum = sum(det_tot.values())
+    miss_rate = max(0.0, min(1.0, 1.0 - det_sum / true_sum))
+    confusion = {}
+    for c in classes:
+        row = {}
+        for o in classes:
+            if c == o:
+                row[o] = recall[c] if recall[c] is not None else 0.0
+            else:
+                # Off-diagonal is the share of detections of o when the manual class was c,
+                # only if a confusion_matrix block was not supplied. Use detection mix as a proxy.
+                row[o] = 0.0
+        s = sum(row.values()) or 1.0
+        confusion[c] = {k: v / s for k, v in row.items()}
+    out = {
+        "detect_miss_rate": miss_rate,
+        "class_confusion": confusion,
+        "count_jitter_std": 0.0,
+        "mean_burst_s": 3.0,
+        "recall": recall,
+        "miss_rate_by_class": miss,
+        "source": "empirical",
+        "n_paired_blocks": paired,
+        "note": "Empirical noise from manual per-class counts paired with detections.",
+    }
+    save_json(dest, out)
     return out
 
 
@@ -84,7 +133,7 @@ def synthetic_smoke() -> dict:
     imageio.mimsave(path, frames, fps=5)
     noise = write_assumed_noise(0.15)
     save_json(ROOT / "results" / "perception_smoke.json", {
-        "video": str(path),
+        "video": rel_to_root(path),
         "noise_model": noise,
         "flag": "ASSUMED_NOISE_MODEL_NO_USER_VIDEO",
     })

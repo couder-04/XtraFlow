@@ -24,8 +24,8 @@ All non-sourced parameters are labelled **assumed**. Choices below record engine
 
 ## D004 — Sublane model
 
-**Choice:** Prefer `--lateral-resolution 0.4` for two-wheeler filtering; fall back to standard lanes if smoke is unstable.  
-**Rationale:** Spec requires sublane for 2W realism; stability verified in smoke before committing.
+**Choice:** Do not pass `--lateral-resolution` to netconvert (SUMO 1.21 has no such netconvert option). Set `<lateral-resolution value="0.4"/>` in the sumocfg. A 60 s probe must succeed or the build fails. The probe has been run: `results/sublane_fallback.json` has `used_sublane` true at 0.4. That probe is one vehicle for 60 s. A full-demand stability check has not been re-run.  
+**Rationale:** A silent fallback left the report describing a lateral model the simulation never ran.
 
 ## D005 — Vehicle mix
 
@@ -49,8 +49,8 @@ All non-sourced parameters are labelled **assumed**. Choices below record engine
 
 ## D009 — Emission primary model
 
-**Choice:** Runtime-probed classes that the installed SUMO accepts. On eclipse-sumo 1.21.0 this is **HBEFA3** (HBEFA4 class names are absent); cross-check uses **PHEMlight** when available. Mapping logged in `results/emission_class_map.json` and README.  
-**Rationale:** Portability across SUMO installs without fabricating class names; verified by loading each candidate.
+**Choice:** `config.yaml` `emission.primary` is HBEFA3, matching the classes this SUMO 1.21 build accepts. HBEFA4 is not in the wheel. The alternate map keeps bus and truck on heavy-duty or bus classes. auto-rickshaw uses a passenger-car class. two-wheeler uses `LDV_G_EU4` when that class loads. Idle-fuel weights inherit those proxies. The cross-check verdict compares confidence intervals, not only sign.  
+**Rationale:** The config used to name HBEFA4 while the run used HBEFA3, and the alternate map sent buses and trucks to a passenger car.
 
 ## D010 — RL reward
 
@@ -59,8 +59,8 @@ All non-sourced parameters are labelled **assumed**. Choices below record engine
 
 ## D010b — RL training budget
 
-**Choice:** Train with short episodes (600 s) up to 50k timesteps; select checkpoint by VALIDATION fuel via `run_one`.  
-**Rationale:** Full 3600 s × 200k SUMO steps is wall-clock prohibitive; protocol (VAL selection, TEST untouched) preserved.
+**Choice:** `config.yaml` `rl.total_timesteps` is the training budget (200000). Code does not cap that budget and does not stop early below it. Episodes use the demand horizon. The checkpoint is chosen on VALIDATION, all four scenarios, full horizon. Report the run as a baseline trained with the budget recorded in `results/rl/rl_selection.json`.  
+**Rationale:** Config, this note, and the trainer have to name the same budget. A short run must not be described as the config budget.
 
 ## D010c — Hyperparameter search
 
@@ -79,8 +79,8 @@ All non-sourced parameters are labelled **assumed**. Choices below record engine
 
 ## D013 — Headline fuel reduction sanity
 
-**Choice:** If XtraFlow vs fixed >30% mean reduction, treat as bug/unfair baseline before reporting; expect ~5–20%.  
-**Rationale:** Spec hard rule for scientific credibility.
+**Choice:** If the paired mean fuel reduction versus the best tuned baseline (fixed_tuned, actuated, queue_pressure, or maxpressure) is above 30%, flag the cell for investigation. Legacy fixed is a secondary comparison and is not the sanity baseline.  
+**Rationale:** The old equal-green plan is a weak baseline under unbalanced demand, so a large gap against it is not evidence by itself.
 
 ## D014 — Independent demand generation
 
@@ -89,20 +89,20 @@ All non-sourced parameters are labelled **assumed**. Choices below record engine
 
 ## D015 — Demand flow levels
 
-**Choice:** Lower approach flows (e.g. balanced 480 veh/h, peak NS 720 / EW 180) after full-horizon runs at higher rates showed `gridlock_flag=1` and large n_completed gaps.  
-**Rationale:** Target ~70–90% DoS under fixed without systemic incompletion; still labelled assumed.
+**Choice:** Approach flows stay in config.yaml and are labelled assumed until `data/observed_counts.csv` is supplied. Degree of saturation is whatever `experiments/calibrate_demand.py` writes to `results/demand_calibration.json` from a VALIDATION run. That file is not allowed to repeat an unmeasured saturation target.  
+**Rationale:** A 70–90% saturation sentence was never computed, and an older note cited a flow that is not in the config.
 
 ## D016 — Pressure turn filtering
 
 **Choice:** Phase pressure counts only vehicles whose route turn matches the phase (through+left vs right), not all vehicles on the approach.  
 **Rationale:** Without this, NS_TL and NS_R pressures were nearly identical, starving EW and causing gridlock (observed on VAL seed 2000).
 
-## D017 — Peak headline ~22% vs fixed
+## D017 — Headline baseline
 
-**Choice:** Report peak_unbalanced mean fuel reduction 21.76% (95% CI 20.0–23.5) despite “expect ~5–20%” guidance.  
-**Rationale:** Below the 30% bug threshold; n_completed matched across controllers; no XtraFlow gridlock on TEST; strong NS/EW imbalance is where adaptive control should help most. Documented as upper end of plausible range.
+**Choice:** The headline is XtraFlow versus the best of fixed_tuned, actuated, queue_pressure, and maxpressure on that scenario, with a paired bootstrap interval. Legacy fixed may be shown as a secondary row. The number lives in `results/headlines.json` after the locked TEST sweep.  
+**Rationale:** Calling a gap versus the legacy equal-green plan the upper end of a plausible range was not a justification. The legacy plan gives NS and EW the same green under NS-heavy demand.
 
-## D018 — Grid underperformance
+## D018 — Grid
 
-**Choice:** Report honestly that on the 2×2 grid, independent/coordinated XtraFlow underperformed fixed and actuated (higher fuel and waiting). Coordination term did not change outcomes.  
-**Rationale:** Spec requires mixed/negative results; controller was tuned for single junction.
+**Choice:** Each junction uses phase groups inferred from that junction's incoming edges, not the single-intersection edge names. Coordination subtracts `neighbor_pressure_weight` times downstream halting count. Quote a grid result only from `results/grid_results.json` after a run that records `n_unfinished`.  
+**Rationale:** The previous controller queried `N_in` on a net that has no such edge, so it saw no vehicles, and the coordination term did not read a neighbor.

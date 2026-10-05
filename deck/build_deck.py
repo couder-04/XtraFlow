@@ -141,7 +141,7 @@ def load() -> dict:
     perc = _load(ROOT / "results" / "perception_smoke.json") or {}
     sublane = _load(ROOT / "results" / "sublane_fallback.json") or {}
     headlines = list(summary.get("headlines") or _load(ROOT / "results" / "headlines.json") or [])
-    headlines.sort(key=lambda row: -float(row["pct_fuel_reduction_vs_fixed"]))
+    headlines.sort(key=lambda row: -float(row.get("pct_fuel_reduction_vs_best") or row.get("pct_fuel_reduction_vs_fixed") or 0))
     comps = {}
     for row in summary.get("comparisons", []):
         if row.get("metric") == "fuel_per_vehicle_L":
@@ -627,7 +627,7 @@ def slide_design(prs, data, page, _total):
     notes(
         slide,
         "Same seed means identical demand. Test seeds are 1–30 after config.lock. "
-        "Mention the sublane fallback only if asked: netconvert failed, standard lanes were used.",
+        "Sublane use is the used_sublane field in results/sublane_fallback.json.",
     )
 
 
@@ -771,9 +771,8 @@ def slide_baselines(prs, data, page, _total):
         write(slide, L + 0.24, y + 0.14, CONTENT_W - 0.45, 0.7, [[(" ".join(bits), 14, INK, False, BODY)]])
     notes(
         slide,
-        "If someone says this is just max-pressure, stay on this slide. The operational claim versus today's fixed signals "
-        "is the first column. The scientific claim for fuel weights is the last two columns: small, positive, intervals above zero. "
-        "PPO was selected on validation and still lost; on the peak it also gridlocked. See the summary table.",
+        "Read the paired intervals on this slide from the loaded comparison table. "
+        "Do not add a verdict that is not in those intervals. RL is a baseline trained with the budget in rl_selection.json.",
     )
 
 
@@ -866,7 +865,19 @@ def slide_robust(prs, data, page, _total):
     dek = "Peak, one-sided. Vehicles are dropped from the detector at random."
     if n:
         dek = f"Peak, one-sided. {n} seeds. Vehicles are dropped from the detector at random."
-    chrome(slide, "If the camera misses", "A missed vehicle does not erase the saving", dek, page)
+    title = "Detector-miss results are not loaded"
+    if curve:
+        high = max(curve, key=lambda row: row["miss"])
+        ref_means = [row["mean"] for row in refs.values()]
+        if ref_means and high["mean"] < min(ref_means):
+            title = "At the highest miss rate, mean fuel is under the reference lines"
+        elif ref_means and high["mean"] > max(ref_means):
+            title = "At the highest miss rate, mean fuel is above the reference lines"
+        elif ref_means:
+            title = "At the highest miss rate, mean fuel sits among the reference lines"
+        else:
+            title = "Detector-miss curve"
+    chrome(slide, "If the camera misses", title, dek, page)
     if not curve:
         write(slide, L, 2.2, CONTENT_W, 0.4, [[("Robustness results are not loaded.", 16, MUTED, False, BODY)]])
         return
@@ -893,19 +904,30 @@ def slide_robust(prs, data, page, _total):
         rx += 3.6
     extra = ""
     if empirical:
-        extra = f" The assumed noise model at {empirical['miss']:.0%} miss lands at {empirical['mean']:.3f} L."
+        source = empirical.get("source") or "see noise_model.json"
+        extra = f" Noise-model point ({source}) is {empirical['mean']:.3f} L."
+    under = bool(curve) and all(
+        row["mean"] < min(ref["mean"] for ref in refs.values())
+        for row in curve
+    ) if refs else False
+    if refs and curve and under:
+        sentence = "Every miss level on this slide has lower mean fuel than every reference line."
+    elif refs and curve:
+        sentence = "Not every miss level is under every reference line."
+    else:
+        sentence = "Reference lines are not loaded."
     write(
         slide,
         L + 0.3,
         6.05,
         CONTENT_W - 0.6,
         0.5,
-        [[("XtraFlow stays under both reference lines across this miss range." + extra, 14, INK, False, BODY)]],
+        [[(sentence + extra, 14, INK, False, BODY)]],
     )
     notes(
         slide,
-        "This is not the full 30-seed test. It is the robustness sweep on the peak scenario. "
-        "The curve is flat in the third decimal from 0 to 30% misses. Perception noise elsewhere in the deck is assumed.",
+        "Means are grouped from results/robustness.json. Do not describe the curve as flat unless the loaded means say so. "
+        "The noise-model source field is empirical only when labels exist.",
     )
 
 
@@ -924,7 +946,15 @@ def slide_grid(prs, data, page, _total):
     dek = "A 2×2 network. The controller was tuned for a single junction."
     if n:
         dek = f"A 2×2 network, {n} seeds. The controller was tuned for a single junction."
-    chrome(slide, "Where it does not transfer", "On a grid, fuel goes the wrong way", dek, page)
+    if "XtraFlow" in means and "fixed" in means and means["XtraFlow"] > means["fixed"]:
+        grid_title = "On this grid, XtraFlow mean fuel is higher than fixed time"
+    elif "XtraFlow" in means and "fixed" in means and means["XtraFlow"] < means["fixed"]:
+        grid_title = "On this grid, XtraFlow mean fuel is lower than fixed time"
+    elif means:
+        grid_title = "Grid means are loaded; compare the cards"
+    else:
+        grid_title = "Grid results are not loaded"
+    chrome(slide, "Where it does not transfer", grid_title, dek, page)
     order = [("actuated", "Actuated", "Lowest fuel here"), ("fixed", "Fixed time", "The simple baseline"), ("XtraFlow", "XtraFlow", "Higher fuel")]
     gap = 0.18
     width = (CONTENT_W - 2 * gap) / 3
@@ -959,8 +989,9 @@ def slide_grid(prs, data, page, _total):
     write(slide, L + 0.32, 5.9, CONTENT_W - 0.6, 0.65, [[(sentence + " A corridor needs its own design.", 16, WHITE, False, BODY)]])
     notes(
         slide,
-        "Say this slide out loud. Independent and coordinated XtraFlow both used more fuel and more waiting than fixed time "
-        "and actuated. Coordination did not change outcomes. Decision D018. Label: simulation-based estimate.",
+        "Read results/grid_results.json. The title is computed from those means. "
+        "Do not describe coordination unless coordination_reduces_fuel is in that file. "
+        "Label: simulation-based estimate; assumed traffic mix.",
     )
 
 
@@ -977,8 +1008,8 @@ def slide_checks(prs, data, page, _total):
     chrome(
         slide,
         "Beside the headline",
-        "Conflicts did not rise. CO₂ still falls.",
-        "One caveat sits with those two checks: the camera model is assumed.",
+        f"Safety: {_plain_verdict(data['safety'].get('verdict', ''))}. Emissions: {_plain_verdict(data['xcheck'].get('verdict', ''))}.",
+        "Both lines are the verdict fields in the loaded JSON, not a fixed sentence.",
         page,
     )
     safety = data["safety"]
@@ -1157,7 +1188,7 @@ def slide_close(prs, data, page, _total):
     steps = [
         ("01", "Count the junction", "Replace the assumed flows with observed demand before quoting a site."),
         ("02", "Film the queue", "A real video replaces the assumed detector-error model."),
-        ("03", "Redesign the corridor", "Neighbor pressure, as implemented, did not help the grid."),
+        ("03", "Read the grid file", "Quote a corridor result only from results/grid_results.json."),
     ]
     gap = 0.16
     width = (CONTENT_W - 2 * gap) / 3
@@ -1173,7 +1204,7 @@ def slide_close(prs, data, page, _total):
     notes(
         slide,
         "Close on the three conditions. Do not end on the annual litre range. "
-        "The single-junction fuel result versus fixed time is the result. The grid is the limit.",
+        "The headline comparison is in results/headlines.json.",
     )
 
 

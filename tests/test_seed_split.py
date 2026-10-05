@@ -15,7 +15,11 @@ def test_seed_ranges_disjoint():
 
 
 def test_config_lock_roundtrip(tmp_path):
-    from sim.util import assert_config_locked, config_sha256, freeze_config, ROOT
-    h = freeze_config()
-    assert h == config_sha256()
-    assert_config_locked()
+    from sim.util import ROOT, assert_config_locked, file_sha256, freeze_config
+    cfg = tmp_path / "config.yaml"
+    cfg.write_text((ROOT / "config.yaml").read_text(encoding="utf-8"), encoding="utf-8")
+    lock = tmp_path / "config.lock"
+    digest = freeze_config(cfg, lock)
+    assert digest == file_sha256(cfg)
+    assert_config_locked(cfg, lock)
+    assert "/Users/" not in lock.read_text(encoding="utf-8")

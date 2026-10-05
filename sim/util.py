@@ -89,31 +89,119 @@ def config_sha256(path: Optional[Path] = None) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+def rel_to_root(path: Path) -> str:
+    """Path relative to the repo root. Never an absolute path."""
+    path = path.resolve()
+    try:
+        return str(path.relative_to(ROOT))
+    except ValueError:
+        return path.name
+
+
+def file_sha256(path: Path) -> Optional[str]:
+    if not path.exists() or not path.is_file():
+        return None
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+# Hashed into results/config.lock. Relative paths only.
+LOCK_FILES = [
+    "config.yaml",
+    "results/tuned_params.json",
+    "results/weights.json",
+    "results/fixed_tuned.json",
+    "results/emission_class_map.json",
+    "results/rl/ppo_best.zip",
+]
+
+
+def git_commit() -> str:
+    try:
+        proc = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        return proc.stdout.strip()
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return "unknown"
+
+
 def freeze_config(cfg_path: Optional[Path] = None, lock_path: Optional[Path] = None) -> str:
+    """Write the config lock. Does not run from the sweep; use `make freeze_config`."""
     ensure_dirs()
     cfg_path = cfg_path or (ROOT / "config.yaml")
     lock_path = lock_path or (ROOT / "results" / "config.lock")
-    h = config_sha256(cfg_path)
+    files: Dict[str, Optional[str]] = {}
+    for rel in LOCK_FILES:
+        if rel == "config.yaml":
+            files["config.yaml"] = file_sha256(cfg_path)
+        else:
+            files[rel] = file_sha256(ROOT / rel)
+    note = "TEST sweep must match these hashes. Paths are relative to the repo root."
+    smoke_bits = []
+    ft = ROOT / "results" / "fixed_tuned.json"
+    rl_meta = ROOT / "results" / "rl" / "rl_selection.json"
+    if ft.exists() and load_json(ft).get("smoke"):
+        smoke_bits.append("results/fixed_tuned.json is a smoke artifact")
+    if rl_meta.exists() and load_json(rl_meta).get("smoke"):
+        smoke_bits.append("results/rl/ppo_best.zip is a smoke checkpoint")
+    if smoke_bits:
+        note += " " + "; ".join(smoke_bits) + ". Re-freeze after the VALIDATION search and config rl.total_timesteps."
     payload = {
-        "sha256": h,
-        "config_path": str(cfg_path.resolve()),
-        "note": "TEST sweep must use this exact config.yaml hash",
+        "files": files,
+        "git_commit": git_commit(),
+        "note": note,
     }
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
     lock_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-    return h
+    return files["config.yaml"] or ""
 
 
 def assert_config_locked(cfg_path: Optional[Path] = None, lock_path: Optional[Path] = None) -> None:
     cfg_path = cfg_path or (ROOT / "config.yaml")
     lock_path = lock_path or (ROOT / "results" / "config.lock")
     if not lock_path.exists():
-        raise RuntimeError("config.lock missing; run freeze_config before TEST sweep/analyze")
+        raise RuntimeError("config.lock missing; run `make freeze_config` before the TEST sweep")
     locked = json.loads(lock_path.read_text(encoding="utf-8"))
-    current = config_sha256(cfg_path)
-    if locked.get("sha256") != current:
+    files = locked.get("files")
+    if not isinstance(files, dict):
+        raise RuntimeError("config.lock is missing file hashes; re-run `make freeze_config`")
+    current_cfg = file_sha256(cfg_path)
+    if files.get("config.yaml") != current_cfg:
         raise RuntimeError(
-            f"config.yaml hash changed after freeze: locked={locked.get('sha256')} current={current}"
+            f"config.yaml hash changed after freeze: locked={files.get('config.yaml')} current={current_cfg}"
         )
+    for rel, digest in files.items():
+        if rel == "config.yaml":
+            continue
+        current = file_sha256(ROOT / rel)
+        if digest != current:
+            raise RuntimeError(f"{rel} hash changed after freeze: locked={digest} current={current}")
+
+
+def tool_cmd(name: str) -> List[str]:
+    """Launch a SUMO tool even if its shebang points at a missing interpreter."""
+    candidates: List[Path] = []
+    found = shutil.which(name)
+    if found:
+        candidates.append(Path(found))
+    candidates.append(ROOT / ".venv" / "bin" / name)
+    for c in candidates:
+        if not c.exists():
+            continue
+        try:
+            first = c.read_text(encoding="utf-8", errors="ignore").splitlines()[0]
+        except OSError:
+            return [str(c)]
+        if first.startswith("#!"):
+            interp = first[2:].strip().split()[0]
+            if not Path(interp).exists():
+                return [sys.executable, str(c)]
+        return [str(c)]
+    raise RuntimeError(f"tool not found: {name}")
 
 
 def save_json(path: Path, obj: Any) -> None:
@@ -131,7 +219,7 @@ def run_cmd(cmd: List[str], cwd: Optional[Path] = None, check: bool = True) -> s
 
 def _emission_class_exists(class_name: str, net_path: Optional[Path] = None) -> bool:
     """Return True if SUMO accepts this emissionClass on a trivial load."""
-    _, binary = locate_sumo()
+    locate_sumo()
     net_path = net_path or (ROOT / "results" / "networks" / "intersection.net.xml")
     if not net_path.exists():
         # Without a net, accept well-known HBEFA3 / PHEMlight names only
@@ -165,7 +253,7 @@ def _emission_class_exists(class_name: str, net_path: Optional[Path] = None) -> 
 """,
             encoding="utf-8",
         )
-        proc = subprocess.run([binary, "-c", str(cfg)], capture_output=True, text=True)
+        proc = subprocess.run(tool_cmd("sumo") + ["-c", str(cfg)], capture_output=True, text=True)
         err = (proc.stderr or "") + (proc.stdout or "")
         return "emissionClass" not in err and "Quitting" not in err
 
@@ -193,30 +281,48 @@ def probe_hbefa_classes() -> Dict[str, str]:
                 break
         mapping[vtype] = chosen or "HBEFA3/PC_G_EU4"
 
-    # Alternate for cross-check: PHEMlight where available else different HBEFA3 petrol/diesel
+    # Alternate keeps buses and trucks off passenger-car classes.
+    # auto_rickshaw has no dedicated class in this build (passenger-car proxy).
+    # two_wheeler primary is LDV_G_EU4 when that class loads (light-duty proxy).
     alt_cands = {
-        "two_wheeler": ["PHEMlight/PC_G_EU4", "HBEFA3/PC_G_EU3"],
-        "auto_rickshaw": ["PHEMlight/PC_G_EU4", "HBEFA3/PC_G_EU3"],
+        "two_wheeler": ["HBEFA3/LDV_G_EU3", "HBEFA3/PC_G_EU3", "PHEMlight/LDV_G_EU4"],
+        "auto_rickshaw": ["HBEFA3/PC_G_EU3", "HBEFA3/PC_G_EU2"],
         "car": ["PHEMlight/PC_G_EU4", "HBEFA3/PC_G_EU3"],
-        "bus": ["PHEMlight/PC_G_EU4", "HBEFA3/HDV"],
-        "truck": ["PHEMlight/PC_G_EU4", "HBEFA3/Bus"],
+        "bus": ["HBEFA3/HDV", "HBEFA3/HDV_D_EU4", "PHEMlight/HDV_D_EU4", "HBEFA3/Bus"],
+        "truck": ["HBEFA3/HDV_D_EU4", "PHEMlight/HDV_D_EU4", "HBEFA3/HDV", "HBEFA3/Bus"],
     }
     alt: Dict[str, str] = {}
     for vtype, cands in alt_cands.items():
         chosen = None
         for c in cands:
+            if vtype in ("bus", "truck") and "PC_" in c:
+                continue
             if c not in tested:
                 tested[c] = _emission_class_exists(c, net if net.exists() else None)
             if tested[c] and c != mapping.get(vtype):
                 chosen = c
                 break
+        if chosen is None and vtype in ("bus", "truck"):
+            for c, ok in tested.items():
+                if ok and c != mapping.get(vtype) and "PC_" not in c and ("HDV" in c or "Bus" in c or "bus" in c):
+                    chosen = c
+                    break
         alt[vtype] = chosen or mapping[vtype]
 
     out = {
         "primary": mapping,
         "alternate": alt,
         "tested": tested,
-        "note": "Installed SUMO 1.21: HBEFA3/PHEMlight available; HBEFA4 not present in this build.",
+        "proxies": {
+            "auto_rickshaw": "passenger-car class (no auto-rickshaw emission class in this SUMO build)",
+            "two_wheeler": "LDV_G_EU4 when available, else the first accepted light/passenger class",
+            "weights": "results/weights.json idle-fuel weights inherit these emission classes",
+        },
+        "note": (
+            "Installed SUMO 1.21: HBEFA3/PHEMlight available; HBEFA4 not present in this build. "
+            "Alternate bus/truck classes stay heavy-duty or bus, not passenger car. "
+            "Simulation-based estimate; assumed traffic mix."
+        ),
     }
     ensure_dirs()
     save_json(ROOT / "results" / "emission_class_map.json", out)
@@ -241,12 +347,17 @@ def kmh_to_ms(kmh: float) -> float:
 
 CONTROLLER_NAMES = [
     "fixed",
+    "fixed_tuned",
     "webster",
     "actuated",
+    "queue_pressure",
     "maxpressure",
     "ours_count",
     "XtraFlow",
     "rl_ppo",
 ]
+
+# Non-oracle baselines eligible for the headline (legacy fixed is secondary).
+HEADLINE_BASELINES = ["fixed_tuned", "actuated", "queue_pressure", "maxpressure"]
 
 SCENARIOS = ["balanced", "peak_unbalanced", "dynamic", "low_demand"]

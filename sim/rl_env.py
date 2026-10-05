@@ -1,9 +1,13 @@
-"""Gymnasium environment wrapping SUMO/TraCI for PPO training."""
+"""Gymnasium environment wrapping SUMO/TraCI for PPO training.
+
+Action 0 keeps the phase. Actions 1..4 request NS_TL, NS_R, EW_TL, EW_R.
+The same min green, max green, yellow, and all-red rules as the other controllers apply.
+Observation features are scaled to [0, 1].
+"""
 from __future__ import annotations
 
 import os
-from pathlib import Path
-from typing import Any, Dict, Optional, Tuple
+from typing import Optional
 
 import numpy as np
 
@@ -14,10 +18,10 @@ except ImportError:  # pragma: no cover
     import gym
     from gym import spaces
 
-from sim.controllers import PHASE_ORDER, OursFuelController, _load_tuned, _load_weights
+from sim.controllers import RLPPOController, _load_tuned, _load_weights
 from sim.gen_demand import generate
 from sim.run_sim import _write_sumocfg
-from sim.util import ROOT, load_config, locate_sumo
+from sim.util import ROOT, load_config, locate_sumo, tool_cmd
 
 
 class SumoTrafficEnv(gym.Env):
@@ -30,17 +34,17 @@ class SumoTrafficEnv(gym.Env):
         self.scenario = scenario
         self._seed = seed
         self.smoke = smoke
-        self.horizon = 120 if smoke else int(self.cfg["simulation"]["demand_horizon_s"])
-        self.timeout = 240 if smoke else int(self.horizon * self.cfg["simulation"]["drain_timeout_multiplier"])
+        self.horizon = 60 if smoke else int(self.cfg["simulation"]["demand_horizon_s"])
+        self.timeout = self.horizon + (30 if smoke else int(self.horizon))
         self.weights = _load_weights()
         self.params = _load_tuned()
-        # obs: 4 approaches * 3 + phase + time = 14
-        self.observation_space = spaces.Box(low=0, high=1e4, shape=(14,), dtype=np.float32)
-        self.action_space = spaces.Discrete(2)  # 0 keep, 1 switch
+        self.observation_space = spaces.Box(low=0.0, high=1.0, shape=(RLPPOController.OBS_DIM,), dtype=np.float32)
+        self.action_space = spaces.Discrete(5)  # 0 keep, 1..4 choose phase
         self._traci = None
-        self._ctrl = None
+        self._ctrl: Optional[RLPPOController] = None
         self._step_count = 0
         self._sumo_bin = None
+        self._dead = False
 
     def reset(self, *, seed: Optional[int] = None, options: Optional[dict] = None):
         if seed is not None:
@@ -50,7 +54,7 @@ class SumoTrafficEnv(gym.Env):
                 self._traci.close()
             except Exception:
                 pass
-        _, self._sumo_bin = locate_sumo()
+        locate_sumo()
         import traci
 
         self._traci = traci
@@ -58,88 +62,56 @@ class SumoTrafficEnv(gym.Env):
         net = ROOT / "results" / "networks" / "intersection.net.xml"
         vtypes = ROOT / "results" / "networks" / "vtypes.add.xml"
         tls_add = ROOT / "results" / "networks" / "tls.add.xml"
-        tag = f"rl_{self.scenario}_seed{self._seed}"
+        tag = f"rl_{self.scenario}_seed{self._seed}_{os.getpid()}"
         raw = ROOT / "results" / "rl"
         raw.mkdir(parents=True, exist_ok=True)
         tripinfo = raw / f"{tag}.tripinfo.xml"
         ssm = raw / f"{tag}.ssm.xml"
         cfg_path = raw / f"{tag}.sumocfg"
-        # Do not set sumo end-time — TraCI owns termination (avoids peer shutdown mid-step).
         _write_sumocfg(net, routes, [vtypes, tls_add], cfg_path, tripinfo, ssm, end=None)
         label = f"rl_{self.scenario}_{self._seed}_{os.getpid()}"
+        cmd = tool_cmd("sumo") + ["-c", str(cfg_path), "--duration-log.disable", "true"]
+        traci.start(cmd, label=label, numRetries=10)
         try:
-            traci.start([self._sumo_bin, "-c", str(cfg_path), "--duration-log.disable", "true"],
-                        label=label, numRetries=10)
             traci.switch(label)
         except Exception:
-            traci.start([self._sumo_bin, "-c", str(cfg_path), "--duration-log.disable", "true"],
-                        numRetries=10)
+            pass
         try:
             traci.trafficlight.setProgram("C", "fixed")
         except Exception:
             pass
-        from sim.controllers import RLPPOController
-
-        self._ctrl = RLPPOController(cfg=self.cfg, weights=self.weights, params=self.params)
+        self._ctrl = RLPPOController(
+            model=None, cfg=self.cfg, weights=self.weights, params=self.params, allow_missing_model=True,
+        )
         self._step_count = 0
-        self._prev_wait = 0.0
         self._dead = False
-        obs = self._get_obs()
+        obs = self._ctrl.normalized_obs(traci)
         return obs, {}
-
-    def _get_obs(self) -> np.ndarray:
-        traci = self._traci
-        D = float(self.cfg["controller"]["detection_distance_m"])
-        vehicles = self._ctrl.observe_vehicles(traci, D)
-        feats = []
-        for ap in ["N", "S", "E", "W"]:
-            halt = sum(1 for v in vehicles if v["approach"] == ap and v["halting"])
-            move = sum(1 for v in vehicles if v["approach"] == ap and not v["halting"])
-            wq = sum(self.weights.get(v["vtype"], 1.0) for v in vehicles if v["approach"] == ap)
-            feats.extend([halt, move, wq])
-        feats.append(float(self._ctrl.state.phase_idx))
-        feats.append(float(self._ctrl.state.time_in_phase))
-        return np.asarray(feats, dtype=np.float32)
 
     def step(self, action: int):
         traci = self._traci
         ctrl = self._ctrl
-        if getattr(self, "_dead", False):
-            return self.observation_space.sample() * 0, 0.0, False, True, {}
-        switched = 0
+        if self._dead or ctrl is None:
+            return np.zeros(self.observation_space.shape, dtype=np.float32), 0.0, False, True, {}
         try:
-            if ctrl._tick_transition():
-                ctrl.apply_state(traci)
-            else:
-                ctrl.state.time_in_phase += 1.0
-                if int(action) == 1 and ctrl.state.time_in_phase >= ctrl.min_green:
-                    nxt = (ctrl.state.phase_idx + 1) % len(PHASE_ORDER)
-                    ctrl._begin_switch(nxt, "rl")
-                    switched = 1
-                elif ctrl.state.time_in_phase >= ctrl.max_green:
-                    nxt = (ctrl.state.phase_idx + 1) % len(PHASE_ORDER)
-                    ctrl._begin_switch(nxt, "max_green")
-                    switched = 1
-                ctrl.apply_state(traci)
-
+            ctrl._sim_time = float(self._step_count)
+            switched = ctrl.apply_action(int(action))
+            ctrl.apply_state(traci)
             traci.simulationStep()
         except Exception:
             self._dead = True
-            return np.zeros(self.observation_space.shape, dtype=np.float32), -10.0, False, True, {}
+            return np.zeros(self.observation_space.shape, dtype=np.float32), -1.0, False, True, {}
 
         self._step_count += 1
-
-        # reward: negative fuel-weighted waiting + switch penalty
+        fuel_mg_s = 0.0
         try:
-            vehicles = ctrl.observe_vehicles(traci, float(self.cfg["controller"]["detection_distance_m"]))
+            for vid in traci.vehicle.getIDList():
+                fuel_mg_s += float(traci.vehicle.getFuelConsumption(vid))
         except Exception:
-            vehicles = []
-        wait_cost = 0.0
-        for v in vehicles:
-            if v["halting"]:
-                wait_cost += float(self.weights.get(v["vtype"], 1.0))
+            fuel_mg_s = 0.0
         lam = float(self.cfg["controller"].get("switch_penalty_rl", 0.05))
-        reward = -wait_cost - lam * switched
+        # Negative fuel (mg/s -> a small litre-scale proxy) plus a switch penalty.
+        reward = -(fuel_mg_s / 1e6) - lam * switched
 
         terminated = False
         truncated = self._step_count >= self.timeout
@@ -150,7 +122,7 @@ class SumoTrafficEnv(gym.Env):
             except Exception:
                 truncated = True
         try:
-            obs = self._get_obs()
+            obs = ctrl.normalized_obs(traci)
         except Exception:
             self._dead = True
             obs = np.zeros(self.observation_space.shape, dtype=np.float32)

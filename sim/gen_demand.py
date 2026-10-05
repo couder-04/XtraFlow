@@ -49,7 +49,8 @@ def _sample_turn(rng: random.Random, ratios: Dict[str, float]) -> str:
 
 
 def generate(scenario: str, seed: int, cfg: Dict[str, Any] | None = None,
-             demand_mult: float = 1.0, mix_override: Dict[str, float] | None = None) -> Path:
+             demand_mult: float = 1.0, mix_override: Dict[str, float] | None = None,
+             demand_scale: Dict[str, float] | None = None) -> Path:
     """Write routes file for scenario+seed. Controller-independent."""
     cfg = cfg or load_config()
     ensure_dirs()
@@ -59,8 +60,10 @@ def generate(scenario: str, seed: int, cfg: Dict[str, Any] | None = None,
     out_dir = ROOT / "results" / "demand"
     out_path = out_dir / f"{scenario}_seed{seed}.rou.xml"
     # Include mult/mix hash in filename if non-default
-    if demand_mult != 1.0 or mix_override is not None:
+    if demand_mult != 1.0 or mix_override is not None or demand_scale:
         tag = f"_m{demand_mult:.2f}"
+        if demand_scale:
+            tag += "_s" + "_".join(f"{k}{demand_scale[k]:.2f}" for k in sorted(demand_scale))
         out_path = out_dir / f"{scenario}_seed{seed}{tag}.rou.xml"
 
     rng = random.Random(int(seed))  # deterministic
@@ -77,7 +80,8 @@ def generate(scenario: str, seed: int, cfg: Dict[str, Any] | None = None,
 
     for t0, t1, rates in blocks:
         for approach in APPROACHES:
-            rate = rates[approach] * demand_mult  # veh/h
+            scale = 1.0 if not demand_scale else float(demand_scale.get(approach, 1.0))
+            rate = rates[approach] * demand_mult * scale  # veh/h
             # Poisson-like via exponential interarrivals
             t = t0
             mean_headway = 3600.0 / max(rate, 1e-6)
@@ -112,7 +116,7 @@ def generate(scenario: str, seed: int, cfg: Dict[str, Any] | None = None,
         "n_vehicles": vid,
         "demand_mult": demand_mult,
         "mix": mix,
-        "path": str(out_path),
+        "path": str(out_path.relative_to(ROOT)),
         "label": "assumed mixed-traffic scenario",
     }
     save_json(out_path.with_suffix(".meta.json"), meta)

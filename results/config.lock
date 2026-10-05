@@ -1,5 +1,12 @@
 {
-  "sha256": "3b8eaea652ae2f17045aaf9602f772262206181beecfd271e854830f0af646ed",
-  "config_path": "/Users/par_04/code_playground/XtraFlow/config.yaml",
-  "note": "TEST sweep must use this exact config.yaml hash"
+  "files": {
+    "config.yaml": "d5d3b0ebf701dc497293bec2e205235da067b58c4d59126f93988d518a288544",
+    "results/tuned_params.json": "02f56b95fc4d507caade3dbb9c8d27b7afaecb6562229a7192e88207c0dc9d33",
+    "results/weights.json": "1422792a7f2da5191355c54cfcf4d62c77397ba409fbc7316a891df8c3304f46",
+    "results/fixed_tuned.json": "e4bb2e6e70c37397b77517f5f75063b73b8633a0f2874305f3767c5567196f9e",
+    "results/emission_class_map.json": "652b73a0ef396b79986574d50cd121e7b00d5be1056388ec5e77f71219278a33",
+    "results/rl/ppo_best.zip": "383e83dded2d283a3a2ade7320f1b9e8ccb7ae45e76b3da7aa2ea403aad51150"
+  },
+  "git_commit": "0898cfd7f06881b157ae98f0e889f243408f5017",
+  "note": "TEST sweep must match these hashes. Paths are relative to the repo root. results/fixed_tuned.json is a smoke artifact; results/rl/ppo_best.zip is a smoke checkpoint. Re-freeze after the VALIDATION search and config rl.total_timesteps."
 }

@@ -7,18 +7,26 @@
     "truck": "HBEFA3/HDV"
   },
   "alternate": {
-    "two_wheeler": "PHEMlight/PC_G_EU4",
-    "auto_rickshaw": "PHEMlight/PC_G_EU4",
+    "two_wheeler": "HBEFA3/LDV_G_EU3",
+    "auto_rickshaw": "HBEFA3/PC_G_EU3",
     "car": "PHEMlight/PC_G_EU4",
-    "bus": "PHEMlight/PC_G_EU4",
-    "truck": "PHEMlight/PC_G_EU4"
+    "bus": "HBEFA3/HDV",
+    "truck": "HBEFA3/HDV_D_EU4"
   },
   "tested": {
     "HBEFA3/LDV_G_EU4": true,
     "HBEFA3/PC_G_EU4": true,
     "HBEFA3/Bus": true,
     "HBEFA3/HDV": true,
-    "PHEMlight/PC_G_EU4": true
+    "HBEFA3/LDV_G_EU3": true,
+    "HBEFA3/PC_G_EU3": true,
+    "PHEMlight/PC_G_EU4": true,
+    "HBEFA3/HDV_D_EU4": true
   },
-  "note": "Installed SUMO 1.21: HBEFA3/PHEMlight available; HBEFA4 not present in this build."
+  "proxies": {
+    "auto_rickshaw": "passenger-car class (no auto-rickshaw emission class in this SUMO build)",
+    "two_wheeler": "LDV_G_EU4 when available, else the first accepted light/passenger class",
+    "weights": "results/weights.json idle-fuel weights inherit these emission classes"
+  },
+  "note": "Installed SUMO 1.21: HBEFA3/PHEMlight available; HBEFA4 not present in this build. Alternate bus/truck classes stay heavy-duty or bus, not passenger car. Simulation-based estimate; assumed traffic mix."
 }

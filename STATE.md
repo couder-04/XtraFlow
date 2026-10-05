@@ -2,35 +2,28 @@
 
 Last updated: 2026-10-05
 
-## Phase checklist
+## What this study is
 
-| Phase | Description | Status | Notes |
-|-------|-------------|--------|-------|
-| 0 | Repo scaffold, venv, deps, docs | DONE | |
-| 1 | Network + vehicles + demand | DONE | |
-| 2 | Controllers + metrics + RL env | DONE | |
-| 3 | Tests + smoke + calibrate + tune | DONE | |
-| 4 | Train RL + config.lock + TEST sweep | DONE | 840/840 rows, 0 NaN |
-| 5 | Analyze + robustness + sensitivity + emission + safety + grid + extrapolate | DONE | |
-| 6 | Perception + demo + dashboard + deck + report + audit | DONE | |
-| 7 | Acceptance checklist | DONE | |
+Simulation-based estimate. The traffic mix is assumed. Controllers default to an oracle detector (SUMO speed, class, and route turn). Emission classes are proxies: auto-rickshaw uses a passenger-car class, two-wheeler uses LDV_G_EU4 when that class loads. Nothing here is a field result.
 
-## Key artifacts
+## Seed protocol
 
-- `results/raw_runs.csv` — 7×4×30 complete
-- `results/weights.json`, `results/tuned_params.json`, `results/config.lock`
-- `results/summary.json`, `results/headlines.json`, `results/REPORT.md`
-- `results/figures/` — 11 figures
-- `results/demo/demo.mp4`, `results/deck.pptx`
-- `perception/noise_model.json` (ASSUMED without user video)
+- TRAIN 1000–1049
+- VALIDATION 2000–2019 (tuning, fixed-plan search, RL checkpoint)
+- TEST 1–30 once, after `make freeze_config`
 
-## Caveats discovered
+## Caveats
 
-- HBEFA3/PHEMlight only (no HBEFA4 in SUMO 1.21 wheel)
-- SSM conflict counts all zero (device output may be empty / under-sensitive)
-- RL underperforms XtraFlow; 13.3% RL gridlock rate on TEST
-- 2×2 grid: XtraFlow worse than fixed/actuated; coordination adds nothing
-- Peak fuel reduction ~22% (above 20% band, below 30% sanity threshold)
-- Perception noise model assumed without user video
-- Assumed vehicle mix / not Indian-vehicle-calibrated emissions
-- config.lock refreshed after the project name change to XtraFlow; simulation parameters unchanged
+- `results/sublane_fallback.json` records `used_sublane` true after a 60 s, one-vehicle probe at lateral resolution 0.4. Full-demand stability under that setting has not been re-run.
+- Safety counts are SSM minTTC conflicts per 1000 departed vehicles. The verdict string is the sign of the bootstrap interval in `results/safety.json`.
+- Fuel per vehicle includes departed vehicles that did not finish. Runs with `n_unfinished > 0` stay in the tables and stay out of the paired headline.
+- Crashes are `status=error`, not gridlock. A sweep with error rows fails.
+- The headline baseline is the best of fixed_tuned, actuated, queue_pressure, and maxpressure. Legacy fixed is secondary.
+- The grid claim is whatever `results/grid_results.json` contains after a run that uses per-junction groups. Do not quote an older grid figure.
+- The noise model `source` is `assumed` until paired labels exist. The deck has to say so.
+- RL is a baseline trained with the budget in `results/rl/rl_selection.json`. A missing `ppo_best.zip` is an error, not an always-keep policy.
+- INR figures in the extrapolation are a placeholder. Scenario weights are an assumption in config.yaml.
+
+## Still to re-run before quoting numbers
+
+Networks (if the sublane probe has not been written), weights, demand calibration, tune, fixed_tuned, RL training at the config budget, freeze, one TEST sweep, then analyze, robustness, sensitivity, emission cross-check, safety, grid, extrapolate, demo, deck, audit.

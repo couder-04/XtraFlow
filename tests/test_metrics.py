@@ -8,7 +8,7 @@ def test_parse_tripinfo_units(tmp_path):
     # 740000 mg fuel petrol => 1 L
     xml = """<?xml version="1.0"?>
 <tripinfos>
-  <tripinfo id="v0" vType="car" waitingTime="10" timeLoss="20" duration="100" waitingCount="2">
+  <tripinfo id="v0" vType="car" arrival="100" waitingTime="10" timeLoss="20" duration="100" waitingCount="2">
     <emissions fuel_abs="740000" CO2_abs="1000000"/>
   </tripinfo>
 </tripinfos>
