@@ -79,7 +79,7 @@ All non-sourced parameters are labelled **assumed**. Choices below record engine
 
 ## D013 — Headline fuel reduction sanity
 
-**Choice:** If ours_fuel vs fixed >30% mean reduction, treat as bug/unfair baseline before reporting; expect ~5–20%.  
+**Choice:** If XtraFlow vs fixed >30% mean reduction, treat as bug/unfair baseline before reporting; expect ~5–20%.  
 **Rationale:** Spec hard rule for scientific credibility.
 
 ## D014 — Independent demand generation
@@ -100,9 +100,9 @@ All non-sourced parameters are labelled **assumed**. Choices below record engine
 ## D017 — Peak headline ~22% vs fixed
 
 **Choice:** Report peak_unbalanced mean fuel reduction 21.76% (95% CI 20.0–23.5) despite “expect ~5–20%” guidance.  
-**Rationale:** Below the 30% bug threshold; n_completed matched across controllers; no ours_fuel gridlock on TEST; strong NS/EW imbalance is where adaptive control should help most. Documented as upper end of plausible range.
+**Rationale:** Below the 30% bug threshold; n_completed matched across controllers; no XtraFlow gridlock on TEST; strong NS/EW imbalance is where adaptive control should help most. Documented as upper end of plausible range.
 
 ## D018 — Grid underperformance
 
-**Choice:** Report honestly that on the 2×2 grid, independent/coordinated ours_fuel underperformed fixed and actuated (higher fuel and waiting). Coordination term did not change outcomes.  
+**Choice:** Report honestly that on the 2×2 grid, independent/coordinated XtraFlow underperformed fixed and actuated (higher fuel and waiting). Coordination term did not change outcomes.  
 **Rationale:** Spec requires mixed/negative results; controller was tuned for single junction.

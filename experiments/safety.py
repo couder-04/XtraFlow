@@ -12,14 +12,14 @@ def main(smoke: bool = False) -> None:
         # run a minimal set
         from sim.run_sim import run_one
         rows = []
-        for ctrl in ["fixed", "ours_fuel", "actuated", "maxpressure"]:
+        for ctrl in ["fixed", "XtraFlow", "actuated", "maxpressure"]:
             rows.append(run_one("balanced", ctrl, 1, smoke=True))
         df = pd.DataFrame(rows)
     else:
         df = pd.read_csv(path)
 
     g = df.groupby("controller")["ssm_conflicts"].agg(["mean", "std", "count"]).reset_index()
-    ours = g[g.controller == "ours_fuel"]["mean"].values
+    ours = g[g.controller == "XtraFlow"]["mean"].values
     fixed = g[g.controller == "fixed"]["mean"].values
     if len(ours) and len(fixed):
         delta = float(ours[0] - fixed[0])

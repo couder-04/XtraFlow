@@ -372,7 +372,7 @@ class OursCountController(BaseController):
 
 
 class OursFuelController(OursCountController):
-    name = "ours_fuel"
+    name = "XtraFlow"
 
     def step(self, traci_mod, sim_time: float) -> None:
         self._adaptive_step(traci_mod, use_weights=True)
@@ -380,7 +380,7 @@ class OursFuelController(OursCountController):
 
 class OursFuelCoordController(OursFuelController):
     """Grid coordination: add neighbor-pressure term."""
-    name = "ours_fuel_coord"
+    name = "XtraFlow_coord"
 
     def __init__(self, tls_id: str, neighbor_ids: Sequence[str], *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -471,7 +471,7 @@ def make_controller(name: str, cfg=None, scenario: str = "balanced",
         return MaxPressureController(**common)
     if name == "ours_count":
         return OursCountController(**common)
-    if name == "ours_fuel":
+    if name == "XtraFlow":
         return OursFuelController(**common)
     if name == "rl_ppo":
         return RLPPOController(model=model, **common)

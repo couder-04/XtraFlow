@@ -13,7 +13,7 @@ def main(smoke: bool = False) -> None:
     scenario = "peak_unbalanced"
     rows = []
     for emis in ["primary", "alternate"]:
-        for ctrl in ["fixed", "ours_fuel"]:
+        for ctrl in ["fixed", "XtraFlow"]:
             for seed in seeds:
                 row = run_one(scenario, ctrl, seed, smoke=smoke, emission_model=emis)
                 rows.append({
@@ -26,11 +26,11 @@ def main(smoke: bool = False) -> None:
 
     def pct(emis):
         f = [r["fuel_per_vehicle_L"] for r in rows if r["emission_model"] == emis and r["controller"] == "fixed"]
-        o = [r["fuel_per_vehicle_L"] for r in rows if r["emission_model"] == emis and r["controller"] == "ours_fuel"]
+        o = [r["fuel_per_vehicle_L"] for r in rows if r["emission_model"] == emis and r["controller"] == "XtraFlow"]
         paired = []
         # pair by seed order
         fmap = {r["seed"]: r["fuel_per_vehicle_L"] for r in rows if r["emission_model"] == emis and r["controller"] == "fixed"}
-        omap = {r["seed"]: r["fuel_per_vehicle_L"] for r in rows if r["emission_model"] == emis and r["controller"] == "ours_fuel"}
+        omap = {r["seed"]: r["fuel_per_vehicle_L"] for r in rows if r["emission_model"] == emis and r["controller"] == "XtraFlow"}
         for s in fmap:
             if s in omap and fmap[s]:
                 paired.append((fmap[s] - omap[s]) / fmap[s] * 100)
@@ -53,7 +53,7 @@ def main(smoke: bool = False) -> None:
     import matplotlib.pyplot as plt
     fig, ax = plt.subplots(figsize=(6, 4))
     ax.bar(["primary", "alternate"], [primary_pct, alt_pct])
-    ax.set_ylabel("% fuel reduction ours vs fixed")
+    ax.set_ylabel("% fuel reduction XtraFlow vs fixed")
     ax.set_title(f"Emission cross-check ({verdict})")
     fig.tight_layout()
     fig.savefig(ROOT / "results" / "figures" / "ix_emission_xcheck.png", dpi=200)

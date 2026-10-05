@@ -1,4 +1,4 @@
-# STATE.md — AI-Based Smart Traffic & Fuel Optimization
+# STATE.md — XtraFlow
 
 Last updated: 2026-10-05
 
@@ -28,8 +28,9 @@ Last updated: 2026-10-05
 
 - HBEFA3/PHEMlight only (no HBEFA4 in SUMO 1.21 wheel)
 - SSM conflict counts all zero (device output may be empty / under-sensitive)
-- RL underperforms ours_fuel; 13.3% RL gridlock rate on TEST
-- 2×2 grid: ours_fuel worse than fixed/actuated; coordination adds nothing
+- RL underperforms XtraFlow; 13.3% RL gridlock rate on TEST
+- 2×2 grid: XtraFlow worse than fixed/actuated; coordination adds nothing
 - Peak fuel reduction ~22% (above 20% band, below 30% sanity threshold)
 - Perception noise model assumed without user video
 - Assumed vehicle mix / not Indian-vehicle-calibrated emissions
+- config.lock refreshed after the project name change to XtraFlow; simulation parameters unchanged

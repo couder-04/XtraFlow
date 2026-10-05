@@ -16,9 +16,9 @@ def load_json(p: Path):
     return None
 
 
-st.set_page_config(page_title="Smart Traffic & Fuel", layout="wide")
-st.title("AI-Based Smart Traffic & Fuel Optimization")
-st.caption("Simulation-based estimate; not a real-world deployment result")
+st.set_page_config(page_title="XtraFlow", layout="wide")
+st.title("XtraFlow")
+st.caption("Fuel-weighted traffic signals. Simulation-based estimate; not a real-world deployment result")
 
 raw = ROOT / "results" / "raw_runs.csv"
 if not raw.exists():

@@ -245,7 +245,7 @@ CONTROLLER_NAMES = [
     "actuated",
     "maxpressure",
     "ours_count",
-    "ours_fuel",
+    "XtraFlow",
     "rl_ppo",
 ]
 

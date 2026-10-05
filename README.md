@@ -1,6 +1,6 @@
-# AI-Based Smart Traffic & Fuel Optimization
+# XtraFlow
 
-Reproducible SUMO study for an IndianOil presentation.
+Fuel-weighted traffic signals. Reproducible SUMO study for an IndianOil presentation.
 
 **Label:** Simulation-based estimate; not a real-world deployment result.  
 **Traffic mix:** assumed mixed-traffic scenario unless you supply observed counts.
@@ -17,8 +17,8 @@ make all
 Or with Docker:
 
 ```bash
-docker build -t iocl-traffic .
-docker run --rm -v "$PWD/results:/app/results" iocl-traffic
+docker build -t xtraflow .
+docker run --rm -v "$PWD/results:/app/results" xtraflow
 ```
 
 ## Expected runtime

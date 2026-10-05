@@ -1,4 +1,4 @@
-"""Side-by-side Fixed vs ours_fuel demo MP4 (same demand seed)."""
+"""Side-by-side Fixed vs XtraFlow demo MP4 (same demand seed)."""
 from __future__ import annotations
 
 import math
@@ -90,7 +90,7 @@ def render(frames_a, frames_b, out_path: Path, timelapse: float = 10.0):
         fig, axes = plt.subplots(1, 2, figsize=(19.2, 10.8), dpi=100)
         for ax, fr, title in [
             (axes[0], frames_a[i], "Fixed"),
-            (axes[1], frames_b[i], "Adaptive (ours_fuel)"),
+            (axes[1], frames_b[i], "XtraFlow"),
         ]:
             ax.set_xlim(xmin, xmax)
             ax.set_ylim(ymin, ymax)
@@ -110,7 +110,7 @@ def render(frames_a, frames_b, out_path: Path, timelapse: float = 10.0):
                     bbox=dict(boxstyle="round", facecolor="white", alpha=0.8))
             ax.set_xticks([])
             ax.set_yticks([])
-        fig.suptitle("Same traffic. Fixed vs Adaptive.", fontsize=22, fontweight="bold")
+        fig.suptitle("Same traffic. Fixed vs XtraFlow.", fontsize=22, fontweight="bold")
         fig.text(0.5, 0.02, f"Simulation-based | time-lapse ≈ {timelapse:.0f}×", ha="center", fontsize=12)
         fig.tight_layout(rect=[0, 0.04, 1, 0.96])
         fig.canvas.draw()
@@ -133,8 +133,8 @@ def main():
     seed = 1  # TEST seed
     print("Recording fixed...")
     fa = _record("fixed", seed, horizon=240, stride=3)
-    print("Recording ours_fuel...")
-    fb = _record("ours_fuel", seed, horizon=240, stride=3)
+    print("Recording XtraFlow...")
+    fb = _record("XtraFlow", seed, horizon=240, stride=3)
     out = ROOT / "results" / "demo" / "demo.mp4"
     mp4, gif = render(fa, fb, out, timelapse=10.0)
     print(f"Wrote {mp4} and {gif}")

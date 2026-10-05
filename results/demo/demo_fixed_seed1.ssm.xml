@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2026-10-05 07:48:32 by Eclipse SUMO sumo Version 1.21.0
+<!-- generated on 2026-10-05 14:19:09 by Eclipse SUMO sumo Version 1.21.0
 <sumoConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
 
     <input>
-        <net-file value="/Users/par_04/code_playground/energy_hackathon/results/networks/intersection.net.xml"/>
-        <route-files value="/Users/par_04/code_playground/energy_hackathon/results/demand/dynamic_seed1.rou.xml"/>
-        <additional-files value="/Users/par_04/code_playground/energy_hackathon/results/networks/vtypes.add.xml,/Users/par_04/code_playground/energy_hackathon/results/networks/tls.add.xml"/>
+        <net-file value="/Users/par_04/code_playground/XtraFlow/results/networks/intersection.net.xml"/>
+        <route-files value="/Users/par_04/code_playground/XtraFlow/results/demand/dynamic_seed1.rou.xml"/>
+        <additional-files value="/Users/par_04/code_playground/XtraFlow/results/networks/vtypes.add.xml,/Users/par_04/code_playground/XtraFlow/results/networks/tls.add.xml"/>
     </input>
 
     <output>
-        <tripinfo-output value="/Users/par_04/code_playground/energy_hackathon/results/demo/demo_fixed_seed1.tripinfo.xml"/>
+        <tripinfo-output value="/Users/par_04/code_playground/XtraFlow/results/demo/demo_fixed_seed1.tripinfo.xml"/>
     </output>
 
     <time>
@@ -36,11 +36,11 @@
         <device.ssm.probability value="1"/>
         <device.ssm.measures value="TTC"/>
         <device.ssm.thresholds value="1.5"/>
-        <device.ssm.file value="/Users/par_04/code_playground/energy_hackathon/results/demo/demo_fixed_seed1.ssm.xml"/>
+        <device.ssm.file value="/Users/par_04/code_playground/XtraFlow/results/demo/demo_fixed_seed1.ssm.xml"/>
     </ssm_device>
 
     <traci_server>
-        <remote-port value="62762"/>
+        <remote-port value="55337"/>
     </traci_server>
 
 </sumoConfiguration>

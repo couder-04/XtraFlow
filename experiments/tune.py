@@ -1,4 +1,4 @@
-"""Grid-search ours_fuel hyperparameters on VALIDATION seeds only."""
+"""Grid-search XtraFlow hyperparameters on VALIDATION seeds only."""
 from __future__ import annotations
 
 import itertools
@@ -22,7 +22,7 @@ def _eval_one(args: Tuple) -> Dict[str, Any]:
     # Ensure controllers pick it up
     import sim.controllers as C
     C._load_tuned = lambda: params  # type: ignore
-    row = run_one(scenario, "ours_fuel", seed, smoke=smoke, params=params)
+    row = run_one(scenario, "XtraFlow", seed, smoke=smoke, params=params)
     return {**params, "seed": seed, "fuel_per_vehicle_L": row["fuel_per_vehicle_L"],
             "n_completed": row["n_completed"], "gridlock_flag": row["gridlock_flag"]}
 
@@ -123,7 +123,7 @@ def _eval_task(task, stage):
     params, scenario, seed, smoke = task
     from sim.run_sim import run_one
     run_id = "tune_" + "_".join(f"{k}{params[k]}" for k in sorted(params))
-    row = run_one(scenario, "ours_fuel", seed, smoke=smoke, params=params, run_id=run_id)
+    row = run_one(scenario, "XtraFlow", seed, smoke=smoke, params=params, run_id=run_id)
     return {**params, "seed": seed, "stage": stage, "fuel_per_vehicle_L": row["fuel_per_vehicle_L"],
             "n_completed": row["n_completed"], "gridlock_flag": row["gridlock_flag"]}
 

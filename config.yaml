@@ -1,8 +1,8 @@
-# AI-Based Smart Traffic & Fuel Optimization — master config
+# XtraFlow — master config
 # ASSUMED parameters are labelled. Freeze via results/config.lock before TEST sweep.
 
 project:
-  name: "AI-Based Smart Traffic & Fuel Optimization"
+  name: "XtraFlow"
   label: "assumed mixed-traffic scenario"
 
 seed_protocol:

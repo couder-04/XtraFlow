@@ -1,11 +1,11 @@
 {
   "n_rows": 840,
   "controllers": [
+    "XtraFlow",
     "actuated",
     "fixed",
     "maxpressure",
     "ours_count",
-    "ours_fuel",
     "rl_ppo",
     "webster"
   ],

@@ -26,11 +26,11 @@ def main() -> None:
     # measured saving: mean (fixed - ours) fuel_per_vehicle on peak_unbalanced if present
     sc = "peak_unbalanced" if "peak_unbalanced" in set(df.scenario) else df.scenario.iloc[0]
     fixed = df[(df.scenario == sc) & (df.controller == "fixed")]["fuel_per_vehicle_L"]
-    ours = df[(df.scenario == sc) & (df.controller == "ours_fuel")]["fuel_per_vehicle_L"]
+    ours = df[(df.scenario == sc) & (df.controller == "XtraFlow")]["fuel_per_vehicle_L"]
     # paired
     m = pd.DataFrame({"seed": df[(df.scenario == sc) & (df.controller == "fixed")]["seed"].values,
                       "fixed": fixed.values})
-    o = pd.DataFrame({"seed": df[(df.scenario == sc) & (df.controller == "ours_fuel")]["seed"].values,
+    o = pd.DataFrame({"seed": df[(df.scenario == sc) & (df.controller == "XtraFlow")]["seed"].values,
                       "ours": ours.values})
     merged = m.merge(o, on="seed")
     saving = (merged["fixed"] - merged["ours"]).to_numpy()

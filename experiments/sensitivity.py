@@ -43,7 +43,7 @@ def main(smoke: bool = False) -> None:
 
     for m in mults:
         for seed in seeds:
-            for ctrl in ["fixed", "ours_fuel"]:
+            for ctrl in ["fixed", "XtraFlow"]:
                 row = run_one(scenario, ctrl, seed, smoke=smoke, demand_mult=float(m))
                 rows.append({
                     "kind": "demand_mult", "mult": m, "controller": ctrl, "seed": seed,
@@ -53,7 +53,7 @@ def main(smoke: bool = False) -> None:
 
     mixes, ranges = lhs_mixes(n_mix)
     for i, mix in enumerate(mixes):
-        for ctrl in ["fixed", "ours_fuel"]:
+        for ctrl in ["fixed", "XtraFlow"]:
             row = run_one(scenario, ctrl, seed=1 + i, smoke=smoke, mix_override=mix)
             rows.append({
                 "kind": "mix_lhs", "mix_id": i, "mix": mix, "controller": ctrl,
@@ -64,7 +64,7 @@ def main(smoke: bool = False) -> None:
     gains = []
     for m in mults:
         f = [r["fuel_per_vehicle_L"] for r in rows if r.get("kind") == "demand_mult" and r["mult"] == m and r["controller"] == "fixed"]
-        o = [r["fuel_per_vehicle_L"] for r in rows if r.get("kind") == "demand_mult" and r["mult"] == m and r["controller"] == "ours_fuel"]
+        o = [r["fuel_per_vehicle_L"] for r in rows if r.get("kind") == "demand_mult" and r["mult"] == m and r["controller"] == "XtraFlow"]
         if f and o:
             pct = (np.mean(f) - np.mean(o)) / np.mean(f) * 100
             gains.append({"demand_mult": m, "dos_proxy": m, "pct_fuel_reduction": float(pct)})
@@ -77,7 +77,7 @@ def main(smoke: bool = False) -> None:
     if gains:
         ax.plot([g["dos_proxy"] for g in gains], [g["pct_fuel_reduction"] for g in gains], marker="o")
     ax.set_xlabel("Demand multiplier (DoS proxy)")
-    ax.set_ylabel("% fuel reduction ours vs fixed")
+    ax.set_ylabel("% fuel reduction XtraFlow vs fixed")
     ax.set_title("Gain vs degree of saturation (proxy)")
     fig.tight_layout()
     fig.savefig(ROOT / "results" / "figures" / "vi_gain_vs_saturation.png", dpi=200)

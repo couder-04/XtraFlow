@@ -1,4 +1,4 @@
-"""2x2 grid: independent ours_fuel vs fixed/actuated vs coordinated neighbor-pressure."""
+"""2x2 grid: independent XtraFlow vs fixed/actuated vs coordinated neighbor-pressure."""
 from __future__ import annotations
 
 import time
@@ -63,10 +63,10 @@ def run_grid(controller: str, seed: int, smoke: bool = False) -> dict:
                 traci.trafficlight.setProgram(tid, "0")
             except Exception:
                 pass
-        elif controller == "ours_fuel":
+        elif controller == "XtraFlow":
             c = OursFuelController(cfg=cfg)
             c.tls_id = tid
-        elif controller == "ours_fuel_coord":
+        elif controller == "XtraFlow_coord":
             nbs = [x for x in tls_ids if x != tid]
             c = OursFuelCoordController(tid, nbs, cfg=cfg)
         else:
@@ -93,7 +93,7 @@ def run_grid(controller: str, seed: int, smoke: bool = False) -> dict:
 
 def main(smoke: bool = False) -> None:
     seeds = [1] if smoke else [1, 2, 3, 4, 5]
-    controllers = ["fixed", "actuated", "ours_fuel", "ours_fuel_coord"]
+    controllers = ["fixed", "actuated", "XtraFlow", "XtraFlow_coord"]
     rows = []
     for ctrl in controllers:
         for seed in seeds:
@@ -110,8 +110,8 @@ def main(smoke: bool = False) -> None:
     df = pd.DataFrame(rows)
     summary = df.groupby("controller")[["fuel_per_vehicle_L", "mean_waiting_s", "n_completed"]].mean().to_dict()
     # coordination benefit
-    indep = df[df.controller == "ours_fuel"]["fuel_per_vehicle_L"].mean()
-    coord = df[df.controller == "ours_fuel_coord"]["fuel_per_vehicle_L"].mean()
+    indep = df[df.controller == "XtraFlow"]["fuel_per_vehicle_L"].mean()
+    coord = df[df.controller == "XtraFlow_coord"]["fuel_per_vehicle_L"].mean()
     coord_helps = bool(np.isfinite(coord) and np.isfinite(indep) and coord < indep)
     out = {
         "rows": rows,

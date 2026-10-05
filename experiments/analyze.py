@@ -100,16 +100,16 @@ def main(smoke: bool = False) -> None:
     summary_df = pd.DataFrame(summary_rows)
     summary_df.to_csv(tab_dir / "summary_mean_std.csv", index=False)
 
-    # Paired comparisons ours_fuel vs others
+    # Paired comparisons XtraFlow vs others
     comparisons = []
     pvals = []
     for sc in sorted(df.scenario.unique()):
         for other in CONTROLLER_NAMES:
-            if other == "ours_fuel":
+            if other == "XtraFlow":
                 continue
             if other not in set(df.controller):
                 continue
-            pct, merged = paired_pct(df, sc, "ours_fuel", other)
+            pct, merged = paired_pct(df, sc, "XtraFlow", other)
             mean, lo, hi = bootstrap_ci(pct, n_resamples=10000 if not smoke else 200)
             # Wilcoxon on paired fuel
             try:
@@ -138,12 +138,12 @@ def main(smoke: bool = False) -> None:
     comp_df = pd.DataFrame(comparisons)
     comp_df.to_csv(tab_dir / "paired_comparisons.csv", index=False)
 
-    # Ablation ours_count vs ours_fuel
+    # Ablation ours_count vs XtraFlow
     abl_rows = []
     for sc in sorted(df.scenario.unique()):
         if "ours_count" not in set(df.controller):
             continue
-        pct, merged = paired_pct(df, sc, "ours_fuel", "ours_count")
+        pct, merged = paired_pct(df, sc, "XtraFlow", "ours_count")
         mean, lo, hi = bootstrap_ci(pct, n_resamples=10000 if not smoke else 200)
         abl_rows.append({
             "scenario": sc,
@@ -162,12 +162,12 @@ def main(smoke: bool = False) -> None:
         comp_flags.append({"scenario": sc, "n_completed_mean_spread": spread, "means": means.to_dict()})
     save_json(ROOT / "results" / "n_completed_check.json", comp_flags)
 
-    # Headline sanity: ours vs fixed
+    # Headline sanity: XtraFlow vs fixed
     headlines = []
     for sc in sorted(df.scenario.unique()):
         if "fixed" not in set(df.controller):
             continue
-        pct, _ = paired_pct(df, sc, "ours_fuel", "fixed")
+        pct, _ = paired_pct(df, sc, "XtraFlow", "fixed")
         mean, lo, hi = bootstrap_ci(pct, n_resamples=10000 if not smoke else 200)
         flag = "OK"
         if np.isfinite(mean) and mean > 30:
@@ -252,13 +252,13 @@ def _fig_pct_reduction(comp_df, path):
     if comp_df.empty:
         return
     fig, ax = plt.subplots(figsize=(10, 6))
-    # ours_fuel vs fixed primarily
+    # XtraFlow vs fixed primarily
     sub = comp_df[comp_df.baseline == "fixed"] if "fixed" in set(comp_df.baseline) else comp_df
     ax.bar(sub.scenario, sub.pct_reduction_mean,
            yerr=[sub.pct_reduction_mean - sub.pct_reduction_ci_lo, sub.pct_reduction_ci_hi - sub.pct_reduction_mean],
            capsize=4)
     ax.axhline(0, color="k", lw=0.8)
-    ax.set_ylabel("% fuel reduction of ours_fuel vs baseline")
+    ax.set_ylabel("% fuel reduction of XtraFlow vs baseline")
     ax.set_title("Percent reduction with bootstrap 95% CI")
     fig.tight_layout()
     fig.savefig(path)
@@ -297,7 +297,7 @@ def _fig_green_alloc(path):
     ts_dir = ROOT / "results" / "timeseries"
     fig, ax = plt.subplots(figsize=(8, 4))
     found = False
-    for name in ["fixed", "ours_fuel"]:
+    for name in ["fixed", "XtraFlow"]:
         files = list(ts_dir.glob(f"*_{name}_seed1*.json")) if ts_dir.exists() else []
         if not files:
             continue
@@ -308,7 +308,7 @@ def _fig_green_alloc(path):
     if not found:
         ax.text(0.5, 0.5, "No green allocation timeseries", ha="center")
     ax.set_ylabel("Green seconds")
-    ax.set_title("Green-time allocation ours_fuel vs fixed")
+    ax.set_title("Green-time allocation XtraFlow vs fixed")
     fig.autofmt_xdate(rotation=30)
     fig.tight_layout()
     fig.savefig(path)
@@ -385,7 +385,7 @@ def write_report(df, summary_df, comp_df, headlines, abl_rows, cfg):
     sublane = _load(ROOT / "results" / "sublane_fallback.json")
 
     lines = []
-    lines.append("# AI-Based Smart Traffic & Fuel Optimization — Research Report\n")
+    lines.append("# XtraFlow — Research Report\n")
     lines.append("**Label:** Simulation-based estimate; not a real-world deployment result. "
                  "Assumed mixed-traffic scenario unless observed counts provided.\n")
 
@@ -393,7 +393,7 @@ def write_report(df, summary_df, comp_df, headlines, abl_rows, cfg):
     lines.append("## Abstract\n")
     lines.append(
         "We evaluate an adaptive, fuel-weighted pressure traffic signal controller "
-        "(ours_fuel) against fixed-time, Webster, SUMO-actuated, max-pressure, count-only "
+        "(XtraFlow) against fixed-time, Webster, SUMO-actuated, max-pressure, count-only "
         "ablation, and PPO baselines under mixed Indian urban traffic in SUMO "
         "(left-hand traffic, sublane-capable). "
     )
@@ -432,12 +432,12 @@ def write_report(df, summary_df, comp_df, headlines, abl_rows, cfg):
 
     lines.append("\n## Per-scenario results (mean±std)\n\n")
     lines.append(summary_df.to_markdown(index=False))
-    lines.append("\n\n## Statistical tests (ours_fuel vs baselines)\n\n")
+    lines.append("\n\n## Statistical tests (XtraFlow vs baselines)\n\n")
     lines.append(comp_df.to_markdown(index=False))
     lines.append("\n")
 
     # Honest losses
-    lines.append("\n## Where ours_fuel loses or ties\n\n")
+    lines.append("\n## Where XtraFlow loses or ties\n\n")
     losses = [c for c in comp_df.to_dict("records") if np.isfinite(c.get("pct_reduction_mean", np.nan)) and c["pct_reduction_mean"] <= 0]
     if not losses:
         lines.append("No non-positive mean fuel reductions found against listed baselines in loaded runs.\n")
@@ -483,7 +483,7 @@ def write_report(df, summary_df, comp_df, headlines, abl_rows, cfg):
     lines.append("**Is it AI?** Perception path uses YOLO; controller is fuel-weighted pressure "
                  "(interpretable). RL-PPO is an additional baseline.\n\n")
     lines.append("**Why not RL?** See RL comparison tables; PPO is trained/selected on TRAIN/VALIDATION "
-                 "and reported honestly if it underperforms ours_fuel.\n\n")
+                 "and reported honestly if it underperforms XtraFlow.\n\n")
     lines.append("**What about deployment?** Requires detectors (or camera+YOLO), TraCI/edge controller, "
                  "and local calibration; results are simulation-based estimates.\n\n")
     lines.append("**What about Indian traffic?** Assumed mix with 2W/auto; sublane model when stable; "

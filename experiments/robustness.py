@@ -1,4 +1,4 @@
-"""Robustness of ours_fuel to detection miss rates and empirical noise model."""
+"""Robustness of XtraFlow to detection miss rates and empirical noise model."""
 from __future__ import annotations
 
 from sim.controllers import PerceptionNoise
@@ -23,8 +23,8 @@ def main(smoke: bool = False) -> None:
     for miss in rates:
         noise = PerceptionNoise(detect_miss_rate=float(miss))
         for seed in seeds:
-            row = run_one(scenario, "ours_fuel", seed, smoke=smoke, noise=noise)
-            rows.append({"kind": "ours_fuel", "controller": "ours_fuel", "miss": miss,
+            row = run_one(scenario, "XtraFlow", seed, smoke=smoke, noise=noise)
+            rows.append({"kind": "XtraFlow", "controller": "XtraFlow", "miss": miss,
                          "seed": seed, "fuel_per_vehicle_L": row["fuel_per_vehicle_L"],
                          "mean_waiting_s": row["mean_waiting_s"]})
 
@@ -33,8 +33,8 @@ def main(smoke: bool = False) -> None:
     if emp_path.exists():
         noise = PerceptionNoise.from_file(emp_path)
         for seed in seeds:
-            row = run_one(scenario, "ours_fuel", seed, smoke=smoke, noise=noise)
-            rows.append({"kind": "empirical_noise", "controller": "ours_fuel", "miss": noise.detect_miss_rate,
+            row = run_one(scenario, "XtraFlow", seed, smoke=smoke, noise=noise)
+            rows.append({"kind": "empirical_noise", "controller": "XtraFlow", "miss": noise.detect_miss_rate,
                          "seed": seed, "fuel_per_vehicle_L": row["fuel_per_vehicle_L"],
                          "mean_waiting_s": row["mean_waiting_s"]})
 
@@ -47,8 +47,8 @@ def main(smoke: bool = False) -> None:
 
     df = pd.DataFrame(rows)
     fig, ax = plt.subplots(figsize=(8, 4))
-    ours = df[df.kind == "ours_fuel"].groupby("miss")["fuel_per_vehicle_L"].mean()
-    ax.plot(ours.index, ours.values, marker="o", label="ours_fuel")
+    ours = df[df.kind == "XtraFlow"].groupby("miss")["fuel_per_vehicle_L"].mean()
+    ax.plot(ours.index, ours.values, marker="o", label="XtraFlow")
     for ctrl in ["fixed", "actuated"]:
         val = df[df.controller == ctrl]["fuel_per_vehicle_L"].mean()
         ax.axhline(val, linestyle="--", label=ctrl)

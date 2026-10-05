@@ -72,70 +72,70 @@
     },
     {
       "emission_model": "primary",
-      "controller": "ours_fuel",
+      "controller": "XtraFlow",
       "seed": 1,
       "fuel_per_vehicle_L": 0.12618845659970995,
       "total_CO2_kg": 564.3295659810955
     },
     {
       "emission_model": "primary",
-      "controller": "ours_fuel",
+      "controller": "XtraFlow",
       "seed": 2,
       "fuel_per_vehicle_L": 0.12250448310524238,
       "total_CO2_kg": 551.4742889253793
     },
     {
       "emission_model": "primary",
-      "controller": "ours_fuel",
+      "controller": "XtraFlow",
       "seed": 3,
       "fuel_per_vehicle_L": 0.12194778332190839,
       "total_CO2_kg": 556.0678849473564
     },
     {
       "emission_model": "primary",
-      "controller": "ours_fuel",
+      "controller": "XtraFlow",
       "seed": 4,
       "fuel_per_vehicle_L": 0.12602694810995943,
       "total_CO2_kg": 559.6325485755278
     },
     {
       "emission_model": "primary",
-      "controller": "ours_fuel",
+      "controller": "XtraFlow",
       "seed": 5,
       "fuel_per_vehicle_L": 0.12366168549966675,
       "total_CO2_kg": 557.9063579381044
     },
     {
       "emission_model": "primary",
-      "controller": "ours_fuel",
+      "controller": "XtraFlow",
       "seed": 6,
       "fuel_per_vehicle_L": 0.12437603246507771,
       "total_CO2_kg": 561.7565732305302
     },
     {
       "emission_model": "primary",
-      "controller": "ours_fuel",
+      "controller": "XtraFlow",
       "seed": 7,
       "fuel_per_vehicle_L": 0.12312805647124193,
       "total_CO2_kg": 562.7190578233187
     },
     {
       "emission_model": "primary",
-      "controller": "ours_fuel",
+      "controller": "XtraFlow",
       "seed": 8,
       "fuel_per_vehicle_L": 0.12113360542286047,
       "total_CO2_kg": 540.5569248398649
     },
     {
       "emission_model": "primary",
-      "controller": "ours_fuel",
+      "controller": "XtraFlow",
       "seed": 9,
       "fuel_per_vehicle_L": 0.12098158925839972,
       "total_CO2_kg": 546.5543405455395
     },
     {
       "emission_model": "primary",
-      "controller": "ours_fuel",
+      "controller": "XtraFlow",
       "seed": 10,
       "fuel_per_vehicle_L": 0.12102346823277664,
       "total_CO2_kg": 540.4697430294964
@@ -212,70 +212,70 @@
     },
     {
       "emission_model": "alternate",
-      "controller": "ours_fuel",
+      "controller": "XtraFlow",
       "seed": 1,
       "fuel_per_vehicle_L": 0.05854692794684487,
       "total_CO2_kg": 249.9705228002175
     },
     {
       "emission_model": "alternate",
-      "controller": "ours_fuel",
+      "controller": "XtraFlow",
       "seed": 2,
       "fuel_per_vehicle_L": 0.058824041165999034,
       "total_CO2_kg": 253.16883061836631
     },
     {
       "emission_model": "alternate",
-      "controller": "ours_fuel",
+      "controller": "XtraFlow",
       "seed": 3,
       "fuel_per_vehicle_L": 0.05912079544595832,
       "total_CO2_kg": 257.85334637732774
     },
     {
       "emission_model": "alternate",
-      "controller": "ours_fuel",
+      "controller": "XtraFlow",
       "seed": 4,
       "fuel_per_vehicle_L": 0.05869439357718391,
       "total_CO2_kg": 248.81449638835988
     },
     {
       "emission_model": "alternate",
-      "controller": "ours_fuel",
+      "controller": "XtraFlow",
       "seed": 5,
       "fuel_per_vehicle_L": 0.058931122118537245,
       "total_CO2_kg": 253.87918406131524
     },
     {
       "emission_model": "alternate",
-      "controller": "ours_fuel",
+      "controller": "XtraFlow",
       "seed": 6,
       "fuel_per_vehicle_L": 0.05811069969572346,
       "total_CO2_kg": 250.53919673959206
     },
     {
       "emission_model": "alternate",
-      "controller": "ours_fuel",
+      "controller": "XtraFlow",
       "seed": 7,
       "fuel_per_vehicle_L": 0.05883646773140492,
       "total_CO2_kg": 256.98457873170594
     },
     {
       "emission_model": "alternate",
-      "controller": "ours_fuel",
+      "controller": "XtraFlow",
       "seed": 8,
       "fuel_per_vehicle_L": 0.05844457065729735,
       "total_CO2_kg": 249.30355417493513
     },
     {
       "emission_model": "alternate",
-      "controller": "ours_fuel",
+      "controller": "XtraFlow",
       "seed": 9,
       "fuel_per_vehicle_L": 0.05845595797535595,
       "total_CO2_kg": 252.38554214632293
     },
     {
       "emission_model": "alternate",
-      "controller": "ours_fuel",
+      "controller": "XtraFlow",
       "seed": 10,
       "fuel_per_vehicle_L": 0.058483074019490704,
       "total_CO2_kg": 249.6330095799201
