@@ -9,23 +9,22 @@ Fuel-weighted traffic signals. Reproducible SUMO study for an IndianOil presenta
 
 ## Results
 
-Figures come from the results files after the locked TEST sweep. This page does not restate them. The headline comparison is in `results/headlines.json` (best tuned baseline; legacy fixed is secondary).
+**Published scope (2026-10-06 time-cut):** locked TEST seeds **1–5**, eight controllers (PPO trained but not in this comparison), four scenarios, full demand horizon. Numbers live in the result files; this page does not restate them.
+
+- Headlines vs best tuned baseline: `results/headlines.json`
+- Per-run table: `results/raw_runs.csv`
+- Report: `results/REPORT.md`
+- What changed / cuts: `results/CHANGES.md`, `STATE.md`
 
 Oracle detector unless `controller.info_mode` is `camera`. Assumed traffic mix. Emission classes are proxies. Simulation-based estimate; assumed traffic mix.
 
 ![Fuel reduction figure, intervals loaded from the results files](results/figures/ii_pct_reduction.png)![Mean fuel, CO2, waiting time, and queue by scenario and controller](results/figures/i_grouped_bars.png)
 
-Fuel, CO₂, waiting, and queue for every controller:
-
-
-
 Detection-miss figure (numbers are in `results/robustness.json`):
 
 ![Fuel per vehicle as the detection miss rate rises from 0 to 30 percent](results/figures/vii_robustness.png)
 
-Grid figure. Quote a grid result only from `results/grid_results.json` after a corrected run:
-
-![Mean fuel per vehicle on the 2x2 grid](results/figures/x_grid_results.png)
+Grid: not scored in this publish. See the note in `results/grid_results.json`.
 
 ## One-command reproduction
 
@@ -43,7 +42,7 @@ docker build -t xtraflow .
 docker run --rm -v "$PWD/results:/app/results" xtraflow
 ```
 
-
+`make all` is the full protocol (TEST 1–30, including RL scoring). The published time-cut used fewer TEST seeds and omitted `rl_ppo` from the sweep; see `STATE.md`.
 
 ## Expected runtime
 
@@ -51,10 +50,12 @@ docker run --rm -v "$PWD/results:/app/results" xtraflow
 | Stage                          | Approx.                |
 | ------------------------------ | ---------------------- |
 | setup + networks + pytest      | 10–20 min              |
-| smoke (7 controllers)          | 5–15 min               |
+| smoke (controllers)            | 5–15 min               |
 | calibrate + tune (VALIDATION)  | 1–3 h                  |
-| train_rl                       | 2–8 h                  |
-| TEST sweep (7×4×30)            | 8–20 h (CPU-dependent) |
+| fixed_tuned search             | several hours          |
+| train_rl (200000 steps)        | many hours (1 env)     |
+| TEST sweep (full 1–30)         | 8–20 h (CPU-dependent) |
+| published time-cut TEST (1–5)  | ~30–60 min             |
 | analyze + extras + demo + deck | 1–3 h                  |
 
 
@@ -69,15 +70,16 @@ docker run --rm -v "$PWD/results:/app/results" xtraflow
 - `deck/` — auto-filled pptx
 - `results/` — raw_runs.csv, summary.json, figures, REPORT.md, deck.pptx
 - `docs/DECISIONS.md` — design choices
-- `STATE.md` — pipeline checklist / resume point
+- `STATE.md` — published status / resume point
 
 
 
 ## Seed protocol
 
 - TRAIN `1000–1049` (RL only)
-- VALIDATION `2000–2019` (tuning / model selection)
-- TEST `1–30` (once, after `results/config.lock`)
+- VALIDATION `2000–2019` (tuning / fixed-plan search / intended RL selection)
+- TEST in config: `1–30` (once, after `results/config.lock`)
+- **This publish:** TEST seeds `1–5` after the lock; PPO not scored on TEST
 
 
 
@@ -105,7 +107,9 @@ Runtime probe writes `results/emission_class_map.json`. On `eclipse-sumo==1.21.0
 
 
 <!-- audit:ignore-start -->
-# Fix and harden plan
+# Fix and harden plan (historical)
+
+This section is the original hardening checklist. The time-cut study that implements it is published; see `STATE.md` and `results/CHANGES.md` for what actually ran.
 
 Review findings for the SUMO fuel-weighted traffic-signal study. Work proceeds in phase order. After each phase, `pytest` and a smoke run must both pass before the next phase starts.
 

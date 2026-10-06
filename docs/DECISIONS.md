@@ -59,13 +59,19 @@ All non-sourced parameters are labelled **assumed**. Choices below record engine
 
 ## D010b — RL training budget
 
-**Choice:** `config.yaml` `rl.total_timesteps` is the training budget (200000). Code does not cap that budget and does not stop early below it. Episodes use the demand horizon. The checkpoint is chosen on VALIDATION, all four scenarios, full horizon. Report the run as a baseline trained with the budget recorded in `results/rl/rl_selection.json`.  
-**Rationale:** Config, this note, and the trainer have to name the same budget. A short run must not be described as the config budget.
+**Choice:** `config.yaml` `rl.total_timesteps` is the training budget (200000). Code does not cap that budget and does not stop early below it. Episodes use the demand horizon. The intended selection is VALIDATION, all four scenarios, full horizon. Report the run from `results/rl/rl_selection.json`.  
+**Time-cut publish (2026-10-06):** training reached the budget; VALIDATION scoring was stopped. The final zip is kept as `results/rl/ppo_best.zip` and `rl_ppo` is omitted from the TEST sweep.  
+**Rationale:** Config, this note, and the trainer have to name the same budget. A short smoke run must not be described as the config budget.
 
 ## D010c — Hyperparameter search
 
 **Choice:** Screen tune grid on first 5 VALIDATION seeds; confirm top-3 on all 20 VALIDATION seeds.  
 **Rationale:** Same seed split; reduces redundant full-grid × 20 cost while keeping selection VAL-only.
+
+## D010d — Time-cut TEST publish
+
+**Choice:** For the 2026-10-06 publish, the locked TEST used seeds 1–5, eight controllers excluding `rl_ppo`, and left the 2×2 grid unscored. Config still defines TEST as 1–30.  
+**Rationale:** Wall-clock limit. Documents and `results/CHANGES.md` must describe the cut; do not present it as the full 30-seed protocol.
 
 ## D011 — Perception without user video
 
@@ -105,4 +111,5 @@ All non-sourced parameters are labelled **assumed**. Choices below record engine
 ## D018 — Grid
 
 **Choice:** Each junction uses phase groups inferred from that junction's incoming edges, not the single-intersection edge names. Coordination subtracts `neighbor_pressure_weight` times downstream halting count. Quote a grid result only from `results/grid_results.json` after a run that records `n_unfinished`.  
+**Time-cut publish (2026-10-06):** the grid was not scored. The single-intersection `tls.add.xml` does not provide programs for the grid TLS ids, so SUMO aborts. The JSON note records that.  
 **Rationale:** The previous controller queried `N_in` on a net that has no such edge, so it saw no vehicles, and the coordination term did not read a neighbor.

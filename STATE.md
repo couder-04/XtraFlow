@@ -1,29 +1,48 @@
 # STATE.md — XtraFlow
 
-Last updated: 2026-10-05
+Last updated: 2026-10-06
 
-## What this study is
+## Status
 
-Simulation-based estimate. The traffic mix is assumed. Controllers default to an oracle detector (SUMO speed, class, and route turn). Emission classes are proxies: auto-rickshaw uses a passenger-car class, two-wheeler uses LDV_G_EU4 when that class loads. Nothing here is a field result.
+Published time-cut study is on `main` (commit after this sync). Simulation-based estimate; assumed traffic mix. Controllers use an oracle detector unless `info_mode` is camera. Emission classes are proxies.
 
-## Seed protocol
+## What was published
+
+| Artifact | State |
+|---|---|
+| `results/demand_calibration.json` | Real VALIDATION, `smoke: false` |
+| `results/tuned_params.json` | Real VALIDATION tune, `smoke: false` |
+| `results/fixed_tuned.json` | All four scenarios, `smoke: false` |
+| `results/rl/ppo_best.zip` | Trained to ≥200000 steps (`smoke: false` in selection meta) |
+| `results/rl/rl_selection.json` | Final zip kept; VALIDATION scoring stopped for time |
+| `results/config.lock` | Frozen after the real fixed plan and 200k zip |
+| `results/raw_runs.csv` | Locked TEST: 8 controllers × 4 scenarios × seeds 1–5 (160 ok rows). No `rl_ppo` |
+| `results/headlines.json` | From that TEST sweep |
+| `results/robustness.json` | Seeds 1–3 |
+| `results/sensitivity.json` | Demand mult + 4 mix samples, seeds 1–2 |
+| `results/emission_xcheck.json` | Seeds 1–2 |
+| `results/safety.json` | From `raw_runs.csv` |
+| `results/grid_results.json` | Not scored; note explains TLS mismatch |
+| `results/REPORT.md`, figures, deck | Regenerated from the files above |
+
+## Seed protocol (config)
 
 - TRAIN 1000–1049
-- VALIDATION 2000–2019 (tuning, fixed-plan search, RL checkpoint)
-- TEST 1–30 once, after `make freeze_config`
+- VALIDATION 2000–2019 (tuning and fixed-plan search)
+- TEST in config is still 1–30; **this publish used TEST seeds 1–5** after the lock
 
 ## Caveats
 
-- `results/sublane_fallback.json` records `used_sublane` true after a 60 s, one-vehicle probe at lateral resolution 0.4. Full-demand stability under that setting has not been re-run.
-- Safety counts are SSM minTTC conflicts per 1000 departed vehicles. The verdict string is the sign of the bootstrap interval in `results/safety.json`.
-- Fuel per vehicle includes departed vehicles that did not finish. Runs with `n_unfinished > 0` stay in the tables and stay out of the paired headline.
-- Crashes are `status=error`, not gridlock. A sweep with error rows fails.
+- PPO was trained to the config budget and is on disk. It was not scored on VALIDATION or TEST, so `rl_ppo` is absent from `raw_runs.csv` and the headline tables.
+- The 2×2 grid was not scored in this publish. See the note in `results/grid_results.json`.
+- Sublane: `results/sublane_fallback.json` records a 60 s one-vehicle probe with `used_sublane` true. Full-demand stability under that setting has not been re-run.
+- Safety is SSM minTTC conflicts per 1000 departed vehicles; quote the verdict in `results/safety.json`.
+- Fuel per vehicle includes departed vehicles that did not finish. Unfinished runs stay out of the paired headline.
 - The headline baseline is the best of fixed_tuned, actuated, queue_pressure, and maxpressure. Legacy fixed is secondary.
-- The grid claim is whatever `results/grid_results.json` contains after a run that uses per-junction groups. Do not quote an older grid figure.
-- The noise model `source` is `assumed` until paired labels exist. The deck has to say so.
-- RL is a baseline trained with the budget in `results/rl/rl_selection.json`. A missing `ppo_best.zip` is an error, not an always-keep policy.
-- INR figures in the extrapolation are a placeholder. Scenario weights are an assumption in config.yaml.
+- INR figures in the extrapolation are a placeholder.
 
-## Still to re-run before quoting numbers
+## Not done in this publish
 
-Networks (if the sublane probe has not been written), weights, demand calibration, tune, fixed_tuned, RL training at the config budget, freeze, one TEST sweep, then analyze, robustness, sensitivity, emission cross-check, safety, grid, extrapolate, demo, deck, audit.
+- Full TEST seeds 1–30
+- VALIDATION scoring of PPO checkpoints and a TEST column for `rl_ppo`
+- A working 2×2 grid sweep with per-junction TLS programs
