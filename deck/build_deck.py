@@ -447,7 +447,7 @@ def slide_agenda(prs, data, page, _total):
         page,
     )
     blocks = [
-        ("01", "Idea", "Why queue counts miss fuel cost, and how idle-fuel weights fix that."),
+        ("01", "Idea", "Adaptive pressure vs fixed timing; fuel weights are a small add-on."),
         ("02", "Locked TEST", "Same demand, fair baselines, fuel / CO₂ / wait / queue on disk."),
         ("03", "Live · SUMO", "Side-by-side: fixed timing vs XtraFlow on one seed."),
         (
@@ -539,7 +539,7 @@ def slide_weights(prs, data, page, _total):
         slide,
         "The controller",
         "Weigh the queue by the fuel it burns",
-        "Max-pressure, with one change: a vehicle counts in proportion to its idle fuel, relative to a car.",
+        "Idle-fuel weights are a small add-on on top of adaptive pressure (about 0–2% vs count-only on TEST).",
         page,
     )
     probe = f"{duration:.0f}-second" if duration else "stopped"
@@ -789,14 +789,17 @@ def slide_headlines(prs, data, page, _total):
         comp = _comp(data, headlines[0]["scenario"], best) or _comp(data, headlines[0]["scenario"], "fixed")
         if comp:
             n_pairs = comp.get("n_pairs")
-    dek = "Fuel per completed vehicle versus the best tuned baseline. Bootstrap 95% intervals."
+    dek = (
+        "Fuel vs best tuned baseline is only 0.3–1.9% (n=5; Holm p=1). "
+        "The 8–17% story is vs fixed / Webster / actuated — see next slide."
+    )
     if n_pairs:
         dek = (
-            f"Fuel per completed vehicle versus the best tuned baseline. "
-            f"{n_pairs:.0f} paired seeds. Bootstrap 95% intervals."
+            f"Fuel vs best tuned baseline is only 0.3–1.9% ({n_pairs:.0f} paired seeds; Holm p=1). "
+            "Large cuts are vs fixed / Webster / actuated, not class fuel weights."
         )
     if headlines and all(_headline_pct(row) > 0 for row in headlines):
-        title = "Lower mean fuel than the strongest baseline"
+        title = "Small edge vs the strongest baseline (0.3–1.9%)"
     elif headlines:
         title = "Headline fuel change versus the strongest baseline"
     else:
@@ -864,8 +867,9 @@ def slide_headlines(prs, data, page, _total):
     write(slide, L + 0.28, 6.12, CONTENT_W - 0.5, 0.5, [[(note, 14, INK, False, BODY)]], anchor="ctr")
     notes(
         slide,
-        "Primary headline is versus the best of fixed_tuned, actuated, queue_pressure, and maxpressure. "
-        "Legacy fixed is secondary (pct_fuel_reduction_vs_fixed_legacy). "
+        "Primary headline vs best of fixed_tuned / actuated / queue_pressure / maxpressure "
+        "is only 0.3–1.9% (n=5; Holm p=1). The 8–17% cuts are vs fixed / Webster / actuated. "
+        "Published maxpressure ≡ queue_pressure (downstream was ~0); re-run after occupancy fix. "
         "Numbers are from results/headlines.json.",
     )
 
@@ -876,7 +880,7 @@ def slide_baselines(prs, data, page, _total):
         slide,
         "The honest comparison",
         "Versus strong adaptive controllers, the edge is small",
-        "Legacy fixed is the easy win. The test that matters is against tuned fixed, actuated, and max-pressure.",
+        "Against max-pressure / queue_pressure the cut is 0.3–1.9% (and those two matched bit-for-bit in this publish). Legacy fixed is the easy win.",
         page,
     )
     scenarios = [row["scenario"] for row in data["headlines"]]

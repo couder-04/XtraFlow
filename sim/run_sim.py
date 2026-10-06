@@ -132,6 +132,12 @@ def run_one(
         routes = routes_path
 
     tag = f"{scenario}_{controller}_seed{seed}_{emission_model}"
+    if demand_mult is not None and abs(float(demand_mult) - 1.0) > 1e-12:
+        tag = f"{tag}_dm{float(demand_mult):g}"
+    if mix_override is not None:
+        # Stable short fingerprint so parallel mix samples do not clobber tripinfo.
+        mix_key = ",".join(f"{k}={float(mix_override[k]):.4f}" for k in sorted(mix_override))
+        tag = f"{tag}_mix{abs(hash(mix_key)) % (10**8):08d}"
     if run_id:
         tag = f"{tag}_{run_id}"
     if smoke:

@@ -1,8 +1,8 @@
 # XtraFlow
 
-**Adaptive traffic signals that weight fuel, not just queues.**
+**Adaptive pressure control cuts fuel about 8–17% vs fixed / Webster / actuated; fuel weighting adds about 0–2%.**
 
-XtraFlow is a SUMO-based signal control stack for mixed urban traffic. It scores approaches by estimated fuel pressure—who is waiting, what they burn, and which turn they need—then serves the phase that clears the most costly delay under hard safety constraints.
+XtraFlow is a SUMO-based signal control stack for mixed urban traffic. It scores approaches by estimated fuel pressure—who is waiting, what they burn, and which turn they need—then serves the phase that clears the most costly delay under hard safety constraints. On the locked TEST (n=5 seeds), most of the gain is adaptive pressure versus fixed-style baselines; class fuel weights barely move the needle except at low demand.
 
 ![Same demand, fixed time beside XtraFlow](results/demo/demo.gif)
 
@@ -33,7 +33,7 @@ Built for presentations, reproducible benchmarks, and engineering review—not m
 ## What’s in the box
 
 - **Fuel-weighted pressure controller** with starvation protection and shared timing constraints
-- **Fair baselines** in one pipeline: legacy fixed, validation-tuned fixed, Webster, SUMO actuated, queue pressure, max-pressure, count-only ablation, optional PPO
+- **Fair baselines** in one pipeline: legacy fixed, validation-tuned fixed, Webster, SUMO actuated, queue pressure, max-pressure (see caveat: published runs matched queue pressure), count-only ablation; PPO trained but **unscored**
 - **Four demand patterns**: balanced, peak unbalanced, dynamic blocks, low demand
 - **Locked evaluation**: train / validation / test seed split, config hash lock, tripinfo fuel and SSM safety
 - **Extras**: detection-miss robustness, demand/mix sensitivity, emission cross-check, demo video, YOLO CCTV demo + story mosaic, auto-filled deck
@@ -42,11 +42,20 @@ Built for presentations, reproducible benchmarks, and engineering review—not m
 
 ## Evidence
 
-Numbers are not hardcoded here. Open the artifacts:
+Locked TEST (seeds **1–5**, four scenarios, eight controllers). Read the artifacts; do not invent percentages.
+
+**What the numbers support**
+
+| Comparison | Fuel change (XtraFlow better = positive) | Caveat |
+| --- | --- | --- |
+| vs fixed / Webster / actuated | about **8–17%** (scenario means; actuated is closer to 5–11%) | Adaptive pressure vs weaker baselines |
+| vs best pressure baseline (`maxpressure` / `queue_pressure`) | **0.3–1.9%** | CIs include 0 on balanced and peak_unbalanced |
+| vs count-only ablation (`ours_count`) | **~0–2%**; clear only on low_demand (~2%) | “no_detectable_difference” on 3/4 scenarios |
+| Holm-adjusted Wilcoxon | all **p_holm = 1.0** | n=5 → minimum raw Wilcoxon p is 0.0625 |
 
 | Artifact | What it is |
 | --- | --- |
-| [`results/headlines.json`](results/headlines.json) | Paired fuel change vs best tuned baseline |
+| [`results/headlines.json`](results/headlines.json) | Paired fuel change vs best tuned baseline (0.3–1.9%) |
 | [`results/REPORT.md`](results/REPORT.md) | Full methods + tables |
 | [`results/raw_runs.csv`](results/raw_runs.csv) | Every locked TEST run |
 | [`results/deck.pptx`](results/deck.pptx) | Slide deck filled from those files |
@@ -59,7 +68,7 @@ Numbers are not hardcoded here. Open the artifacts:
 
 ![Fuel under rising detection miss](results/figures/vii_robustness.png)
 
-**Published package:** full-hour simulations, TEST seeds 1–5, eight controllers (PPO trained to the config budget and kept on disk, not scored in this TEST table). Details in `STATE.md`.
+**Published package:** full-hour simulations, TEST seeds 1–5, eight controllers. PPO was trained to the config budget and kept on disk but **not scored** on VALIDATION or TEST—do not cite it as a result. Details in `STATE.md`.
 
 ---
 
@@ -169,8 +178,12 @@ Common Make targets:
 
 - Simulation only; assumed vehicle mix unless you supply counts
 - Default information mode is an **oracle** (SUMO speed, class, route turn)
-- Emission classes are **proxies** (HBEFA3 / PHEMlight on the pinned SUMO wheel)
-- YOLO CCTV demo is **input feasibility** (phase choice from detections); fuel headlines come from SUMO, not from those clips
-- 2×2 grid scoring is not part of the current published package—see `results/grid_results.json`
+- Emission classes are **proxies** (HBEFA3 / PHEMlight on the pinned SUMO wheel); auto-rickshaw shares the car class, so its fuel weight is 1.0
+- The large 8–17% cuts are **adaptive pressure vs fixed / Webster / actuated**, not class fuel weighting (about 0–2% vs `ours_count`)
+- TEST used **n=5** seeds; Holm-adjusted tests cannot reject at α=0.05 (all p_holm = 1.0)
+- In the published `raw_runs.csv`, `maxpressure` is **bit-identical** to `queue_pressure` (downstream term was effectively zero). Treat them as one baseline until a re-run after the occupancy fix in `sim/controllers.py`
+- `results/sensitivity.json` waiting times are **stale / invalid** for many rows (parallel tripinfo clobber + missing mix key); fuel columns may still be usable—re-run sensitivity after the code fix
+- YOLO CCTV demo is **input feasibility**; fuel headlines come from SUMO, not from those clips
+- PPO zip on disk is **unscored**; 2×2 grid is unscored—see `results/grid_results.json`
 
 Design rationale: [`docs/DECISIONS.md`](docs/DECISIONS.md)

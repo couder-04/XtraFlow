@@ -2,6 +2,14 @@
 
 **Label:** Simulation-based estimate; not a real-world deployment result. Assumed mixed-traffic scenario unless observed counts provided.
 
+## How to read these numbers (2026-10-07)
+
+- **Adaptive pressure vs fixed / Webster / actuated:** about **8–17%** lower fuel per vehicle (scenario means from `raw_runs.csv`; actuated is closer to 5–11%). That is the main effect.
+- **Fuel weighting vs count-only (`ours_count`):** about **0–2%**; detectable mainly on `low_demand`. Against the best pressure baseline the headline is **0.3–1.9%**, with CIs that include 0 on balanced and peak_unbalanced.
+- **TEST n=5.** Holm-adjusted Wilcoxon p-values are all **1.0** (minimum raw Wilcoxon p at n=5 is 0.0625).
+- **`maxpressure` is not an independent baseline in this file.** In `raw_runs.csv` it is bit-identical to `queue_pressure` on every metric, because the published controller used a near-zero downstream halting penalty. Treat “vs maxpressure” and “vs queue_pressure” as the same comparison. Controller code was patched to use out-edge occupancy / vehicle count; **these tables are stale until a re-sweep.**
+- **`results/sensitivity.json` waiting times are stale / invalid** (many `mean_waiting_s: 0.0` beside normal fuel; mix rows omitted the key). Do not quote wait sensitivity until re-run.
+
 ## Abstract
 
 We evaluate an adaptive, fuel-weighted pressure traffic signal controller (XtraFlow) against legacy fixed-time, a validation-tuned fixed plan, Webster, SUMO-actuated, queue-pressure, max-pressure, and a count-only ablation. PPO was trained to the configured step budget and is not in this TEST comparison. Controllers use an oracle detector (SUMO speed, class, and route turn) unless info_mode is camera. Emission classes are proxies. Simulation-based estimate; assumed traffic mix. 
@@ -279,6 +287,8 @@ RL selected on VALIDATION: `{"selected_on": "Final checkpoint at 200704 steps. V
 
 
 ## Sensitivity
+
+**Stale wait metric:** many rows in `results/sensitivity.json` show `mean_waiting_s: 0.0` next to normal fuel, and mix-LHS rows omitted wait entirely. Parallel workers clobbered shared tripinfo paths; the mix task also dropped the key. Code is fixed; **do not quote waiting-time sensitivity until re-run.** Fuel columns may still be informative.
 
 ```
 {

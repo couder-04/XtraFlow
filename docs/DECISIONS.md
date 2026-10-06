@@ -110,6 +110,13 @@ All non-sourced parameters are labelled **assumed**. Choices below record engine
 
 ## D018 — Grid
 
-**Choice:** Each junction uses phase groups inferred from that junction's incoming edges, not the single-intersection edge names. Coordination subtracts `neighbor_pressure_weight` times downstream halting count. Quote a grid result only from `results/grid_results.json` after a run that records `n_unfinished`.  
+**Choice:** Each junction uses phase groups inferred from that junction's incoming edges, not the single-intersection edge names. Coordination subtracts `neighbor_pressure_weight` times downstream vehicle count (same helper as max-pressure). Quote a grid result only from `results/grid_results.json` after a run that records `n_unfinished`.  
 **Time-cut publish (2026-10-06):** the grid was not scored. The single-intersection `tls.add.xml` does not provide programs for the grid TLS ids, so SUMO aborts. The JSON note records that.  
 **Rationale:** The previous controller queried `N_in` on a net that has no such edge, so it saw no vehicles, and the coordination term did not read a neighbor.
+
+## D019 — Max-pressure downstream term
+
+**Published TEST (2026-10-06):** `maxpressure` and `queue_pressure` are **bit-identical** in `raw_runs.csv` on every metric. The controller used `getLastStepHaltingNumber` on out-edges, which are almost never queued, so the downstream penalty was ~0. **Do not treat max-pressure as an independent baseline in those tables.**
+
+**Code fix (2026-10-07, results not re-run):** `maxpressure` subtracts out-edge **occupancy** (falling back to `getLastStepVehicleNumber`) on the phase's movement out-edges from `phase_groups.json` / `DEFAULT_DOWNSTREAM`. Gap-out may switch to the least-negative phase when every pressure is non-positive. **Stale until a TEST re-sweep.**  
+**Rationale:** Classic max-pressure needs a real downstream queue / occupancy term relative to the movements a phase serves.

@@ -17,12 +17,14 @@ from sim.util import ROOT, load_config, load_json
 PHASE_ORDER = ["NS_TL", "NS_R", "EW_TL", "EW_R"]
 APPROACHES = ["N", "S", "E", "W"]
 
-# Immediate downstream edges for the single intersection (left-hand traffic).
+# Per-phase out-edges for movements served by that phase (left-hand traffic).
+# Built from connection geometry: each phase lists only the out-edges its greens feed.
+# Prefer results/phase_groups.json when the network has been built.
 DEFAULT_DOWNSTREAM = {
-    "NS_TL": ["S_out", "N_out", "E_out", "W_out"],
-    "NS_R": ["W_out", "E_out"],
-    "EW_TL": ["W_out", "E_out", "S_out", "N_out"],
-    "EW_R": ["N_out", "S_out"],
+    "NS_TL": ["E_out", "S_out", "W_out", "N_out"],  # N L/T, S L/T
+    "NS_R": ["W_out", "E_out"],                     # N right, S right
+    "EW_TL": ["S_out", "W_out", "N_out", "E_out"],  # E L/T, W L/T
+    "EW_R": ["N_out", "S_out"],                     # E right, W right
 }
 DEFAULT_APPROACH_EDGES = {a: [f"{a}_in"] for a in APPROACHES}
 
@@ -96,8 +98,14 @@ class BaseController:
         self.state = ControllerState()
         self.tls_id = "C"
         self.approach_edges = approach_edges or {k: list(v) for k, v in DEFAULT_APPROACH_EDGES.items()}
+        # Prefer geometry-inferred outs from phase_groups.json when present.
+        if downstream_edges is None and phase_file.exists():
+            pg = load_json(phase_file)
+            downstream_edges = pg.get("downstream_edges")
         self.downstream_edges = downstream_edges or {k: list(v) for k, v in DEFAULT_DOWNSTREAM.items()}
         self.turn_lookup = turn_lookup or {}
+        if not self.turn_lookup and phase_file.exists():
+            self.turn_lookup = load_json(phase_file).get("turn_lookup") or {}
         self._rng_noise: Optional[random.Random] = None
         self._noise_seed = ""
         self._vid_rngs: Dict[tuple, random.Random] = {}
@@ -331,10 +339,27 @@ class BaseController:
         return p - downstream_penalty
 
     def _downstream_count(self, traci_mod, phase_name: str) -> float:
+        """Downstream load for max-pressure: occupancy (scaled), else vehicle count.
+
+        Halting on short out-edges is near zero at a free discharge, so the old
+        getLastStepHaltingNumber penalty was always ~0 and made maxpressure
+        bit-identical to queue_pressure. Out-edge occupancy is preferred; it is
+        scaled to a vehicle-equivalent so it is commensurate with the upstream
+        count-based pressure. Vehicle number is the fallback.
+        """
+        # Occupancy is in [0, 1]; upstream pressure is vehicle-counts. Scale so a
+        # fully occupied out-edge roughly matches ~10 queued vehicles of penalty.
+        occ_scale = float(self.params.get("downstream_occupancy_scale", 10.0))
         total = 0.0
         for edge in self.downstream_edges.get(phase_name, []):
             try:
-                total += float(traci_mod.edge.getLastStepHaltingNumber(edge))
+                occ = float(traci_mod.edge.getLastStepOccupancy(edge))
+                total += occ * occ_scale
+                continue
+            except Exception:
+                pass
+            try:
+                total += float(traci_mod.edge.getLastStepVehicleNumber(edge))
             except Exception:
                 continue
         return total
@@ -375,13 +400,8 @@ class BaseController:
         for p in PHASE_ORDER:
             pen = 0.0
             if use_downstream or coord_weight:
-                w = 1.0 if use_downstream and coord_weight == 0.0 else coord_weight
-                if use_downstream and coord_weight == 0.0:
-                    w = 1.0
-                elif coord_weight:
-                    w = coord_weight
-                else:
-                    w = 0.0
+                # maxpressure: full downstream weight; coord: neighbor_pressure_weight.
+                w = 1.0 if use_downstream else float(coord_weight)
                 pen = w * self._downstream_count(traci_mod, p)
             pressures[p] = self.pressure(vehicles, p, use_weights=use_weights, alpha=alpha, downstream_penalty=pen)
         self._update_starvation(pressures, sim_time)
@@ -393,10 +413,17 @@ class BaseController:
         if starved is not None and self.state.time_in_phase >= self.min_green:
             self._begin_switch(starved, "starvation")
         elif pressures[cur] <= 1e-9 and self.state.time_in_phase >= self.min_green:
-            others = [p for p in PHASE_ORDER if p != cur and pressures[p] > 0]
-            if others:
-                best = max(others, key=lambda p: pressures[p])
-                self._begin_switch(PHASE_ORDER.index(best), "gapout")
+            # Prefer a positive-pressure phase. If max-pressure pushed every phase
+            # non-positive, still switch to the least-negative alternative.
+            positive = [p for p in PHASE_ORDER if p != cur and pressures[p] > 0]
+            pool = positive or [p for p in PHASE_ORDER if p != cur]
+            if pool:
+                best = max(pool, key=lambda p: pressures[p])
+                if pressures[best] > pressures[cur]:
+                    self._begin_switch(
+                        PHASE_ORDER.index(best),
+                        "gapout" if positive else "pressure",
+                    )
         elif self.state.time_in_phase >= self.max_green:
             best = max(PHASE_ORDER, key=lambda p: pressures[p])
             nxt = PHASE_ORDER.index(best) if best != cur else (self.state.phase_idx + 1) % len(PHASE_ORDER)
@@ -558,7 +585,7 @@ class QueuePressureController(BaseController):
 
 
 class MaxPressureController(BaseController):
-    """Max-pressure: incoming queue minus downstream occupancy."""
+    """Max-pressure: incoming queue minus downstream occupancy on out-edges."""
 
     name = "maxpressure"
 

@@ -8,9 +8,11 @@ import pytest
 
 from sim.controllers import (
     PHASE_ORDER,
+    MaxPressureController,
     OursFuelController,
     OursFuelCoordController,
     PerceptionNoise,
+    QueuePressureController,
     RLPPOController,
 )
 from sim.metrics import conflicts_per_1000, fuel_per_departed, parse_ssm_conflicts, parse_ssm_details, parse_tripinfo
@@ -43,7 +45,8 @@ class _TL:
 class World:
     """Fake TraCI with a fixed set of vehicles on one edge."""
 
-    def __init__(self, edge_ids=None, n=0, approach_edge="N_in", halting_edges=None):
+    def __init__(self, edge_ids=None, n=0, approach_edge="N_in", halting_edges=None,
+                 occupancy_edges=None):
         self.trafficlight = _TL()
         self.edge = self
         self.vehicle = self
@@ -53,6 +56,7 @@ class World:
         if edge_ids:
             self.edge_ids.update(edge_ids)
         self.halt = dict(halting_edges or {})
+        self.occ = dict(occupancy_edges or {})
         self._lane_len = 100.0
 
     def getLastStepVehicleIDs(self, edge):
@@ -62,7 +66,16 @@ class World:
         return float(self.halt.get(edge, 0))
 
     def getLastStepVehicleNumber(self, edge):
+        if edge in self.occ:
+            return float(self.occ[edge]) * 10.0
         return float(self.halt.get(edge, 0))
+
+    def getLastStepOccupancy(self, edge):
+        if edge in self.occ:
+            return float(self.occ[edge])
+        # Force vehicle-number fallback when only halt counts were provided
+        # (coord / legacy tests).
+        raise AttributeError(f"no occupancy for {edge}")
 
     def getLaneID(self, vid):
         return "N_in_1"
@@ -216,6 +229,89 @@ def test_coord_differs_from_independent_when_downstream_is_full():
     assert indep.state.last_switch_reason in ("pressure", "gapout", "starvation", "max_green")
     assert getattr(indep.state, "_pending_idx", None) == PHASE_ORDER.index("NS_TL")
     assert getattr(coord.state, "_pending_idx", None) != PHASE_ORDER.index("NS_TL")
+
+
+def test_downstream_penalty_nonzero_when_out_edges_occupied():
+    """Occupancy on out-edges must produce a non-zero max-pressure penalty."""
+    info = _groups()
+    cfg = load_config()
+    mp = MaxPressureController(
+        cfg=cfg, groups=info["groups"], n_links=info["n_links"],
+        downstream_edges=info["downstream_edges"],
+    )
+    empty = World(n=0)
+    assert mp._downstream_count(empty, "NS_TL") == 0.0
+    busy = World(n=0, occupancy_edges={"S_out": 0.4, "N_out": 0.3, "E_out": 0.2, "W_out": 0.1})
+    pen = mp._downstream_count(busy, "NS_TL")
+    assert pen > 0.0
+    # Default scale 10 → 0.4+0.3+0.2+0.1 = 1.0 occupancy → 10.0 penalty.
+    assert pen == pytest.approx(10.0)
+    # Right phase only sees E_out + W_out in the published mapping.
+    assert mp._downstream_count(busy, "NS_R") == pytest.approx(3.0)
+
+
+def test_maxpressure_differs_from_queue_when_downstream_occupied():
+    """Vehicle count on out-edges must change phase choice vs queue_pressure."""
+    info = _groups()
+    cfg = load_config()
+    cfg = {**cfg, "signals": {**cfg["signals"], "min_green_s": 1, "max_green_s": 90, "starvation_s": 1000}}
+    # Heavy NS demand; fill NS_TL out-edges so max-pressure drops NS_TL below EW_TL
+    # while queue_pressure still prefers NS_TL.
+    edge_ids = {
+        "N_in": [f"n{i}" for i in range(6)],
+        "S_in": [f"s{i}" for i in range(6)],
+        "E_in": [f"e{i}" for i in range(3)],
+        "W_in": [f"w{i}" for i in range(3)],
+    }
+    # Occupancy on all outs; TL phases pay for four edges, R phases for two.
+    world = World(
+        n=0,
+        edge_ids=edge_ids,
+        occupancy_edges={"S_out": 1.0, "N_out": 1.0, "E_out": 1.0, "W_out": 1.0},
+    )
+
+    def lane(vid):
+        if str(vid).startswith("n"):
+            return "N_in_1"
+        if str(vid).startswith("s"):
+            return "S_in_1"
+        if str(vid).startswith("e"):
+            return "E_in_1"
+        return "W_in_1"
+
+    def route(vid):
+        if str(vid).startswith("n"):
+            return ["N_in", "S_out"]
+        if str(vid).startswith("s"):
+            return ["S_in", "N_out"]
+        if str(vid).startswith("e"):
+            return ["E_in", "W_out"]
+        return ["W_in", "E_out"]
+
+    world.getLaneID = lane
+    world.getRoute = route
+
+    qp = QueuePressureController(
+        cfg=cfg, groups=info["groups"], n_links=info["n_links"],
+        downstream_edges=info["downstream_edges"],
+    )
+    mp = MaxPressureController(
+        cfg=cfg, groups=info["groups"], n_links=info["n_links"],
+        downstream_edges=info["downstream_edges"],
+    )
+    for ctrl in (qp, mp):
+        ctrl.state.phase_idx = PHASE_ORDER.index("EW_TL")
+        ctrl.state.time_in_phase = 5.0
+        ctrl.step(world, 10.0)
+
+    qp_next = getattr(qp.state, "_pending_idx", None)
+    mp_next = getattr(mp.state, "_pending_idx", None)
+    # Queue pressure sees raw NS demand (12) > EW (6) and switches to NS_TL.
+    assert qp_next == PHASE_ORDER.index("NS_TL")
+    # Max-pressure: TL phases pay occupancy on all four outs; R phases only two,
+    # so NS_R can beat NS_TL even though upstream NS demand is higher.
+    assert mp_next is None or mp_next != PHASE_ORDER.index("NS_TL")
+    assert qp_next != mp_next
 
 
 def test_ssm_demo_files_and_fixture(tmp_path: Path):

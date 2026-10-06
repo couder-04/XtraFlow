@@ -1,5 +1,5 @@
 .PHONY: setup test smoke calibrate tune fixed_tuned train_rl sweep analyze robustness \
-	sensitivity emission_xcheck safety perception grid extrapolate demo yolo_demo \
+	sensitivity weight_sensitivity emission_xcheck safety perception grid extrapolate demo yolo_demo \
 	yolo_dashboard dashboard deck report audit all freeze_config networks
 
 PYTHON ?= .venv/bin/python
@@ -50,6 +50,9 @@ robustness:
 
 sensitivity:
 	$(PYTHON) -m experiments.sensitivity
+
+weight_sensitivity:
+	$(PYTHON) -m experiments.weight_sensitivity
 
 emission_xcheck:
 	$(PYTHON) -m experiments.emission_xcheck

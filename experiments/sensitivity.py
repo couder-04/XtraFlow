@@ -49,6 +49,7 @@ def _sens_task(task):
     return {
         "kind": "mix_lhs", "mix_id": seed - 1, "mix": mix, "controller": ctrl,
         "fuel_per_vehicle_L": row["fuel_per_vehicle_L"],
+        "mean_waiting_s": row["mean_waiting_s"],
     }
 
 

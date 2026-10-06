@@ -314,5 +314,7 @@
       0.25
     ]
   },
-  "label": "assumed"
+  "label": "assumed",
+  "wait_metric_stale": true,
+  "wait_metric_note": "Many mean_waiting_s values are invalid (0.0 beside normal fuel; mix_lhs rows omitted the key). Cause: parallel workers clobbered shared tripinfo tags; mix task dropped wait. Code fixed 2026-10-07 in experiments/sensitivity.py and sim/run_sim.py unique tags. Re-run make sensitivity before quoting wait. Fuel columns may still be usable."
 }

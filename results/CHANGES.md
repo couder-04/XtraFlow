@@ -2,6 +2,13 @@
 
 Simulation-based estimate; assumed traffic mix.
 
+## Docs / code honesty pass (2026-10-07, no re-run)
+
+- Reframed claims: adaptive pressure vs fixed/Webster/actuated ≈ 8–17%; fuel weights ≈ 0–2% (mainly low_demand); n=5; Holm p=1.0.
+- Documented that published `maxpressure` ≡ `queue_pressure` (not an independent baseline).
+- Patched `maxpressure` downstream to occupancy / vehicle count; unit test added. **`raw_runs.csv` / headlines remain the 2026-10-06 numbers (stale for maxpressure).**
+- Fixed sensitivity `mean_waiting_s` drop + tripinfo tag collisions. **`sensitivity.json` wait values remain stale until re-run.**
+
 ## Published time-cut (2026-10-06)
 
 The locked TEST comparison in `results/raw_runs.csv` and the headline file `results/headlines.json` are from this publish. Do not quote older pre-fix headlines.
@@ -32,6 +39,8 @@ The locked TEST comparison in `results/raw_runs.csv` and the headline file `resu
 - Degree of saturation is the measured field in `results/demand_calibration.json`, or it is absent.
 - HBEFA4 is not the primary model. Config and `results/emission_class_map.json` name HBEFA3.
 - INR figures stay a placeholder.
+- Large % fuel cuts are not attributed to class fuel weighting; those come from adaptive pressure vs fixed-style baselines.
+- `maxpressure` is not described as a distinct baseline for the published CSV.
 
 ## Code corrections that change the numbers
 
