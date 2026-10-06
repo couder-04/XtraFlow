@@ -12,7 +12,7 @@ XtraFlow is a SUMO-based signal control stack for mixed urban traffic. It scores
 
 ![YOLO story: which roads get green](results/demo/yolo/yolo_story.gif)
 
-<p align="center"><em>Four CCTV cams · green = GO (plays) · dim = PAUSE (frozen) · <a href="results/demo/yolo/yolo_story.mp4">full MP4</a> · input feasibility, not a fuel claim</em></p>
+<p align="center"><em>Hypothesis on camera: detect → fuel-weighted pressure → green / yellow / all-red · <a href="results/demo/yolo/yolo_story.mp4">full MP4</a> · input feasibility, not a fuel claim</em></p>
 
 > Simulation-based estimate · assumed traffic mix · oracle detector unless camera mode is on · proxy emission classes. Not a field deployment result.
 
@@ -142,7 +142,7 @@ Place up to four clips as `data/video/cam_{N,E,S,W}_hwy.mp4` (preferred) or Bell
 | Counts + phase timeline | `results/demo/yolo/counts_*.json`, `yolo_demo_summary.json` |
 | UI | `make yolo_dashboard` → **Story video** · clubbed · per-cam · **Decisions & fuel** |
 
-The story banner shows **North-South** or **East-West** moving; **GO** tiles play while the other pair is **PAUSE** (frozen). When NS is active, E/W pause, and vice versa. Clip idle-fuel figures are illustrative proxies from detector counts; published % fuel cuts stay in [`results/headlines.json`](results/headlines.json). Provenance: [`results/demo/yolo/SOURCE.md`](results/demo/yolo/SOURCE.md).
+The story follows the controller hypothesis: **detect who waits → score fuel-weighted phase pressure → serve under green / yellow / all-red**. GO plays, YELLOW still rolls while clearing, ALL RED and the waiting axis **PAUSE** (frozen). Bars show phase fuel pressure. Min-green is scaled to the short clip; yellow/all-red match `config.yaml`. Clip idle-fuel figures are illustrative; published % fuel cuts stay in [`results/headlines.json`](results/headlines.json). Provenance: [`results/demo/yolo/SOURCE.md`](results/demo/yolo/SOURCE.md).
 
 Only use datasets you are allowed to use. Nothing unlicensed is downloaded by this repo.
 
