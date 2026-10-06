@@ -448,7 +448,7 @@ def slide_agenda(prs, data, page, _total):
     )
     blocks = [
         ("01", "Idea", "Adaptive pressure vs fixed timing; fuel weights are a small add-on."),
-        ("02", "Locked TEST", "Same demand, fair baselines, fuel / CO₂ / wait / queue on disk."),
+        ("02", "Locked TEST", "Same demand, fair baselines, full figure gallery on disk."),
         ("03", "Live · SUMO", "Side-by-side: fixed timing vs XtraFlow on one seed."),
         (
             "04",
@@ -1243,30 +1243,61 @@ def _plain_verdict(value: str) -> str:
     return mapping.get(value, (value or "Not loaded").replace("_", " "))
 
 
-def slide_figures(prs, data, page, _total):
+# All analyze/study PNGs under results/figures/ (filename, short title, one-line caption).
+FIGURE_CATALOG = [
+    ("i_grouped_bars.png", "Metrics by controller", "Fuel, CO₂, wait, and queue (mean±std)"),
+    ("ii_pct_reduction.png", "Fuel cut vs baselines", "Paired % reduction versus tuned baselines"),
+    ("iii_dynamic_queue_ts.png", "Dynamic queue series", "Queue time series on the dynamic scenario"),
+    ("iv_green_allocation.png", "Green allocation", "XtraFlow green share versus fixed timing"),
+    ("v_fuel_by_type.png", "Fuel by vehicle type", "Mean fuel split across the assumed mix"),
+    ("vi_gain_vs_saturation.png", "Gain vs saturation", "Fuel gain versus demand multiplier proxy"),
+    ("vii_robustness.png", "Detection-miss robustness", "Fuel under rising detector miss rates"),
+    ("viii_rl_training.png", "RL training", "PPO training curve (unscored on TEST)"),
+    ("ix_emission_xcheck.png", "Emission cross-check", "Primary vs alternate emission classes"),
+    ("x_grid_results.png", "2×2 grid", "Grid sweep (unscored TLS caveat applies)"),
+    ("xi_extrapolation.png", "Extrapolation", "Placeholder scaled fuel / INR range"),
+    ("xtraflow_choice.png", "Phase choice sketch", "How fuel-weighted pressure picks a phase"),
+]
+
+
+def slide_figure_pair(prs, data, page, _total, pair):
+    """One slide with one or two figures from FIGURE_CATALOG."""
     slide = blank(prs)
-    chrome(
-        slide,
-        "Evidence on disk",
-        "Figures are regenerated from the locked TEST",
-        "Nothing on this slide is typed by hand. Open results/figures/ if you want the source PNGs.",
-        page,
-    )
-    left = ROOT / "results" / "figures" / "ii_pct_reduction.png"
-    right = ROOT / "results" / "figures" / "i_grouped_bars.png"
-    _card(slide, L, 1.7, 6.0, 4.85)
-    write(slide, L + 0.22, 1.85, 5.5, 0.3, [[("FUEL CUT VS BASELINES", 12, AMBER, True, BODY)]])
-    if not picture(slide, left, L + 0.25, 2.25, 5.5, 3.9):
-        write(slide, L + 0.3, 3.5, 5.4, 0.4, [[("ii_pct_reduction.png not found", 14, MUTED, False, BODY)]])
-    _card(slide, L + 6.28, 1.7, 6.0, 4.85)
-    write(slide, L + 6.5, 1.85, 5.5, 0.3, [[("FUEL, CO₂, WAIT, QUEUE", 12, AMBER, True, BODY)]])
-    if not picture(slide, right, L + 6.5, 2.25, 5.5, 3.9):
-        write(slide, L + 6.55, 3.5, 5.4, 0.4, [[("i_grouped_bars.png not found", 14, MUTED, False, BODY)]])
+    if len(pair) == 1:
+        fname, title, caption = pair[0]
+        chrome(slide, "Figures", title, caption, page)
+        path = ROOT / "results" / "figures" / fname
+        _card(slide, L, 1.7, CONTENT_W, 4.85)
+        if not picture(slide, path, L + 0.35, 1.95, CONTENT_W - 0.7, 4.4):
+            write(slide, L + 0.5, 3.5, 10, 0.4, [[(f"{fname} not found", 14, MUTED, False, BODY)]])
+    else:
+        (f1, t1, c1), (f2, t2, c2) = pair
+        chrome(
+            slide,
+            "Figures",
+            f"{t1}  ·  {t2}",
+            "Regenerated from results/ by analyze.py and the study scripts.",
+            page,
+        )
+        half = (CONTENT_W - 0.28) / 2
+        for i, (fname, title, caption) in enumerate(pair):
+            x = L + i * (half + 0.28)
+            _card(slide, x, 1.7, half, 4.85)
+            write(slide, x + 0.2, 1.85, half - 0.4, 0.28, [[(title.upper(), 11, AMBER, True, BODY)]])
+            path = ROOT / "results" / "figures" / fname
+            if not picture(slide, path, x + 0.2, 2.2, half - 0.4, 3.55):
+                write(slide, x + 0.25, 3.5, half - 0.5, 0.4, [[(f"{fname} not found", 13, MUTED, False, BODY)]])
+            write(slide, x + 0.2, 5.85, half - 0.4, 0.5, [[(caption, 11, MUTED, False, BODY)]])
     notes(
         slide,
-        "These PNGs are written by analyze.py after the locked TEST. "
-        "Do not describe a trend that is not visible in the figure.",
+        "PNGs live in results/figures/. Do not describe a trend that is not visible in the figure. "
+        "RL / grid / extrapolation slides inherit the same caveats as STATE.md.",
     )
+
+
+def slide_figures(prs, data, page, _total):
+    """Legacy single entry point — unused when main() expands FIGURE_CATALOG."""
+    slide_figure_pair(prs, data, page, _total, FIGURE_CATALOG[:2])
 
 
 def slide_demo(prs, data, page, _total):
@@ -1741,6 +1772,9 @@ def main():
     prs.core_properties.title = "XtraFlow"
     prs.core_properties.subject = "Fuel-weighted traffic signals"
     prs.core_properties.category = data["label"]
+
+    figure_pairs = [FIGURE_CATALOG[i:i + 2] for i in range(0, len(FIGURE_CATALOG), 2)]
+
     builders = [
         slide_title,
         slide_agenda,
@@ -1751,7 +1785,10 @@ def main():
         slide_headlines,
         slide_baselines,
         slide_experience,
-        slide_figures,
+    ]
+    for pair in figure_pairs:
+        builders.append(lambda prs, data, page, total, pair=pair: slide_figure_pair(prs, data, page, total, pair))
+    builders.extend([
         slide_demo,
         slide_yolo,
         slide_yolo_overlays,
@@ -1760,13 +1797,13 @@ def main():
         slide_checks,
         slide_scale,
         slide_close,
-    ]
+    ])
     total = len(builders)
     for page, builder in enumerate(builders, start=1):
         builder(prs, data, page, total)
     out = ROOT / "results" / "deck.pptx"
     prs.save(str(out))
-    print(f"Wrote {out} ({total} slides)")
+    print(f"Wrote {out} ({total} slides, {len(FIGURE_CATALOG)} figures)")
 
 
 if __name__ == "__main__":
