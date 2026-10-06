@@ -43,7 +43,8 @@
       "results/demo/yolo/counts_W.json"
     ],
     "mosaic": "results/demo/yolo/yolo_mosaic.mp4",
-    "primary_overlay": "results/demo/yolo_overlay.mp4"
+    "primary_overlay": "results/demo/yolo_overlay.mp4",
+    "story": "results/demo/yolo/yolo_story.mp4"
   },
   "per_camera": {
     "N": {
@@ -467,7 +468,783 @@
           "truck": 0,
           "auto_rickshaw": 0
         }
-      ]
+      ],
+      "decisions": [
+        {
+          "frame": 0,
+          "t_s": 0.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 7,
+          "pressures": {
+            "NS_TL": 1.8,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.8,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 3,
+          "t_s": 1.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 4,
+          "pressures": {
+            "NS_TL": 0.9,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.9,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 6,
+          "t_s": 2.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 5,
+          "pressures": {
+            "NS_TL": 1.2,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.2,
+          "xtra_idle_mg_s": 2321.7,
+          "fixed_idle_mg_s": 4833.3,
+          "count_idle_mg_s": 2321.7,
+          "idle_saved_vs_fixed_mg_s": 2511.7
+        },
+        {
+          "frame": 9,
+          "t_s": 3.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 6,
+          "pressures": {
+            "NS_TL": 1.5,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.5,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 5670.6,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 4833.3
+        },
+        {
+          "frame": 12,
+          "t_s": 4.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 5,
+          "pressures": {
+            "NS_TL": 1.9,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.9,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 15,
+          "t_s": 5.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 5,
+          "pressures": {
+            "NS_TL": 1.5,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.5,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 18,
+          "t_s": 6.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 3,
+          "pressures": {
+            "NS_TL": 0.9,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.9,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 2511.7,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 2511.7
+        },
+        {
+          "frame": 21,
+          "t_s": 7.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 4,
+          "pressures": {
+            "NS_TL": 0.9,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.9,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 2511.7,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 1674.4
+        },
+        {
+          "frame": 24,
+          "t_s": 8.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 4,
+          "pressures": {
+            "NS_TL": 0.9,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.9,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 27,
+          "t_s": 9.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 4,
+          "pressures": {
+            "NS_TL": 0.9,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.9,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 30,
+          "t_s": 10.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 4,
+          "pressures": {
+            "NS_TL": 0.9,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.9,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 2511.7,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 1674.4
+        },
+        {
+          "frame": 33,
+          "t_s": 11.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 4,
+          "pressures": {
+            "NS_TL": 0.9,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.9,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 2511.7,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 1674.4
+        },
+        {
+          "frame": 36,
+          "t_s": 12.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 4,
+          "pressures": {
+            "NS_TL": 0.6,
+            "NS_R": 0.0,
+            "EW_TL": 0.6,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.6,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 1674.4,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 39,
+          "t_s": 13.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 4,
+          "pressures": {
+            "NS_TL": 0.6,
+            "NS_R": 0.0,
+            "EW_TL": 0.6,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.6,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 1674.4,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 42,
+          "t_s": 14.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 3,
+          "pressures": {
+            "NS_TL": 0.6,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.6,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 1674.4,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 837.2
+        },
+        {
+          "frame": 45,
+          "t_s": 15.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 4,
+          "pressures": {
+            "NS_TL": 0.6,
+            "NS_R": 0.0,
+            "EW_TL": 0.6,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.6,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 1674.4,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 48,
+          "t_s": 16.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 2,
+          "pressures": {
+            "NS_TL": 0.3,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.3,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 51,
+          "t_s": 17.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 2,
+          "pressures": {
+            "NS_TL": 0.3,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.3,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 54,
+          "t_s": 18.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 2,
+          "pressures": {
+            "NS_TL": 0.3,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.3,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 57,
+          "t_s": 19.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 2,
+          "pressures": {
+            "NS_TL": 0.3,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.3,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 60,
+          "t_s": 20.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 3,
+          "pressures": {
+            "NS_TL": 0.6,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.6,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 63,
+          "t_s": 21.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 2,
+          "pressures": {
+            "NS_TL": 0.3,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.3,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 66,
+          "t_s": 22.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 69,
+          "t_s": 23.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 72,
+          "t_s": 24.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 2,
+          "pressures": {
+            "NS_TL": 0.3,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.3,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 75,
+          "t_s": 25.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 3,
+          "pressures": {
+            "NS_TL": 0.6,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.6,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 78,
+          "t_s": 26.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 3,
+          "pressures": {
+            "NS_TL": 0.6,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.6,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 1674.4,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 837.2
+        },
+        {
+          "frame": 81,
+          "t_s": 27.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 3,
+          "pressures": {
+            "NS_TL": 0.6,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.6,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 1674.4,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 837.2
+        },
+        {
+          "frame": 84,
+          "t_s": 28.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 2,
+          "pressures": {
+            "NS_TL": 0.3,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.3,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 87,
+          "t_s": 29.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 3,
+          "pressures": {
+            "NS_TL": 0.6,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.6,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 90,
+          "t_s": 30.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 93,
+          "t_s": 31.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 2,
+          "pressures": {
+            "NS_TL": 0.6,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.6,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 1674.4,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 1674.4
+        },
+        {
+          "frame": 96,
+          "t_s": 32.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 2,
+          "pressures": {
+            "NS_TL": 0.6,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.6,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 99,
+          "t_s": 33.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 3,
+          "pressures": {
+            "NS_TL": 0.6,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.6,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 102,
+          "t_s": 34.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 3,
+          "pressures": {
+            "NS_TL": 0.6,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.6,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 1674.4,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 837.2
+        },
+        {
+          "frame": 105,
+          "t_s": 35.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 5,
+          "pressures": {
+            "NS_TL": 1.2,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.2,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 3348.9,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 2511.7
+        },
+        {
+          "frame": 108,
+          "t_s": 36.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 5,
+          "pressures": {
+            "NS_TL": 1.2,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.2,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 111,
+          "t_s": 37.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 5,
+          "pressures": {
+            "NS_TL": 1.2,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.2,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 114,
+          "t_s": 38.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 4,
+          "pressures": {
+            "NS_TL": 1.9,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.9,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 837.2
+        },
+        {
+          "frame": 117,
+          "t_s": 39.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 4,
+          "pressures": {
+            "NS_TL": 1.9,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.9,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 837.2
+        }
+      ],
+      "decision_summary": {
+        "n_samples": 40,
+        "phase_share": {
+          "NS_TL": 1.0
+        },
+        "dominant_phase": "NS_TL",
+        "mean_served_pressure": 0.787,
+        "cum_idle_xtra_mg": 9983.1,
+        "cum_idle_fixed_mg": 18012.9,
+        "cum_idle_saved_mg": 8029.8,
+        "idle_fuel_saved_L_proxy": 0.01085,
+        "pct_idle_cut_vs_fixed": 44.58,
+        "note": "Idle-fuel proxy from detector counts + measured idle mg/s weights. Illustrative for this clip \u2014 not the published SUMO fuel result."
+      }
     },
     "E": {
       "title": "Straight street (Zenodo cam_16) / Bellevue Newport",
@@ -890,7 +1667,783 @@
           "truck": 0,
           "auto_rickshaw": 0
         }
-      ]
+      ],
+      "decisions": [
+        {
+          "frame": 0,
+          "t_s": 0.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 8,
+          "pressures": {
+            "NS_TL": 1.8,
+            "NS_R": 0.0,
+            "EW_TL": 0.6,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.8,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 1674.4,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 3,
+          "t_s": 1.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 8,
+          "pressures": {
+            "NS_TL": 1.8,
+            "NS_R": 0.0,
+            "EW_TL": 0.6,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.8,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 1674.4,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 6,
+          "t_s": 2.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 8,
+          "pressures": {
+            "NS_TL": 1.8,
+            "NS_R": 0.0,
+            "EW_TL": 0.6,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.8,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 5023.3,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 3348.9
+        },
+        {
+          "frame": 9,
+          "t_s": 3.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 8,
+          "pressures": {
+            "NS_TL": 1.8,
+            "NS_R": 0.0,
+            "EW_TL": 0.6,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.8,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 5023.3,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 3348.9
+        },
+        {
+          "frame": 12,
+          "t_s": 4.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 8,
+          "pressures": {
+            "NS_TL": 6.0,
+            "NS_R": 0.0,
+            "EW_TL": 2.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 6.0,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 1674.4,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 15,
+          "t_s": 5.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 9,
+          "pressures": {
+            "NS_TL": 6.3,
+            "NS_R": 0.0,
+            "EW_TL": 2.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 6.3,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 1674.4,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 18,
+          "t_s": 6.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 10,
+          "pressures": {
+            "NS_TL": 6.6,
+            "NS_R": 0.0,
+            "EW_TL": 2.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 6.6,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 5023.3,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 3348.9
+        },
+        {
+          "frame": 21,
+          "t_s": 7.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 9,
+          "pressures": {
+            "NS_TL": 5.6,
+            "NS_R": 0.0,
+            "EW_TL": 2.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 5.6,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 4186.1,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 2511.7
+        },
+        {
+          "frame": 24,
+          "t_s": 8.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 8,
+          "pressures": {
+            "NS_TL": 4.6,
+            "NS_R": 0.0,
+            "EW_TL": 2.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 4.6,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 1674.4,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 27,
+          "t_s": 9.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 9,
+          "pressures": {
+            "NS_TL": 5.6,
+            "NS_R": 0.0,
+            "EW_TL": 2.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 5.6,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 1674.4,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 30,
+          "t_s": 10.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 8,
+          "pressures": {
+            "NS_TL": 5.3,
+            "NS_R": 0.0,
+            "EW_TL": 2.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 5.3,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 4186.1,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 2511.7
+        },
+        {
+          "frame": 33,
+          "t_s": 11.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 8,
+          "pressures": {
+            "NS_TL": 5.3,
+            "NS_R": 0.0,
+            "EW_TL": 2.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 5.3,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 4186.1,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 2511.7
+        },
+        {
+          "frame": 36,
+          "t_s": 12.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 8,
+          "pressures": {
+            "NS_TL": 5.3,
+            "NS_R": 0.0,
+            "EW_TL": 2.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 5.3,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 1674.4,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 39,
+          "t_s": 13.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 9,
+          "pressures": {
+            "NS_TL": 6.3,
+            "NS_R": 0.0,
+            "EW_TL": 2.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 6.3,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 1674.4,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 42,
+          "t_s": 14.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 9,
+          "pressures": {
+            "NS_TL": 6.3,
+            "NS_R": 0.0,
+            "EW_TL": 2.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 6.3,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 5023.3,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 3348.9
+        },
+        {
+          "frame": 45,
+          "t_s": 15.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 8,
+          "pressures": {
+            "NS_TL": 5.3,
+            "NS_R": 0.0,
+            "EW_TL": 2.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 5.3,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 4186.1,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 2511.7
+        },
+        {
+          "frame": 48,
+          "t_s": 16.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 10,
+          "pressures": {
+            "NS_TL": 6.6,
+            "NS_R": 0.0,
+            "EW_TL": 2.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 6.6,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 1674.4,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 51,
+          "t_s": 17.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 11,
+          "pressures": {
+            "NS_TL": 6.9,
+            "NS_R": 0.0,
+            "EW_TL": 2.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 6.9,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 1674.4,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 54,
+          "t_s": 18.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 10,
+          "pressures": {
+            "NS_TL": 5.9,
+            "NS_R": 0.0,
+            "EW_TL": 2.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 5.9,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 5023.3,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 3348.9
+        },
+        {
+          "frame": 57,
+          "t_s": 19.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 10,
+          "pressures": {
+            "NS_TL": 6.6,
+            "NS_R": 0.0,
+            "EW_TL": 2.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 6.6,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 5023.3,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 3348.9
+        },
+        {
+          "frame": 60,
+          "t_s": 20.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 10,
+          "pressures": {
+            "NS_TL": 6.6,
+            "NS_R": 0.0,
+            "EW_TL": 2.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 6.6,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 1674.4,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 63,
+          "t_s": 21.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 8,
+          "pressures": {
+            "NS_TL": 5.3,
+            "NS_R": 0.0,
+            "EW_TL": 2.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 5.3,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 1674.4,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 66,
+          "t_s": 22.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 9,
+          "pressures": {
+            "NS_TL": 6.3,
+            "NS_R": 0.0,
+            "EW_TL": 2.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 6.3,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 5023.3,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 3348.9
+        },
+        {
+          "frame": 69,
+          "t_s": 23.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 8,
+          "pressures": {
+            "NS_TL": 5.3,
+            "NS_R": 0.0,
+            "EW_TL": 2.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 5.3,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 4186.1,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 2511.7
+        },
+        {
+          "frame": 72,
+          "t_s": 24.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 7,
+          "pressures": {
+            "NS_TL": 4.3,
+            "NS_R": 0.0,
+            "EW_TL": 2.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 4.3,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 1674.4,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 75,
+          "t_s": 25.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 8,
+          "pressures": {
+            "NS_TL": 5.3,
+            "NS_R": 0.0,
+            "EW_TL": 2.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 5.3,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 1674.4,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 78,
+          "t_s": 26.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 9,
+          "pressures": {
+            "NS_TL": 5.6,
+            "NS_R": 0.0,
+            "EW_TL": 2.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 5.6,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 4186.1,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 2511.7
+        },
+        {
+          "frame": 81,
+          "t_s": 27.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 8,
+          "pressures": {
+            "NS_TL": 4.6,
+            "NS_R": 0.0,
+            "EW_TL": 2.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 4.6,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 3348.9,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 1674.4
+        },
+        {
+          "frame": 84,
+          "t_s": 28.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 8,
+          "pressures": {
+            "NS_TL": 4.6,
+            "NS_R": 0.0,
+            "EW_TL": 2.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 4.6,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 1674.4,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 87,
+          "t_s": 29.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 9,
+          "pressures": {
+            "NS_TL": 5.6,
+            "NS_R": 0.0,
+            "EW_TL": 2.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 5.6,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 1674.4,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 90,
+          "t_s": 30.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 9,
+          "pressures": {
+            "NS_TL": 5.6,
+            "NS_R": 0.0,
+            "EW_TL": 2.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 5.6,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 4186.1,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 2511.7
+        },
+        {
+          "frame": 93,
+          "t_s": 31.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 9,
+          "pressures": {
+            "NS_TL": 5.6,
+            "NS_R": 0.0,
+            "EW_TL": 2.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 5.6,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 4186.1,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 2511.7
+        },
+        {
+          "frame": 96,
+          "t_s": 32.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 8,
+          "pressures": {
+            "NS_TL": 4.6,
+            "NS_R": 0.0,
+            "EW_TL": 2.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 4.6,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 1674.4,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 99,
+          "t_s": 33.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 8,
+          "pressures": {
+            "NS_TL": 4.6,
+            "NS_R": 0.0,
+            "EW_TL": 2.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 4.6,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 1674.4,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 102,
+          "t_s": 34.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 9,
+          "pressures": {
+            "NS_TL": 4.6,
+            "NS_R": 0.0,
+            "EW_TL": 2.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 4.6,
+          "xtra_idle_mg_s": 2511.7,
+          "fixed_idle_mg_s": 3348.9,
+          "count_idle_mg_s": 2511.7,
+          "idle_saved_vs_fixed_mg_s": 837.2
+        },
+        {
+          "frame": 105,
+          "t_s": 35.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 8,
+          "pressures": {
+            "NS_TL": 3.6,
+            "NS_R": 0.0,
+            "EW_TL": 2.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 3.6,
+          "xtra_idle_mg_s": 2511.7,
+          "fixed_idle_mg_s": 2511.7,
+          "count_idle_mg_s": 2511.7,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 108,
+          "t_s": 36.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 8,
+          "pressures": {
+            "NS_TL": 3.6,
+            "NS_R": 0.0,
+            "EW_TL": 2.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 3.6,
+          "xtra_idle_mg_s": 2511.7,
+          "fixed_idle_mg_s": 2511.7,
+          "count_idle_mg_s": 2511.7,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 111,
+          "t_s": 37.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 8,
+          "pressures": {
+            "NS_TL": 3.6,
+            "NS_R": 0.0,
+            "EW_TL": 2.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 3.6,
+          "xtra_idle_mg_s": 2511.7,
+          "fixed_idle_mg_s": 2511.7,
+          "count_idle_mg_s": 2511.7,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 114,
+          "t_s": 38.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 8,
+          "pressures": {
+            "NS_TL": 3.6,
+            "NS_R": 0.0,
+            "EW_TL": 2.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 3.6,
+          "xtra_idle_mg_s": 2511.7,
+          "fixed_idle_mg_s": 2511.7,
+          "count_idle_mg_s": 2511.7,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 117,
+          "t_s": 39.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 8,
+          "pressures": {
+            "NS_TL": 3.6,
+            "NS_R": 0.0,
+            "EW_TL": 2.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 3.6,
+          "xtra_idle_mg_s": 2511.7,
+          "fixed_idle_mg_s": 2511.7,
+          "count_idle_mg_s": 2511.7,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        }
+      ],
+      "decision_summary": {
+        "n_samples": 40,
+        "phase_share": {
+          "NS_TL": 1.0
+        },
+        "dominant_phase": "NS_TL",
+        "mean_served_pressure": 4.955,
+        "cum_idle_xtra_mg": 23999.9,
+        "cum_idle_fixed_mg": 39349.1,
+        "cum_idle_saved_mg": 15349.2,
+        "idle_fuel_saved_L_proxy": 0.02074,
+        "pct_idle_cut_vs_fixed": 39.01,
+        "note": "Idle-fuel proxy from detector counts + measured idle mg/s weights. Illustrative for this clip \u2014 not the published SUMO fuel result."
+      }
     },
     "S": {
       "title": "I-5 S @ 188th St (WSDOT) / Bellevue SE 38th",
@@ -1313,7 +2866,784 @@
           "truck": 0,
           "auto_rickshaw": 0
         }
-      ]
+      ],
+      "decisions": [
+        {
+          "frame": 0,
+          "t_s": 0.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 3,
+          "t_s": 1.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 6,
+          "t_s": 2.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 9,
+          "t_s": 3.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 12,
+          "t_s": 4.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 15,
+          "t_s": 5.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 18,
+          "t_s": 6.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 21,
+          "t_s": 7.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 24,
+          "t_s": 8.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 27,
+          "t_s": 9.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 30,
+          "t_s": 10.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 33,
+          "t_s": 11.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 36,
+          "t_s": 12.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 39,
+          "t_s": 13.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 42,
+          "t_s": 14.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 45,
+          "t_s": 15.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 48,
+          "t_s": 16.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 51,
+          "t_s": 17.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 54,
+          "t_s": 18.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 57,
+          "t_s": 19.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 60,
+          "t_s": 20.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 63,
+          "t_s": 21.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 66,
+          "t_s": 22.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 69,
+          "t_s": 23.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 72,
+          "t_s": 24.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 75,
+          "t_s": 25.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 78,
+          "t_s": 26.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 81,
+          "t_s": 27.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 84,
+          "t_s": 28.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 87,
+          "t_s": 29.0,
+          "next_phase": "EW_TL",
+          "count_phase": "EW_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 1,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.3,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 2321.7,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 2321.7
+        },
+        {
+          "frame": 90,
+          "t_s": 30.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 93,
+          "t_s": 31.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 96,
+          "t_s": 32.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 99,
+          "t_s": 33.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 102,
+          "t_s": 34.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 105,
+          "t_s": 35.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 108,
+          "t_s": 36.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 111,
+          "t_s": 37.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 114,
+          "t_s": 38.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 117,
+          "t_s": 39.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 0,
+          "pressures": {
+            "NS_TL": 0.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.0,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        }
+      ],
+      "decision_summary": {
+        "n_samples": 40,
+        "phase_share": {
+          "NS_TL": 0.975,
+          "EW_TL": 0.025
+        },
+        "dominant_phase": "NS_TL",
+        "mean_served_pressure": 0.007,
+        "cum_idle_xtra_mg": 0.0,
+        "cum_idle_fixed_mg": 773.9,
+        "cum_idle_saved_mg": 773.9,
+        "idle_fuel_saved_L_proxy": 0.00105,
+        "pct_idle_cut_vs_fixed": 100.0,
+        "note": "Idle-fuel proxy from detector counts + measured idle mg/s weights. Illustrative for this clip \u2014 not the published SUMO fuel result."
+      }
     },
     "W": {
       "title": "Divided arterial (Zenodo cam_11) / Bellevue NE 8th",
@@ -1736,14 +4066,1568 @@
           "truck": 0,
           "auto_rickshaw": 0
         }
-      ]
+      ],
+      "decisions": [
+        {
+          "frame": 0,
+          "t_s": 0.0,
+          "next_phase": "EW_TL",
+          "count_phase": "EW_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 3,
+          "pressures": {
+            "NS_TL": 0.3,
+            "NS_R": 0.0,
+            "EW_TL": 0.6,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.6,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 1285.3,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 448.1
+        },
+        {
+          "frame": 3,
+          "t_s": 1.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 2,
+          "pressures": {
+            "NS_TL": 0.3,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.3,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 6,
+          "t_s": 2.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 3,
+          "pressures": {
+            "NS_TL": 0.6,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.6,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 1674.4,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 837.2
+        },
+        {
+          "frame": 9,
+          "t_s": 3.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 3,
+          "pressures": {
+            "NS_TL": 0.6,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.6,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 1674.4,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 837.2
+        },
+        {
+          "frame": 12,
+          "t_s": 4.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 5,
+          "pressures": {
+            "NS_TL": 0.9,
+            "NS_R": 0.0,
+            "EW_TL": 0.6,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.9,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 1674.4,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 15,
+          "t_s": 5.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 3,
+          "pressures": {
+            "NS_TL": 0.6,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 0.6,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 18,
+          "t_s": 6.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 3,
+          "pressures": {
+            "NS_TL": 1.3,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.3,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 21,
+          "t_s": 7.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 3,
+          "pressures": {
+            "NS_TL": 1.3,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.3,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 24,
+          "t_s": 8.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 3,
+          "pressures": {
+            "NS_TL": 1.3,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.3,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 27,
+          "t_s": 9.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 3,
+          "pressures": {
+            "NS_TL": 1.3,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.3,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 30,
+          "t_s": 10.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 4,
+          "pressures": {
+            "NS_TL": 1.3,
+            "NS_R": 0.0,
+            "EW_TL": 0.6,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.3,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": -837.2
+        },
+        {
+          "frame": 33,
+          "t_s": 11.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 3,
+          "pressures": {
+            "NS_TL": 1.3,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.3,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 36,
+          "t_s": 12.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 4,
+          "pressures": {
+            "NS_TL": 1.6,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.6,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 39,
+          "t_s": 13.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 5,
+          "pressures": {
+            "NS_TL": 1.6,
+            "NS_R": 0.0,
+            "EW_TL": 0.6,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.6,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 1674.4,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 42,
+          "t_s": 14.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 4,
+          "pressures": {
+            "NS_TL": 1.3,
+            "NS_R": 0.0,
+            "EW_TL": 0.6,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.3,
+          "xtra_idle_mg_s": 3158.9,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 3158.9,
+          "idle_saved_vs_fixed_mg_s": -2321.7
+        },
+        {
+          "frame": 45,
+          "t_s": 15.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 4,
+          "pressures": {
+            "NS_TL": 1.3,
+            "NS_R": 0.0,
+            "EW_TL": 0.6,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.3,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": -837.2
+        },
+        {
+          "frame": 48,
+          "t_s": 16.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 4,
+          "pressures": {
+            "NS_TL": 1.3,
+            "NS_R": 0.0,
+            "EW_TL": 0.6,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.3,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 1674.4,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 51,
+          "t_s": 17.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 4,
+          "pressures": {
+            "NS_TL": 1.3,
+            "NS_R": 0.0,
+            "EW_TL": 0.6,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.3,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 1674.4,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 54,
+          "t_s": 18.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 4,
+          "pressures": {
+            "NS_TL": 1.3,
+            "NS_R": 0.0,
+            "EW_TL": 0.6,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.3,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": -837.2
+        },
+        {
+          "frame": 57,
+          "t_s": 19.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 4,
+          "pressures": {
+            "NS_TL": 1.3,
+            "NS_R": 0.0,
+            "EW_TL": 0.6,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.3,
+          "xtra_idle_mg_s": 1674.4,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 1674.4,
+          "idle_saved_vs_fixed_mg_s": -837.2
+        },
+        {
+          "frame": 60,
+          "t_s": 20.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 4,
+          "pressures": {
+            "NS_TL": 1.3,
+            "NS_R": 0.0,
+            "EW_TL": 0.6,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.3,
+          "xtra_idle_mg_s": 3158.9,
+          "fixed_idle_mg_s": 3158.9,
+          "count_idle_mg_s": 3158.9,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 63,
+          "t_s": 21.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 3,
+          "pressures": {
+            "NS_TL": 1.3,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.3,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 66,
+          "t_s": 22.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 2,
+          "pressures": {
+            "NS_TL": 1.3,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.3,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 837.2
+        },
+        {
+          "frame": 69,
+          "t_s": 23.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 3,
+          "pressures": {
+            "NS_TL": 1.3,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.3,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 72,
+          "t_s": 24.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 2,
+          "pressures": {
+            "NS_TL": 1.3,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.3,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 75,
+          "t_s": 25.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 3,
+          "pressures": {
+            "NS_TL": 1.3,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.3,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 78,
+          "t_s": 26.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 2,
+          "pressures": {
+            "NS_TL": 1.3,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.3,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 837.2
+        },
+        {
+          "frame": 81,
+          "t_s": 27.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 2,
+          "pressures": {
+            "NS_TL": 1.3,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.3,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 837.2
+        },
+        {
+          "frame": 84,
+          "t_s": 28.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 2,
+          "pressures": {
+            "NS_TL": 1.3,
+            "NS_R": 0.0,
+            "EW_TL": 0.0,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.3,
+          "xtra_idle_mg_s": 0.0,
+          "fixed_idle_mg_s": 0.0,
+          "count_idle_mg_s": 0.0,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 87,
+          "t_s": 29.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 2,
+          "pressures": {
+            "NS_TL": 1.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.0,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 90,
+          "t_s": 30.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 2,
+          "pressures": {
+            "NS_TL": 1.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.0,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 93,
+          "t_s": 31.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 2,
+          "pressures": {
+            "NS_TL": 1.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.0,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 96,
+          "t_s": 32.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 2,
+          "pressures": {
+            "NS_TL": 1.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.0,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 99,
+          "t_s": 33.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 2,
+          "pressures": {
+            "NS_TL": 1.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.0,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 102,
+          "t_s": 34.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 2,
+          "pressures": {
+            "NS_TL": 1.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.0,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 105,
+          "t_s": 35.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 2,
+          "pressures": {
+            "NS_TL": 1.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.0,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 108,
+          "t_s": 36.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_TL",
+          "n_vehicles": 2,
+          "pressures": {
+            "NS_TL": 1.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.0,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 111,
+          "t_s": 37.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "NS_R",
+          "n_vehicles": 2,
+          "pressures": {
+            "NS_TL": 1.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.0,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 114,
+          "t_s": 38.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_TL",
+          "n_vehicles": 3,
+          "pressures": {
+            "NS_TL": 1.3,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.3,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        },
+        {
+          "frame": 117,
+          "t_s": 39.0,
+          "next_phase": "NS_TL",
+          "count_phase": "NS_TL",
+          "fixed_phase": "EW_R",
+          "n_vehicles": 2,
+          "pressures": {
+            "NS_TL": 1.0,
+            "NS_R": 0.0,
+            "EW_TL": 0.3,
+            "EW_R": 0.0
+          },
+          "served_pressure": 1.0,
+          "xtra_idle_mg_s": 837.2,
+          "fixed_idle_mg_s": 837.2,
+          "count_idle_mg_s": 837.2,
+          "idle_saved_vs_fixed_mg_s": 0.0
+        }
+      ],
+      "decision_summary": {
+        "n_samples": 40,
+        "phase_share": {
+          "EW_TL": 0.025,
+          "NS_TL": 0.975
+        },
+        "dominant_phase": "NS_TL",
+        "mean_served_pressure": 1.135,
+        "cum_idle_xtra_mg": 13547.7,
+        "cum_idle_fixed_mg": 13202.2,
+        "cum_idle_saved_mg": -345.5,
+        "idle_fuel_saved_L_proxy": -0.00047,
+        "pct_idle_cut_vs_fixed": -2.62,
+        "note": "Idle-fuel proxy from detector counts + measured idle mg/s weights. Illustrative for this clip \u2014 not the published SUMO fuel result."
+      }
     }
   },
   "clubbed": {
     "peak_vehicles": 24,
     "mean_vehicles": 14.82,
     "mean_weighted_pressure": 15.49,
-    "n_cameras": 4
+    "n_cameras": 4,
+    "decisions": [
+      {
+        "frame": 0,
+        "t_s": 0.0,
+        "next_phase": "NS_TL",
+        "count_phase": "NS_TL",
+        "fixed_phase": "NS_TL",
+        "n_vehicles": 9,
+        "pressures": {
+          "NS_TL": 1.5,
+          "NS_R": 0.0,
+          "EW_TL": 1.2,
+          "EW_R": 0.0
+        },
+        "served_pressure": 1.5,
+        "xtra_idle_mg_s": 2959.7,
+        "fixed_idle_mg_s": 2959.7,
+        "count_idle_mg_s": 2959.7,
+        "idle_saved_vs_fixed_mg_s": 0.0
+      },
+      {
+        "frame": 3,
+        "t_s": 1.0,
+        "next_phase": "NS_TL",
+        "count_phase": "NS_TL",
+        "fixed_phase": "NS_R",
+        "n_vehicles": 6,
+        "pressures": {
+          "NS_TL": 0.9,
+          "NS_R": 0.0,
+          "EW_TL": 0.9,
+          "EW_R": 0.0
+        },
+        "served_pressure": 0.9,
+        "xtra_idle_mg_s": 2511.7,
+        "fixed_idle_mg_s": 2511.7,
+        "count_idle_mg_s": 2511.7,
+        "idle_saved_vs_fixed_mg_s": 0.0
+      },
+      {
+        "frame": 6,
+        "t_s": 2.0,
+        "next_phase": "NS_TL",
+        "count_phase": "NS_TL",
+        "fixed_phase": "EW_TL",
+        "n_vehicles": 7,
+        "pressures": {
+          "NS_TL": 1.2,
+          "NS_R": 0.0,
+          "EW_TL": 0.9,
+          "EW_R": 0.0
+        },
+        "served_pressure": 1.2,
+        "xtra_idle_mg_s": 2511.7,
+        "fixed_idle_mg_s": 4833.3,
+        "count_idle_mg_s": 2511.7,
+        "idle_saved_vs_fixed_mg_s": 2321.7
+      },
+      {
+        "frame": 9,
+        "t_s": 3.0,
+        "next_phase": "NS_TL",
+        "count_phase": "NS_TL",
+        "fixed_phase": "EW_R",
+        "n_vehicles": 8,
+        "pressures": {
+          "NS_TL": 1.5,
+          "NS_R": 0.0,
+          "EW_TL": 0.9,
+          "EW_R": 0.0
+        },
+        "served_pressure": 1.5,
+        "xtra_idle_mg_s": 2511.7,
+        "fixed_idle_mg_s": 5670.6,
+        "count_idle_mg_s": 2511.7,
+        "idle_saved_vs_fixed_mg_s": 3158.9
+      },
+      {
+        "frame": 12,
+        "t_s": 4.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "NS_TL",
+        "n_vehicles": 8,
+        "pressures": {
+          "NS_TL": 1.9,
+          "NS_R": 0.0,
+          "EW_TL": 2.6,
+          "EW_R": 0.0
+        },
+        "served_pressure": 2.6,
+        "xtra_idle_mg_s": 837.2,
+        "fixed_idle_mg_s": 3348.9,
+        "count_idle_mg_s": 837.2,
+        "idle_saved_vs_fixed_mg_s": 2511.7
+      },
+      {
+        "frame": 15,
+        "t_s": 5.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "NS_R",
+        "n_vehicles": 8,
+        "pressures": {
+          "NS_TL": 1.5,
+          "NS_R": 0.0,
+          "EW_TL": 2.3,
+          "EW_R": 0.0
+        },
+        "served_pressure": 2.3,
+        "xtra_idle_mg_s": 5670.6,
+        "fixed_idle_mg_s": 2511.7,
+        "count_idle_mg_s": 5670.6,
+        "idle_saved_vs_fixed_mg_s": -3158.9
+      },
+      {
+        "frame": 18,
+        "t_s": 6.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "EW_TL",
+        "n_vehicles": 6,
+        "pressures": {
+          "NS_TL": 0.9,
+          "NS_R": 0.0,
+          "EW_TL": 2.3,
+          "EW_R": 0.0
+        },
+        "served_pressure": 2.3,
+        "xtra_idle_mg_s": 2511.7,
+        "fixed_idle_mg_s": 2511.7,
+        "count_idle_mg_s": 2511.7,
+        "idle_saved_vs_fixed_mg_s": 0.0
+      },
+      {
+        "frame": 21,
+        "t_s": 7.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "EW_R",
+        "n_vehicles": 6,
+        "pressures": {
+          "NS_TL": 0.9,
+          "NS_R": 0.0,
+          "EW_TL": 2.3,
+          "EW_R": 0.0
+        },
+        "served_pressure": 2.3,
+        "xtra_idle_mg_s": 2511.7,
+        "fixed_idle_mg_s": 2511.7,
+        "count_idle_mg_s": 2511.7,
+        "idle_saved_vs_fixed_mg_s": 0.0
+      },
+      {
+        "frame": 24,
+        "t_s": 8.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "NS_TL",
+        "n_vehicles": 6,
+        "pressures": {
+          "NS_TL": 0.9,
+          "NS_R": 0.0,
+          "EW_TL": 2.3,
+          "EW_R": 0.0
+        },
+        "served_pressure": 2.3,
+        "xtra_idle_mg_s": 2511.7,
+        "fixed_idle_mg_s": 2511.7,
+        "count_idle_mg_s": 2511.7,
+        "idle_saved_vs_fixed_mg_s": 0.0
+      },
+      {
+        "frame": 27,
+        "t_s": 9.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "NS_R",
+        "n_vehicles": 6,
+        "pressures": {
+          "NS_TL": 0.9,
+          "NS_R": 0.0,
+          "EW_TL": 2.3,
+          "EW_R": 0.0
+        },
+        "served_pressure": 2.3,
+        "xtra_idle_mg_s": 2511.7,
+        "fixed_idle_mg_s": 2511.7,
+        "count_idle_mg_s": 2511.7,
+        "idle_saved_vs_fixed_mg_s": 0.0
+      },
+      {
+        "frame": 30,
+        "t_s": 10.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "EW_TL",
+        "n_vehicles": 7,
+        "pressures": {
+          "NS_TL": 0.9,
+          "NS_R": 0.0,
+          "EW_TL": 2.6,
+          "EW_R": 0.0
+        },
+        "served_pressure": 2.6,
+        "xtra_idle_mg_s": 2511.7,
+        "fixed_idle_mg_s": 2511.7,
+        "count_idle_mg_s": 2511.7,
+        "idle_saved_vs_fixed_mg_s": 0.0
+      },
+      {
+        "frame": 33,
+        "t_s": 11.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "EW_R",
+        "n_vehicles": 6,
+        "pressures": {
+          "NS_TL": 0.9,
+          "NS_R": 0.0,
+          "EW_TL": 2.3,
+          "EW_R": 0.0
+        },
+        "served_pressure": 2.3,
+        "xtra_idle_mg_s": 2511.7,
+        "fixed_idle_mg_s": 2511.7,
+        "count_idle_mg_s": 2511.7,
+        "idle_saved_vs_fixed_mg_s": 0.0
+      },
+      {
+        "frame": 36,
+        "t_s": 12.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "NS_TL",
+        "n_vehicles": 5,
+        "pressures": {
+          "NS_TL": 0.6,
+          "NS_R": 0.0,
+          "EW_TL": 2.3,
+          "EW_R": 0.0
+        },
+        "served_pressure": 2.3,
+        "xtra_idle_mg_s": 1674.4,
+        "fixed_idle_mg_s": 2511.7,
+        "count_idle_mg_s": 1674.4,
+        "idle_saved_vs_fixed_mg_s": 837.2
+      },
+      {
+        "frame": 39,
+        "t_s": 13.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "NS_R",
+        "n_vehicles": 6,
+        "pressures": {
+          "NS_TL": 0.6,
+          "NS_R": 0.0,
+          "EW_TL": 2.6,
+          "EW_R": 0.0
+        },
+        "served_pressure": 2.6,
+        "xtra_idle_mg_s": 1674.4,
+        "fixed_idle_mg_s": 3348.9,
+        "count_idle_mg_s": 1674.4,
+        "idle_saved_vs_fixed_mg_s": 1674.4
+      },
+      {
+        "frame": 42,
+        "t_s": 14.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "EW_TL",
+        "n_vehicles": 6,
+        "pressures": {
+          "NS_TL": 0.6,
+          "NS_R": 0.0,
+          "EW_TL": 2.6,
+          "EW_R": 0.0
+        },
+        "served_pressure": 2.6,
+        "xtra_idle_mg_s": 1674.4,
+        "fixed_idle_mg_s": 1674.4,
+        "count_idle_mg_s": 1674.4,
+        "idle_saved_vs_fixed_mg_s": 0.0
+      },
+      {
+        "frame": 45,
+        "t_s": 15.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "EW_R",
+        "n_vehicles": 6,
+        "pressures": {
+          "NS_TL": 0.6,
+          "NS_R": 0.0,
+          "EW_TL": 2.6,
+          "EW_R": 0.0
+        },
+        "served_pressure": 2.6,
+        "xtra_idle_mg_s": 1674.4,
+        "fixed_idle_mg_s": 1674.4,
+        "count_idle_mg_s": 1674.4,
+        "idle_saved_vs_fixed_mg_s": 0.0
+      },
+      {
+        "frame": 48,
+        "t_s": 16.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "NS_TL",
+        "n_vehicles": 5,
+        "pressures": {
+          "NS_TL": 0.3,
+          "NS_R": 0.0,
+          "EW_TL": 2.6,
+          "EW_R": 0.0
+        },
+        "served_pressure": 2.6,
+        "xtra_idle_mg_s": 837.2,
+        "fixed_idle_mg_s": 3348.9,
+        "count_idle_mg_s": 837.2,
+        "idle_saved_vs_fixed_mg_s": 2511.7
+      },
+      {
+        "frame": 51,
+        "t_s": 17.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "NS_R",
+        "n_vehicles": 5,
+        "pressures": {
+          "NS_TL": 0.3,
+          "NS_R": 0.0,
+          "EW_TL": 2.6,
+          "EW_R": 0.0
+        },
+        "served_pressure": 2.6,
+        "xtra_idle_mg_s": 837.2,
+        "fixed_idle_mg_s": 3348.9,
+        "count_idle_mg_s": 837.2,
+        "idle_saved_vs_fixed_mg_s": 2511.7
+      },
+      {
+        "frame": 54,
+        "t_s": 18.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "EW_TL",
+        "n_vehicles": 5,
+        "pressures": {
+          "NS_TL": 0.3,
+          "NS_R": 0.0,
+          "EW_TL": 2.6,
+          "EW_R": 0.0
+        },
+        "served_pressure": 2.6,
+        "xtra_idle_mg_s": 837.2,
+        "fixed_idle_mg_s": 837.2,
+        "count_idle_mg_s": 837.2,
+        "idle_saved_vs_fixed_mg_s": 0.0
+      },
+      {
+        "frame": 57,
+        "t_s": 19.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "EW_R",
+        "n_vehicles": 5,
+        "pressures": {
+          "NS_TL": 0.3,
+          "NS_R": 0.0,
+          "EW_TL": 2.6,
+          "EW_R": 0.0
+        },
+        "served_pressure": 2.6,
+        "xtra_idle_mg_s": 837.2,
+        "fixed_idle_mg_s": 837.2,
+        "count_idle_mg_s": 837.2,
+        "idle_saved_vs_fixed_mg_s": 0.0
+      },
+      {
+        "frame": 60,
+        "t_s": 20.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "NS_TL",
+        "n_vehicles": 5,
+        "pressures": {
+          "NS_TL": 0.3,
+          "NS_R": 0.0,
+          "EW_TL": 2.6,
+          "EW_R": 0.0
+        },
+        "served_pressure": 2.6,
+        "xtra_idle_mg_s": 837.2,
+        "fixed_idle_mg_s": 4833.3,
+        "count_idle_mg_s": 837.2,
+        "idle_saved_vs_fixed_mg_s": 3996.1
+      },
+      {
+        "frame": 63,
+        "t_s": 21.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "NS_R",
+        "n_vehicles": 4,
+        "pressures": {
+          "NS_TL": 0.3,
+          "NS_R": 0.0,
+          "EW_TL": 2.3,
+          "EW_R": 0.0
+        },
+        "served_pressure": 2.3,
+        "xtra_idle_mg_s": 837.2,
+        "fixed_idle_mg_s": 2511.7,
+        "count_idle_mg_s": 837.2,
+        "idle_saved_vs_fixed_mg_s": 1674.4
+      },
+      {
+        "frame": 66,
+        "t_s": 22.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "EW_TL",
+        "n_vehicles": 4,
+        "pressures": {
+          "NS_TL": 0.0,
+          "NS_R": 0.0,
+          "EW_TL": 3.3,
+          "EW_R": 0.0
+        },
+        "served_pressure": 3.3,
+        "xtra_idle_mg_s": 0.0,
+        "fixed_idle_mg_s": 0.0,
+        "count_idle_mg_s": 0.0,
+        "idle_saved_vs_fixed_mg_s": 0.0
+      },
+      {
+        "frame": 69,
+        "t_s": 23.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "EW_R",
+        "n_vehicles": 3,
+        "pressures": {
+          "NS_TL": 0.0,
+          "NS_R": 0.0,
+          "EW_TL": 2.3,
+          "EW_R": 0.0
+        },
+        "served_pressure": 2.3,
+        "xtra_idle_mg_s": 0.0,
+        "fixed_idle_mg_s": 0.0,
+        "count_idle_mg_s": 0.0,
+        "idle_saved_vs_fixed_mg_s": 0.0
+      },
+      {
+        "frame": 72,
+        "t_s": 24.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "NS_TL",
+        "n_vehicles": 5,
+        "pressures": {
+          "NS_TL": 0.3,
+          "NS_R": 0.0,
+          "EW_TL": 3.3,
+          "EW_R": 0.0
+        },
+        "served_pressure": 3.3,
+        "xtra_idle_mg_s": 837.2,
+        "fixed_idle_mg_s": 2511.7,
+        "count_idle_mg_s": 837.2,
+        "idle_saved_vs_fixed_mg_s": 1674.4
+      },
+      {
+        "frame": 75,
+        "t_s": 25.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "NS_R",
+        "n_vehicles": 5,
+        "pressures": {
+          "NS_TL": 0.6,
+          "NS_R": 0.0,
+          "EW_TL": 2.3,
+          "EW_R": 0.0
+        },
+        "served_pressure": 2.3,
+        "xtra_idle_mg_s": 1674.4,
+        "fixed_idle_mg_s": 2511.7,
+        "count_idle_mg_s": 1674.4,
+        "idle_saved_vs_fixed_mg_s": 837.2
+      },
+      {
+        "frame": 78,
+        "t_s": 26.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "EW_TL",
+        "n_vehicles": 6,
+        "pressures": {
+          "NS_TL": 0.6,
+          "NS_R": 0.0,
+          "EW_TL": 3.3,
+          "EW_R": 0.0
+        },
+        "served_pressure": 3.3,
+        "xtra_idle_mg_s": 1674.4,
+        "fixed_idle_mg_s": 1674.4,
+        "count_idle_mg_s": 1674.4,
+        "idle_saved_vs_fixed_mg_s": 0.0
+      },
+      {
+        "frame": 81,
+        "t_s": 27.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "EW_R",
+        "n_vehicles": 6,
+        "pressures": {
+          "NS_TL": 0.6,
+          "NS_R": 0.0,
+          "EW_TL": 3.3,
+          "EW_R": 0.0
+        },
+        "served_pressure": 3.3,
+        "xtra_idle_mg_s": 1674.4,
+        "fixed_idle_mg_s": 1674.4,
+        "count_idle_mg_s": 1674.4,
+        "idle_saved_vs_fixed_mg_s": 0.0
+      },
+      {
+        "frame": 84,
+        "t_s": 28.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "NS_TL",
+        "n_vehicles": 5,
+        "pressures": {
+          "NS_TL": 0.3,
+          "NS_R": 0.0,
+          "EW_TL": 3.3,
+          "EW_R": 0.0
+        },
+        "served_pressure": 3.3,
+        "xtra_idle_mg_s": 837.2,
+        "fixed_idle_mg_s": 2511.7,
+        "count_idle_mg_s": 837.2,
+        "idle_saved_vs_fixed_mg_s": 1674.4
+      },
+      {
+        "frame": 87,
+        "t_s": 29.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "NS_R",
+        "n_vehicles": 6,
+        "pressures": {
+          "NS_TL": 0.9,
+          "NS_R": 0.0,
+          "EW_TL": 2.3,
+          "EW_R": 0.0
+        },
+        "served_pressure": 2.3,
+        "xtra_idle_mg_s": 3996.1,
+        "fixed_idle_mg_s": 2511.7,
+        "count_idle_mg_s": 3996.1,
+        "idle_saved_vs_fixed_mg_s": -1484.4
+      },
+      {
+        "frame": 90,
+        "t_s": 30.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "EW_TL",
+        "n_vehicles": 3,
+        "pressures": {
+          "NS_TL": 0.0,
+          "NS_R": 0.0,
+          "EW_TL": 2.3,
+          "EW_R": 0.0
+        },
+        "served_pressure": 2.3,
+        "xtra_idle_mg_s": 0.0,
+        "fixed_idle_mg_s": 0.0,
+        "count_idle_mg_s": 0.0,
+        "idle_saved_vs_fixed_mg_s": 0.0
+      },
+      {
+        "frame": 93,
+        "t_s": 31.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "EW_R",
+        "n_vehicles": 5,
+        "pressures": {
+          "NS_TL": 0.6,
+          "NS_R": 0.0,
+          "EW_TL": 2.3,
+          "EW_R": 0.0
+        },
+        "served_pressure": 2.3,
+        "xtra_idle_mg_s": 1674.4,
+        "fixed_idle_mg_s": 1674.4,
+        "count_idle_mg_s": 1674.4,
+        "idle_saved_vs_fixed_mg_s": 0.0
+      },
+      {
+        "frame": 96,
+        "t_s": 32.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "NS_TL",
+        "n_vehicles": 5,
+        "pressures": {
+          "NS_TL": 0.6,
+          "NS_R": 0.0,
+          "EW_TL": 2.3,
+          "EW_R": 0.0
+        },
+        "served_pressure": 2.3,
+        "xtra_idle_mg_s": 1674.4,
+        "fixed_idle_mg_s": 2511.7,
+        "count_idle_mg_s": 1674.4,
+        "idle_saved_vs_fixed_mg_s": 837.2
+      },
+      {
+        "frame": 99,
+        "t_s": 33.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "NS_R",
+        "n_vehicles": 5,
+        "pressures": {
+          "NS_TL": 0.6,
+          "NS_R": 0.0,
+          "EW_TL": 2.3,
+          "EW_R": 0.0
+        },
+        "served_pressure": 2.3,
+        "xtra_idle_mg_s": 1674.4,
+        "fixed_idle_mg_s": 2511.7,
+        "count_idle_mg_s": 1674.4,
+        "idle_saved_vs_fixed_mg_s": 837.2
+      },
+      {
+        "frame": 102,
+        "t_s": 34.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "EW_TL",
+        "n_vehicles": 5,
+        "pressures": {
+          "NS_TL": 0.6,
+          "NS_R": 0.0,
+          "EW_TL": 2.3,
+          "EW_R": 0.0
+        },
+        "served_pressure": 2.3,
+        "xtra_idle_mg_s": 1674.4,
+        "fixed_idle_mg_s": 1674.4,
+        "count_idle_mg_s": 1674.4,
+        "idle_saved_vs_fixed_mg_s": 0.0
+      },
+      {
+        "frame": 105,
+        "t_s": 35.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "EW_R",
+        "n_vehicles": 7,
+        "pressures": {
+          "NS_TL": 1.2,
+          "NS_R": 0.0,
+          "EW_TL": 2.3,
+          "EW_R": 0.0
+        },
+        "served_pressure": 2.3,
+        "xtra_idle_mg_s": 3348.9,
+        "fixed_idle_mg_s": 3348.9,
+        "count_idle_mg_s": 3348.9,
+        "idle_saved_vs_fixed_mg_s": 0.0
+      },
+      {
+        "frame": 108,
+        "t_s": 36.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "NS_TL",
+        "n_vehicles": 7,
+        "pressures": {
+          "NS_TL": 1.2,
+          "NS_R": 0.0,
+          "EW_TL": 2.3,
+          "EW_R": 0.0
+        },
+        "served_pressure": 2.3,
+        "xtra_idle_mg_s": 3348.9,
+        "fixed_idle_mg_s": 2511.7,
+        "count_idle_mg_s": 3348.9,
+        "idle_saved_vs_fixed_mg_s": -837.2
+      },
+      {
+        "frame": 111,
+        "t_s": 37.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "NS_R",
+        "n_vehicles": 7,
+        "pressures": {
+          "NS_TL": 1.2,
+          "NS_R": 0.0,
+          "EW_TL": 2.3,
+          "EW_R": 0.0
+        },
+        "served_pressure": 2.3,
+        "xtra_idle_mg_s": 3348.9,
+        "fixed_idle_mg_s": 2511.7,
+        "count_idle_mg_s": 3348.9,
+        "idle_saved_vs_fixed_mg_s": -837.2
+      },
+      {
+        "frame": 114,
+        "t_s": 38.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "EW_TL",
+        "n_vehicles": 7,
+        "pressures": {
+          "NS_TL": 1.9,
+          "NS_R": 0.0,
+          "EW_TL": 2.3,
+          "EW_R": 0.0
+        },
+        "served_pressure": 2.3,
+        "xtra_idle_mg_s": 837.2,
+        "fixed_idle_mg_s": 837.2,
+        "count_idle_mg_s": 837.2,
+        "idle_saved_vs_fixed_mg_s": 0.0
+      },
+      {
+        "frame": 117,
+        "t_s": 39.0,
+        "next_phase": "EW_TL",
+        "count_phase": "EW_TL",
+        "fixed_phase": "EW_R",
+        "n_vehicles": 7,
+        "pressures": {
+          "NS_TL": 1.9,
+          "NS_R": 0.0,
+          "EW_TL": 2.3,
+          "EW_R": 0.0
+        },
+        "served_pressure": 2.3,
+        "xtra_idle_mg_s": 837.2,
+        "fixed_idle_mg_s": 837.2,
+        "count_idle_mg_s": 837.2,
+        "idle_saved_vs_fixed_mg_s": 0.0
+      }
+    ],
+    "decision_summary": {
+      "n_samples": 40,
+      "phase_share": {
+        "NS_TL": 0.1,
+        "EW_TL": 0.9
+      },
+      "dominant_phase": "EW_TL",
+      "mean_served_pressure": 2.397,
+      "cum_idle_xtra_mg": 24302.0,
+      "cum_idle_fixed_mg": 31215.7,
+      "cum_idle_saved_mg": 6913.7,
+      "idle_fuel_saved_L_proxy": 0.00934,
+      "pct_idle_cut_vs_fixed": 22.15,
+      "note": "Idle-fuel proxy from detector counts + measured idle mg/s weights. Illustrative for this clip \u2014 not the published SUMO fuel result."
+    }
   },
   "last_frame": {
     "N": {
@@ -1778,5 +5662,32 @@
       "bus": 0,
       "two_wheeler": 0
     }
-  }
+  },
+  "published_fuel_savings": [
+    {
+      "scenario": "balanced",
+      "vs_best_baseline_%": 0.3,
+      "vs_fixed_legacy_%": 7.94,
+      "best_baseline": "maxpressure"
+    },
+    {
+      "scenario": "dynamic",
+      "vs_best_baseline_%": 1.09,
+      "vs_fixed_legacy_%": 13.24,
+      "best_baseline": "maxpressure"
+    },
+    {
+      "scenario": "low_demand",
+      "vs_best_baseline_%": 1.91,
+      "vs_fixed_legacy_%": 14.15,
+      "best_baseline": "maxpressure"
+    },
+    {
+      "scenario": "peak_unbalanced",
+      "vs_best_baseline_%": 0.69,
+      "vs_fixed_legacy_%": 17.52,
+      "best_baseline": "maxpressure"
+    }
+  ],
+  "decision_label": "XtraFlow serves the highest fuel-weighted phase pressure; idle-fuel proxy compares that choice to fixed round-robin on the same counts."
 }

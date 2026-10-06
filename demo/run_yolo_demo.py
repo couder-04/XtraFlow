@@ -13,6 +13,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+from demo.yolo_decisions import enrich_summary
 from sim.util import ROOT, save_json
 
 # Prefer straight one-way highway clips; Bellevue junctions as fallback.
@@ -315,6 +316,7 @@ def main() -> None:
             "two_wheeler": last.get("two_wheeler"),
         }
     summary["last_frame"] = pressures
+    summary = enrich_summary(summary, out_dir)
 
     save_json(out_dir / "yolo_demo_summary.json", summary)
     save_json(
@@ -359,6 +361,12 @@ def main() -> None:
     )
     print(json.dumps(summary["outputs"], indent=2))
     print("Wrote", out_dir / "yolo_demo_summary.json")
+
+    # One simple story video: mosaic + which roads move when
+    try:
+        _run([py, "-m", "demo.yolo_story", "--summary", str(out_dir / "yolo_demo_summary.json")])
+    except Exception as e:
+        print("story video skipped:", e, flush=True)
 
 
 if __name__ == "__main__":
