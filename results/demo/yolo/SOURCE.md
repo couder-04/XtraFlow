@@ -11,6 +11,7 @@ Clips under `data/video/` are gitignored. Re-run:
 ```bash
 make yolo_demo
 # or: python -m demo.run_yolo_demo
+python -m demo.yolo_story   # rebuild GO/WAIT story only
 ```
 
 Dashboard:
@@ -21,8 +22,9 @@ make yolo_dashboard
 
 Outputs:
 
+- `results/demo/yolo/yolo_story.mp4` — **main story**: 2×2 cams, GO/WAIT, which roads move when
 - `results/demo/yolo_overlay.mp4` — primary single-cam overlay
-- `results/demo/yolo/yolo_mosaic.mp4` — 2×2 mosaic
+- `results/demo/yolo/yolo_mosaic.mp4` — plain 2×2 mosaic
 - `results/demo/yolo/overlay_{N,E,S,W}.mp4`
 - `results/demo/yolo/counts_*.json`
-- `results/demo/yolo/yolo_demo_summary.json`
+- `results/demo/yolo/yolo_demo_summary.json` — counts, phase timeline, idle-fuel proxy + published headlines
