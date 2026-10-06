@@ -324,6 +324,27 @@ def picture(slide, path: Path, l, t, w, h=None):
     return slide.shapes.add_picture(str(path), **kwargs)
 
 
+def movie(slide, movie_path: Path, poster_path: Path | None, l, t, w, h):
+    """Embed an MP4 so PowerPoint can play it in-slide (click to play)."""
+    movie_path = Path(movie_path)
+    if not movie_path.exists() or movie_path.stat().st_size == 0:
+        return None
+    poster = None
+    if poster_path is not None:
+        poster_path = Path(poster_path)
+        if poster_path.exists() and poster_path.stat().st_size > 0:
+            poster = str(poster_path)
+    return slide.shapes.add_movie(
+        str(movie_path),
+        Inches(l),
+        Inches(t),
+        Inches(w),
+        Inches(h),
+        poster_frame_image=poster,
+        mime_type="video/mp4",
+    )
+
+
 def _fmt_pct(value, digits=1) -> str:
     return f"{value:.{digits}f}%"
 
@@ -1386,38 +1407,55 @@ def _yolo_still(approach: str, kind: str | None = None) -> Path | None:
 
 
 def slide_yolo(prs, data, page, _total):
-    """Main perception live clip: GO/WAIT story mosaic."""
+    """Main perception live clip: GO/WAIT story mosaic (embedded, click to play)."""
     slide = blank(prs)
     yolo = data.get("yolo") or {}
     label = yolo.get("label") or "Input feasibility — not a fuel-saving result"
     chrome(
         slide,
         "Live clip 2 · perception",
-        "Play the YOLO story: GO / WAIT on four cameras",
+        "YOLO story video — click to play in PowerPoint",
         label,
         page,
     )
     outputs = yolo.get("outputs") or {}
-    story = outputs.get("story") or "results/demo/yolo/yolo_story.mp4"
+    story_rel = outputs.get("story") or "results/demo/yolo/yolo_story.mp4"
+    story_path = ROOT / story_rel
     still = ROOT / "results" / "demo" / "yolo" / "yolo_story_still.jpg"
     club = (yolo.get("clubbed") or {}).get("decision_summary") or {}
 
     rect(slide, L, 1.68, 7.55, 4.0, NAVY, radius=0.08)
-    if still.exists() and picture(slide, still, L + 0.18, 1.86, 7.2, 3.65):
-        pass
-    else:
-        write(slide, L + 0.35, 3.2, 7.0, 0.5, [[("Run make yolo_demo for yolo_story_still.jpg", 16, MIST, False, BODY)]])
+    embedded = movie(slide, story_path, still if still.exists() else None, L + 0.18, 1.86, 7.2, 3.65)
+    if not embedded:
+        if still.exists() and picture(slide, still, L + 0.18, 1.86, 7.2, 3.65):
+            write(slide, L + 0.35, 5.2, 7.0, 0.3, [[("Video missing — still only. Run make yolo_demo.", 12, MIST, False, BODY)]])
+        else:
+            write(slide, L + 0.35, 3.2, 7.0, 0.5, [[("Run make yolo_demo for yolo_story.mp4", 16, MIST, False, BODY)]])
 
     _card(slide, L + 7.8, 1.68, 4.48, 4.0)
-    write(slide, L + 8.02, 1.88, 4.1, 0.28, [[("PLAY NOW", 12, AMBER, True, BODY)]])
-    exists = (ROOT / story).exists()
+    write(slide, L + 8.02, 1.88, 4.1, 0.28, [[("CLICK VIDEO TO PLAY", 12, AMBER, True, BODY)]])
+    exists = story_path.exists()
     write(
         slide,
         L + 8.02,
-        2.25,
+        2.2,
         4.1,
-        0.7,
-        [[(story, 15, TEAL if exists else CORAL, True, TITLE)]],
+        0.55,
+        [[(
+            "Embedded on this slide." if exists else "Video file missing.",
+            15,
+            TEAL if exists else CORAL,
+            True,
+            TITLE,
+        )]],
+    )
+    write(
+        slide,
+        L + 8.02,
+        2.75,
+        4.1,
+        0.35,
+        [[(story_rel, 11, MUTED, False, BODY)]],
     )
     talking = [
         "Green = that axis moves. Red = wait.",
@@ -1425,10 +1463,10 @@ def slide_yolo(prs, data, page, _total):
         "Four independent corridor cams — not one junction.",
         "Not the locked SUMO fuel headline.",
     ]
-    y = 3.1
+    y = 3.2
     for i, line in enumerate(talking, start=1):
-        write(slide, L + 8.02, y, 4.1, 0.55, [[(f"{i}.  {line}", 14, INK, False, BODY)]])
-        y += 0.55
+        write(slide, L + 8.02, y, 4.1, 0.5, [[(f"{i}.  {line}", 14, INK, False, BODY)]])
+        y += 0.52
 
     proxy = club.get("pct_idle_cut_vs_fixed")
     peak = (yolo.get("clubbed") or {}).get("peak_vehicles")
@@ -1446,7 +1484,7 @@ def slide_yolo(prs, data, page, _total):
     write(slide, L + 0.32, 6.35, CONTENT_W - 0.6, 0.3, [[(bit_line, 14, WHITE, False, BODY)]])
     notes(
         slide,
-        "Play results/demo/yolo/yolo_story.mp4 full-screen. "
+        "Click the embedded yolo_story.mp4 on this slide to play in PowerPoint (Slideshow or Normal view). "
         "Say: GO/WAIT is illustrative from detector counts; published fuel is oracle SUMO TEST. "
         "Next slide has mosaic + per-cam overlays if you want to linger.",
     )
