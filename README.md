@@ -12,7 +12,7 @@ XtraFlow is a SUMO-based signal control stack for mixed urban traffic. It scores
 
 ![YOLO story: which roads get green](results/demo/yolo/yolo_story.gif)
 
-<p align="center"><em>Four CCTV cams · green = GO (served) · dim = WAIT · <a href="results/demo/yolo/yolo_story.mp4">full MP4</a> · input feasibility, not a fuel claim</em></p>
+<p align="center"><em>Four CCTV cams · green = GO (plays) · dim = PAUSE (frozen) · <a href="results/demo/yolo/yolo_story.mp4">full MP4</a> · input feasibility, not a fuel claim</em></p>
 
 > Simulation-based estimate · assumed traffic mix · oracle detector unless camera mode is on · proxy emission classes. Not a field deployment result.
 
@@ -50,7 +50,7 @@ Numbers are not hardcoded here. Open the artifacts:
 | [`results/REPORT.md`](results/REPORT.md) | Full methods + tables |
 | [`results/raw_runs.csv`](results/raw_runs.csv) | Every locked TEST run |
 | [`results/deck.pptx`](results/deck.pptx) | Slide deck filled from those files |
-| [`results/demo/yolo/yolo_story.gif`](results/demo/yolo/yolo_story.gif) / [`.mp4`](results/demo/yolo/yolo_story.mp4) | CCTV story: which roads get green when (feasibility demo) |
+| [`results/demo/yolo/yolo_story.gif`](results/demo/yolo/yolo_story.gif) / [`.mp4`](results/demo/yolo/yolo_story.mp4) | CCTV story: GO plays / other axis PAUSE frozen (feasibility demo) |
 | [`STATE.md`](STATE.md) · [`results/CHANGES.md`](results/CHANGES.md) | Published scope and cuts |
 
 ![Fuel reduction vs baselines](results/figures/ii_pct_reduction.png)
@@ -87,7 +87,7 @@ Dashboard and deck after a run:
 make demo
 make deck
 make dashboard        # Streamlit UI over SUMO results/
-make yolo_demo        # 4-cam YOLO overlays + mosaic + story video
+make yolo_demo        # 4-cam overlays + mosaic + GO/PAUSE story video
 make yolo_dashboard   # Streamlit: story / clubbed / per-cam + decisions
 ```
 
@@ -125,7 +125,7 @@ Controllers share the same network, demand files, and timing hard rules. Demand 
 ```bash
 python -m perception.yolo_counts --video data/video/YOUR.mp4 --roi perception/roi.yaml
 python -m perception.evaluate_detector
-make yolo_demo        # overlays, mosaic, decisions, story video
+make yolo_demo        # overlays, mosaic, decisions, GO/PAUSE story
 make yolo_dashboard   # http://localhost:8501 by default (or set --server.port)
 ```
 
@@ -136,13 +136,13 @@ Place up to four clips as `data/video/cam_{N,E,S,W}_hwy.mp4` (preferred) or Bell
 | Step | Command / artifact |
 | --- | --- |
 | Run pipeline | `make yolo_demo` |
-| Story video (GO/WAIT mosaic) | [`results/demo/yolo/yolo_story.mp4`](results/demo/yolo/yolo_story.mp4) |
+| Story video (GO/PAUSE mosaic) | [`results/demo/yolo/yolo_story.mp4`](results/demo/yolo/yolo_story.mp4) |
 | 2×2 mosaic | `results/demo/yolo/yolo_mosaic.mp4` |
 | Per-cam overlays | `results/demo/yolo/overlay_{N,E,S,W}.mp4` |
 | Counts + phase timeline | `results/demo/yolo/counts_*.json`, `yolo_demo_summary.json` |
 | UI | `make yolo_dashboard` → **Story video** · clubbed · per-cam · **Decisions & fuel** |
 
-The story banner shows **North–South** or **East–West** moving; green tiles are served, dimmed tiles wait. Clip idle-fuel figures are illustrative proxies from detector counts; published % fuel cuts stay in [`results/headlines.json`](results/headlines.json). Provenance: [`results/demo/yolo/SOURCE.md`](results/demo/yolo/SOURCE.md).
+The story banner shows **North-South** or **East-West** moving; **GO** tiles play while the other pair is **PAUSE** (frozen). When NS is active, E/W pause, and vice versa. Clip idle-fuel figures are illustrative proxies from detector counts; published % fuel cuts stay in [`results/headlines.json`](results/headlines.json). Provenance: [`results/demo/yolo/SOURCE.md`](results/demo/yolo/SOURCE.md).
 
 Only use datasets you are allowed to use. Nothing unlicensed is downloaded by this repo.
 

@@ -195,7 +195,8 @@ if view.startswith("Story"):
     st.subheader("Which roads move, when")
     st.write(
         "One video of all four cameras. **GO** tiles are the approaches XtraFlow is serving; "
-        "**WAIT** tiles are held. Banner text says North–South or East–West."
+        "One video of all four cameras. **GO** tiles play; **PAUSE** tiles freeze. "
+        "Banner text says North-South or East-West."
     )
     story = resolve((summary.get("outputs") or {}).get("story"))
     if story is None:

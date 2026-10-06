@@ -20,10 +20,10 @@ BANNER_H = 72
 FOOTER_H = 48
 ORDER = ("N", "E", "S", "W")  # TL, TR, BL, BR
 PHASE_PLAIN = {
-    "NS_TL": "North–South moving",
-    "NS_R": "North–South (right) moving",
-    "EW_TL": "East–West moving",
-    "EW_R": "East–West (right) moving",
+    "NS_TL": "North-South moving",
+    "NS_R": "North-South (right) moving",
+    "EW_TL": "East-West moving",
+    "EW_R": "East-West (right) moving",
 }
 
 
@@ -82,6 +82,20 @@ def build_story(
     if len(caps) < 2:
         raise SystemExit("Need at least two overlay videos")
 
+    # Seed one frame each so WAIT tiles have something to freeze on.
+    last: dict[str, np.ndarray] = {}
+    exhausted: set[str] = set()
+    continuous_lens = []
+    for a, cap in caps.items():
+        n = int(cap.get(cv2.CAP_PROP_FRAME_COUNT) or 0)
+        if n > 0:
+            continuous_lens.append(n)
+        fr = _read_scaled(cap)
+        if fr is None:
+            exhausted.add(a)
+        else:
+            last[a] = fr
+
     out_w = TILE_W * 2
     out_h = BANNER_H + TILE_H * 2 + FOOTER_H
     out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -93,30 +107,50 @@ def build_story(
     )
 
     frame_i = 0
-    while True:
-        tiles = {}
-        done = False
-        for a, cap in caps.items():
-            fr = _read_scaled(cap)
-            if fr is None:
-                done = True
-                break
-            tiles[a] = fr
-        if done or len(tiles) < len(caps):
-            break
-
+    # Same wall-clock length as a normal playthrough; WAIT tiles freeze instead of advancing.
+    max_frames = max(continuous_lens) if continuous_lens else int(fps * 15)
+    t_max = max((float(r.get("t_s") or 0) for r in decisions), default=1.0) or 1.0
+    while frame_i < max_frames:
         t_s = frame_i / fps
-        dec = _phase_at(decisions, t_s)
+        t_query = min(t_s, t_max)
+        dec = _phase_at(decisions, t_query)
         phase = dec.get("next_phase") or "NS_TL"
         active = set(PHASE_APPROACHES.get(phase, ()))
         plain = PHASE_PLAIN.get(phase, phase)
 
+        # Advance only GO cameras; WAIT cameras stay frozen on last frame.
+        any_new = False
+        for a, cap in caps.items():
+            if a in exhausted:
+                continue
+            if a not in active:
+                continue
+            fr = _read_scaled(cap)
+            if fr is None:
+                exhausted.add(a)
+            else:
+                last[a] = fr
+                any_new = True
+
+        if not last:
+            break
+        # If every GO camera is exhausted, hold a few freeze frames then stop.
+        if not any_new and all(a in exhausted for a in active if a in caps):
+            if all(a in exhausted for a in caps):
+                break
+
         canvas = np.zeros((out_h, out_w, 3), dtype=np.uint8)
-        # banner
         canvas[:BANNER_H, :] = (28, 28, 28)
         _put(canvas, f"t = {t_s:4.1f}s", (16, 46), 0.85, (220, 220, 220), 2)
         _put(canvas, plain, (200, 46), 0.95, (80, 255, 140), 2)
-        _put(canvas, "XtraFlow serves highest fuel-weighted demand", (out_w - 520, 46), 0.45, (180, 180, 180), 1)
+        _put(
+            canvas,
+            "GO plays · PAUSE freezes",
+            (out_w - 320, 46),
+            0.5,
+            (180, 180, 180),
+            1,
+        )
 
         positions = {
             "N": (0, BANNER_H),
@@ -125,39 +159,48 @@ def build_story(
             "W": (TILE_W, BANNER_H + TILE_H),
         }
         for a, (x, y) in positions.items():
-            if a not in tiles:
+            if a not in last:
                 continue
-            tile = tiles[a]
-            label = a
+            tile = last[a]
             if a in active:
                 tile = _glow(tile)
                 badge = "GO"
                 badge_color = (40, 220, 90)
             else:
                 tile = _dim(tile, 0.4)
-                badge = "WAIT"
+                badge = "PAUSE"
                 badge_color = (80, 80, 200)
             canvas[y : y + TILE_H, x : x + TILE_W] = tile
-            cv2.rectangle(canvas, (x + 8, y + 8), (x + 100, y + 40), badge_color, -1)
-            _put(canvas, f"{label} {badge}", (x + 14, y + 32), 0.65, (255, 255, 255), 2)
+            cv2.rectangle(canvas, (x + 8, y + 8), (x + 118, y + 40), badge_color, -1)
+            _put(canvas, f"{a} {badge}", (x + 14, y + 32), 0.65, (255, 255, 255), 2)
 
-        # footer timeline
         canvas[out_h - FOOTER_H :, :] = (22, 22, 22)
-        _put(canvas, "Timeline  N/S green = north–south roads move   ·   E/W green = east–west roads move", (16, out_h - 18), 0.5, (200, 200, 200), 1)
-        # scrubber
+        _put(
+            canvas,
+            "Timeline  N/S GO -> E/W paused   |   E/W GO -> N/S paused",
+            (16, out_h - 18),
+            0.5,
+            (200, 200, 200),
+            1,
+        )
         if decisions:
-            t_max = max(float(r.get("t_s") or 0) for r in decisions) or 1.0
-            progress = min(1.0, t_s / t_max)
+            t_show = t_query
+            progress = min(1.0, t_show / t_max)
             bar_y = out_h - FOOTER_H + 12
             cv2.rectangle(canvas, (16, bar_y), (out_w - 16, bar_y + 8), (60, 60, 60), -1)
-            cv2.rectangle(canvas, (16, bar_y), (16 + int((out_w - 32) * progress), bar_y + 8), (80, 220, 140), -1)
-            # mark phase changes
+            cv2.rectangle(
+                canvas,
+                (16, bar_y),
+                (16 + int((out_w - 32) * progress), bar_y + 8),
+                (80, 220, 140),
+                -1,
+            )
             prev = None
             for r in decisions:
                 ph = r.get("next_phase")
                 if ph != prev:
                     px = 16 + int((out_w - 32) * (float(r.get("t_s") or 0) / t_max))
-                    col = (80, 255, 140) if ph.startswith("NS") else (80, 200, 255)
+                    col = (80, 255, 140) if str(ph).startswith("NS") else (80, 200, 255)
                     cv2.line(canvas, (px, bar_y - 4), (px, bar_y + 12), col, 2)
                     prev = ph
 
