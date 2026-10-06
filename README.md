@@ -10,9 +10,9 @@ XtraFlow is a SUMO-based signal control stack for mixed urban traffic. It scores
 
 ### Story video — which roads move when
 
-[![YOLO story: GO/WAIT mosaic](results/demo/yolo/yolo_story_still.jpg)](results/demo/yolo/yolo_story.mp4)
+![YOLO story: which roads get green](results/demo/yolo/yolo_story.gif)
 
-<p align="center"><em><a href="results/demo/yolo/yolo_story.mp4">Watch yolo_story.mp4</a> · four CCTV cams · green = served · dim = wait · input feasibility, not a fuel claim</em></p>
+<p align="center"><em>Four CCTV cams · green = GO (served) · dim = WAIT · <a href="results/demo/yolo/yolo_story.mp4">full MP4</a> · input feasibility, not a fuel claim</em></p>
 
 > Simulation-based estimate · assumed traffic mix · oracle detector unless camera mode is on · proxy emission classes. Not a field deployment result.
 
@@ -50,7 +50,7 @@ Numbers are not hardcoded here. Open the artifacts:
 | [`results/REPORT.md`](results/REPORT.md) | Full methods + tables |
 | [`results/raw_runs.csv`](results/raw_runs.csv) | Every locked TEST run |
 | [`results/deck.pptx`](results/deck.pptx) | Slide deck filled from those files |
-| [`results/demo/yolo/yolo_story.mp4`](results/demo/yolo/yolo_story.mp4) | CCTV story: which roads get green when (feasibility demo) |
+| [`results/demo/yolo/yolo_story.gif`](results/demo/yolo/yolo_story.gif) / [`.mp4`](results/demo/yolo/yolo_story.mp4) | CCTV story: which roads get green when (feasibility demo) |
 | [`STATE.md`](STATE.md) · [`results/CHANGES.md`](results/CHANGES.md) | Published scope and cuts |
 
 ![Fuel reduction vs baselines](results/figures/ii_pct_reduction.png)
