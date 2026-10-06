@@ -391,6 +391,7 @@ def slide_title(prs, data, page, _total):
         [[("Fuel-weighted traffic signals", 26, RGBColor(0xF0, 0xC2, 0x6A), False, TITLE)]],
     )
     n_sc, seed_bit, n_ctrl = _scope_bits(data)
+    yolo = data.get("yolo") or {}
     write(
         slide,
         0.78,
@@ -399,18 +400,26 @@ def slide_title(prs, data, page, _total):
         0.85,
         [[(
             f"A locked comparison on mixed Indian traffic. Same demand, {n_ctrl} controllers, "
-            f"{n_sc} demand patterns. Not a field deployment.",
+            f"{n_sc} demand patterns. Not a field deployment."
+            + (" Live demos: SUMO side-by-side + YOLO camera clips." if yolo else ""),
             18,
             MIST,
             False,
             BODY,
         )]],
     )
-    facts = [
-        (n_sc, "scenarios"),
-        (seed_bit.split()[0], "test seeds, scored once"),
-        (n_ctrl, "controllers in TEST"),
-    ]
+    if yolo:
+        facts = [
+            (n_sc, "scenarios"),
+            (seed_bit.split()[0], "test seeds, scored once"),
+            ("2", "live clips to play"),
+        ]
+    else:
+        facts = [
+            (n_sc, "scenarios"),
+            (seed_bit.split()[0], "test seeds, scored once"),
+            (n_ctrl, "controllers in TEST"),
+        ]
     x = 0.78
     for value, label in facts:
         write(slide, x, 5.15, 3.3, 0.5, [[(value, 28, WHITE, True, TITLE)]])
@@ -422,7 +431,46 @@ def slide_title(prs, data, page, _total):
     notes(
         slide,
         "Open on energy, not on travel time. Say out loud that this is a simulation before the first percentage. "
-        f"Scope: {seed_bit}. Source label: {data['label']}",
+        f"Scope: {seed_bit}. Source label: {data['label']}. "
+        "Demo order later: results/demo/demo.mp4, then results/demo/yolo/yolo_story.mp4.",
+    )
+
+
+def slide_agenda(prs, data, page, _total):
+    slide = blank(prs)
+    yolo = data.get("yolo") or {}
+    chrome(
+        slide,
+        "Talk map",
+        "What you will see",
+        "Numbers first from the locked TEST. Clips last — they illustrate, they do not replace the headline.",
+        page,
+    )
+    blocks = [
+        ("01", "Idea", "Why queue counts miss fuel cost, and how idle-fuel weights fix that."),
+        ("02", "Locked TEST", "Same demand, fair baselines, fuel / CO₂ / wait / queue on disk."),
+        ("03", "Live · SUMO", "Side-by-side: fixed timing vs XtraFlow on one seed."),
+        (
+            "04",
+            "Live · YOLO",
+            "Camera mosaic with GO/WAIT story, then per-cam overlays if asked."
+            if yolo
+            else "Camera path: run make yolo_demo to fill the clips.",
+        ),
+        ("05", "Limits", "Detection miss, unscored grid, oracle TEST, next field steps."),
+    ]
+    gap = 0.14
+    width = (CONTENT_W - 4 * gap) / 5
+    for i, (num, title, body) in enumerate(blocks):
+        x = L + i * (width + gap)
+        _card(slide, x, 1.75, width, 4.15)
+        write(slide, x + 0.18, 1.95, width - 0.35, 0.35, [[(num, 18, AMBER, True, TITLE)]])
+        write(slide, x + 0.18, 2.45, width - 0.35, 0.7, [[(title, 18, INK, True, TITLE)]])
+        write(slide, x + 0.18, 3.3, width - 0.38, 2.2, [[(body, 14, INK, False, BODY)]])
+    notes(
+        slide,
+        "Skip nothing in 01–03 for a short talk. Play both live clips. "
+        "Robustness / grid / scaling are backup if asked.",
     )
 
 
@@ -630,7 +678,7 @@ def slide_cycle(prs, data, page, _total):
         write(slide, x + 0.26, 3.2, width - 0.52, 2.4, [[(body, 15, INK, False, BODY)]])
     notes(
         slide,
-        "Play the YOLO mosaic after the side-by-side SUMO demo. "
+        "Play the YOLO story after the side-by-side SUMO demo (yolo_story.mp4). "
         "Say clearly: YOLO is input feasibility; headline fuel numbers are oracle TEST. "
         "Do not claim a field detector result.",
     )
@@ -1256,7 +1304,7 @@ def slide_demo(prs, data, page, _total):
             5.3,
             7.0,
             0.7,
-            [[("Next: YOLO camera overlays — how the controller can see the queue.", 15, RGBColor(0xF0, 0xC2, 0x6A), False, BODY)]],
+            [[("Next: YOLO story clip — GO/WAIT on four cameras.", 15, RGBColor(0xF0, 0xC2, 0x6A), False, BODY)]],
         )
     else:
         write(
@@ -1282,28 +1330,103 @@ def slide_demo(prs, data, page, _total):
     notes(
         slide,
         "Open results/demo/demo.mp4 (or demo.gif) while presenting. "
-        "Then advance to the YOLO slide and play the mosaic. "
+        "Then advance to the YOLO story slide and play yolo_story.mp4. "
         "Say that the SUMO demo is qualitative; the headline numbers are on the previous slides.",
     )
 
 
-def _yolo_still(approach: str) -> Path | None:
-    still_dir = ROOT / "results" / "demo" / "yolo_stills"
-    if not still_dir.exists():
-        return None
-    matches = sorted(still_dir.glob(f"cam_{approach}_*.jpg"))
-    return matches[0] if matches else None
+def _yolo_still(approach: str, kind: str | None = None) -> Path | None:
+    dirs: list[Path] = []
+    if kind == "hwy":
+        dirs.append(ROOT / "results" / "demo" / "yolo_stills_hwy")
+    dirs.append(ROOT / "results" / "demo" / "yolo_stills")
+    dirs.append(ROOT / "results" / "demo" / "yolo_stills_hwy")
+    for still_dir in dirs:
+        if not still_dir.exists():
+            continue
+        matches = sorted(still_dir.glob(f"cam_{approach}_*.jpg"))
+        if matches:
+            return matches[0]
+    return None
 
 
 def slide_yolo(prs, data, page, _total):
+    """Main perception live clip: GO/WAIT story mosaic."""
     slide = blank(prs)
     yolo = data.get("yolo") or {}
     label = yolo.get("label") or "Input feasibility — not a fuel-saving result"
     chrome(
         slide,
         "Live clip 2 · perception",
-        "YOLO reads the approach from camera video",
+        "Play the YOLO story: GO / WAIT on four cameras",
         label,
+        page,
+    )
+    outputs = yolo.get("outputs") or {}
+    story = outputs.get("story") or "results/demo/yolo/yolo_story.mp4"
+    still = ROOT / "results" / "demo" / "yolo" / "yolo_story_still.jpg"
+    club = (yolo.get("clubbed") or {}).get("decision_summary") or {}
+
+    rect(slide, L, 1.68, 7.55, 4.0, NAVY, radius=0.08)
+    if still.exists() and picture(slide, still, L + 0.18, 1.86, 7.2, 3.65):
+        pass
+    else:
+        write(slide, L + 0.35, 3.2, 7.0, 0.5, [[("Run make yolo_demo for yolo_story_still.jpg", 16, MIST, False, BODY)]])
+
+    _card(slide, L + 7.8, 1.68, 4.48, 4.0)
+    write(slide, L + 8.02, 1.88, 4.1, 0.28, [[("PLAY NOW", 12, AMBER, True, BODY)]])
+    exists = (ROOT / story).exists()
+    write(
+        slide,
+        L + 8.02,
+        2.25,
+        4.1,
+        0.7,
+        [[(story, 15, TEAL if exists else CORAL, True, TITLE)]],
+    )
+    talking = [
+        "Green = that axis moves. Red = wait.",
+        "Phase picks the highest fuel-weighted pressure.",
+        "Four independent corridor cams — not one junction.",
+        "Not the locked SUMO fuel headline.",
+    ]
+    y = 3.1
+    for i, line in enumerate(talking, start=1):
+        write(slide, L + 8.02, y, 4.1, 0.55, [[(f"{i}.  {line}", 14, INK, False, BODY)]])
+        y += 0.55
+
+    proxy = club.get("pct_idle_cut_vs_fixed")
+    peak = (yolo.get("clubbed") or {}).get("peak_vehicles")
+    mean_v = (yolo.get("clubbed") or {}).get("mean_vehicles")
+    rect(slide, L, 5.85, CONTENT_W, 0.95, NAVY, radius=0.08)
+    bits = []
+    if mean_v is not None:
+        bits.append(f"mean ~{mean_v:.0f} veh across cams")
+    if peak is not None:
+        bits.append(f"peak {peak:.0f}")
+    if proxy is not None:
+        bits.append(f"idle-fuel proxy vs fixed {proxy:.0f}% on this clip only")
+    bit_line = "  ·  ".join(bits) if bits else "See yolo_demo_summary.json"
+    write(slide, L + 0.32, 6.0, CONTENT_W - 0.6, 0.28, [[("CLIP STATS (PROXY — NOT TEST)", 12, AMBER, True, BODY)]])
+    write(slide, L + 0.32, 6.35, CONTENT_W - 0.6, 0.3, [[(bit_line, 14, WHITE, False, BODY)]])
+    notes(
+        slide,
+        "Play results/demo/yolo/yolo_story.mp4 full-screen. "
+        "Say: GO/WAIT is illustrative from detector counts; published fuel is oracle SUMO TEST. "
+        "Next slide has mosaic + per-cam overlays if you want to linger.",
+    )
+
+
+def slide_yolo_overlays(prs, data, page, _total):
+    """Backup play list: mosaic + N/E/S/W overlays."""
+    slide = blank(prs)
+    yolo = data.get("yolo") or {}
+    label = yolo.get("label") or "Input feasibility — not a fuel-saving result"
+    chrome(
+        slide,
+        "Live clip 2b · optional",
+        "Mosaic and per-camera overlays",
+        "Play if someone asks how each approach looks. Same caveat: input feasibility only.",
         page,
     )
     cams = yolo.get("cameras") or [
@@ -1312,7 +1435,6 @@ def slide_yolo(prs, data, page, _total):
         {"approach": "S", "title": "South"},
         {"approach": "W", "title": "West"},
     ]
-    # 2×2 stills
     cell_w, cell_h = 2.85, 1.7
     gap_x, gap_y = 0.12, 0.12
     origin_x, origin_y = L, 1.68
@@ -1324,29 +1446,24 @@ def slide_yolo(prs, data, page, _total):
         y = origin_y + row * (cell_h + gap_y)
         cam = by_approach.get(approach) or {"approach": approach, "title": approach}
         title = cam.get("title") or approach
-        still = _yolo_still(approach)
+        short = title.split("/")[0].strip()
+        still = _yolo_still(approach, cam.get("kind"))
         rect(slide, x, y, cell_w, cell_h, NAVY, radius=0.06)
         if still and picture(slide, still, x + 0.08, y + 0.28, cell_w - 0.16, cell_h - 0.4):
-            write(slide, x + 0.1, y + 0.04, cell_w - 0.2, 0.24, [[(f"{approach}  ·  {title}", 11, WHITE, True, BODY)]])
+            write(slide, x + 0.1, y + 0.04, cell_w - 0.2, 0.24, [[(f"{approach}  ·  {short}", 11, WHITE, True, BODY)]])
         else:
-            write(slide, x + 0.15, y + 0.55, cell_w - 0.3, 0.5, [[(f"{approach}  ·  {title}", 14, MIST, True, BODY)]])
+            write(slide, x + 0.15, y + 0.55, cell_w - 0.3, 0.5, [[(f"{approach}  ·  {short}", 14, MIST, True, BODY)]])
             write(slide, x + 0.15, y + 1.05, cell_w - 0.3, 0.35, [[("still missing — run make yolo_demo", 12, MIST, False, BODY)]])
 
-    # Play list panel
     outputs = yolo.get("outputs") or {}
     mosaic = outputs.get("mosaic") or "results/demo/yolo/yolo_mosaic.mp4"
     primary = outputs.get("primary_overlay") or "results/demo/yolo_overlay.mp4"
-    overlays = outputs.get("overlays") or [
-        f"results/demo/yolo/overlay_{a}.mp4" for a in order
-    ]
+    overlays = outputs.get("overlays") or [f"results/demo/yolo/overlay_{a}.mp4" for a in order]
     panel_x = L + 2 * (cell_w + gap_x) + 0.2
     panel_w = CONTENT_W - (panel_x - L)
     _card(slide, panel_x, 1.68, panel_w, 3.52)
     write(slide, panel_x + 0.22, 1.85, panel_w - 0.4, 0.28, [[("PLAY THESE", 12, AMBER, True, BODY)]])
-    play_rows = [
-        ("Mosaic (2×2)", mosaic),
-        ("Primary overlay", primary),
-    ]
+    play_rows = [("Mosaic (2×2)", mosaic), ("Primary overlay", primary)]
     for approach, path in zip(order, overlays):
         play_rows.append((f"Cam {approach}", path))
     y = 2.25
@@ -1359,36 +1476,19 @@ def slide_yolo(prs, data, page, _total):
         y += 0.48
 
     note = yolo.get("note") or (
-        "Four cameras are four different junctions, mapped to N/E/S/W for a mosaic. "
-        "Not synchronized approaches of one intersection."
+        "Four independent corridor cameras mapped to N/E/S/W. Not synchronized approaches of one intersection."
     )
     source = yolo.get("source") or ""
+    attr = yolo.get("attribution") or ""
     rect(slide, L, 5.35, CONTENT_W, 1.45, NAVY, radius=0.08)
-    write(slide, L + 0.32, 5.5, CONTENT_W - 0.6, 0.28, [[("SAY THIS OUT LOUD", 12, AMBER, True, BODY)]])
-    write(
-        slide,
-        L + 0.32,
-        5.85,
-        CONTENT_W - 0.6,
-        0.55,
-        [[(
-            "This shows the controller can ingest camera counts. "
-            "It is not the locked fuel result. TEST headlines still use the oracle detector.",
-            15,
-            WHITE,
-            False,
-            BODY,
-        )]],
-    )
-    attribution = note
-    if source:
-        attribution = f"{note}  ·  {source}"
-    write(slide, L + 0.32, 6.45, CONTENT_W - 0.6, 0.25, [[(attribution, 12, MIST, False, BODY)]])
+    write(slide, L + 0.32, 5.5, CONTENT_W - 0.6, 0.28, [[("ATTRIBUTION", 12, AMBER, True, BODY)]])
+    write(slide, L + 0.32, 5.85, CONTENT_W - 0.6, 0.4, [[(note, 14, WHITE, False, BODY)]])
+    foot = "  ·  ".join(p for p in (source, attr) if p)
+    write(slide, L + 0.32, 6.4, CONTENT_W - 0.6, 0.25, [[(foot or label, 12, MIST, False, BODY)]])
     notes(
         slide,
-        "Play results/demo/yolo/yolo_mosaic.mp4 first, then one overlay if asked. "
-        "Attribution and caveats are in results/demo/yolo/SOURCE.md and yolo_demo_summary.json. "
-        "Do not present Bellevue clips as an Indian field site or as synchronized approaches.",
+        "Optional. Prefer yolo_story on the previous slide for the talk. "
+        "Use mosaic or one overlay only if asked. Do not claim a synchronized field site.",
     )
 
 
@@ -1624,7 +1724,7 @@ def slide_close(prs, data, page, _total):
     footer(slide, page, dark=True)
     notes(
         slide,
-        "Close on the three conditions. Demo order was: SUMO side-by-side, then YOLO mosaic. "
+        "Close on the three conditions. Demo order was: SUMO side-by-side, YOLO story, optional overlays. "
         "Do not end on the annual litre range. The headline comparison is in results/headlines.json.",
     )
 
@@ -1639,6 +1739,7 @@ def main():
     prs.core_properties.category = data["label"]
     builders = [
         slide_title,
+        slide_agenda,
         slide_problem,
         slide_weights,
         slide_cycle,
@@ -1649,6 +1750,7 @@ def main():
         slide_figures,
         slide_demo,
         slide_yolo,
+        slide_yolo_overlays,
         slide_robust,
         slide_grid,
         slide_checks,
