@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import csv
+import hashlib
 import json
 import os
 import random
@@ -136,8 +137,10 @@ def run_one(
         tag = f"{tag}_dm{float(demand_mult):g}"
     if mix_override is not None:
         # Stable short fingerprint so parallel mix samples do not clobber tripinfo.
+        # Do not use builtin hash(): PYTHONHASHSEED makes it process-unstable.
         mix_key = ",".join(f"{k}={float(mix_override[k]):.4f}" for k in sorted(mix_override))
-        tag = f"{tag}_mix{abs(hash(mix_key)) % (10**8):08d}"
+        digest = hashlib.md5(mix_key.encode("utf-8")).hexdigest()[:8]
+        tag = f"{tag}_mix{digest}"
     if run_id:
         tag = f"{tag}_{run_id}"
     if smoke:

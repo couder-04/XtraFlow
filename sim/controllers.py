@@ -338,22 +338,34 @@ class BaseController:
             p += w * (1.0 if v["halting"] else alpha)
         return p - downstream_penalty
 
-    def _downstream_count(self, traci_mod, phase_name: str) -> float:
-        """Downstream load for max-pressure: occupancy (scaled), else vehicle count.
+    # Occupancy unit: TraCI getLastStepOccupancy returns a fraction in [0, 1]
+    # (lane length occupied / lane length). Upstream phase pressure is in
+    # vehicle-count units (Σ w · {1 if halted else α}). Multiplying occupancy by
+    # downstream_occupancy_scale (default 10) converts one fully occupied out-edge
+    # into ~10 vehicle-equivalents of penalty so the two terms are commensurate.
+    # Values outside [0, 1] are clipped; if occupancy is unavailable, fall back to
+    # getLastStepVehicleNumber (already in vehicle units, unscaled).
+    DOWNSTREAM_OCCUPANCY_SCALE_DEFAULT = 10.0
 
-        Halting on short out-edges is near zero at a free discharge, so the old
-        getLastStepHaltingNumber penalty was always ~0 and made maxpressure
-        bit-identical to queue_pressure. Out-edge occupancy is preferred; it is
-        scaled to a vehicle-equivalent so it is commensurate with the upstream
-        count-based pressure. Vehicle number is the fallback.
+    def _downstream_count(self, traci_mod, phase_name: str) -> float:
+        """Downstream load for max-pressure [vehicle-equivalent].
+
+        Prefer out-edge occupancy ∈ [0, 1], scaled by ``downstream_occupancy_scale``
+        (default 10 → vehicle-equivalent). Else raw vehicle count. Never uses
+        getLastStepHaltingNumber (that made published maxpressure ≡ queue_pressure).
         """
-        # Occupancy is in [0, 1]; upstream pressure is vehicle-counts. Scale so a
-        # fully occupied out-edge roughly matches ~10 queued vehicles of penalty.
-        occ_scale = float(self.params.get("downstream_occupancy_scale", 10.0))
+        occ_scale = float(
+            self.params.get(
+                "downstream_occupancy_scale",
+                self.DOWNSTREAM_OCCUPANCY_SCALE_DEFAULT,
+            )
+        )
         total = 0.0
         for edge in self.downstream_edges.get(phase_name, []):
             try:
                 occ = float(traci_mod.edge.getLastStepOccupancy(edge))
+                if occ < 0.0 or occ > 1.0:
+                    occ = max(0.0, min(1.0, occ))
                 total += occ * occ_scale
                 continue
             except Exception:

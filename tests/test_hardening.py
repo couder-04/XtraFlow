@@ -244,14 +244,98 @@ def test_downstream_penalty_nonzero_when_out_edges_occupied():
     busy = World(n=0, occupancy_edges={"S_out": 0.4, "N_out": 0.3, "E_out": 0.2, "W_out": 0.1})
     pen = mp._downstream_count(busy, "NS_TL")
     assert pen > 0.0
-    # Default scale 10 → 0.4+0.3+0.2+0.1 = 1.0 occupancy → 10.0 penalty.
+    # Default scale 10 → 0.4+0.3+0.2+0.1 = 1.0 occupancy → 10.0 vehicle-eq.
     assert pen == pytest.approx(10.0)
     # Right phase only sees E_out + W_out in the published mapping.
     assert mp._downstream_count(busy, "NS_R") == pytest.approx(3.0)
 
 
+def test_downstream_occupancy_unit_is_fraction_scaled_to_vehicle_eq():
+    """Occupancy is TraCI [0,1]; penalty = clip(occ) * downstream_occupancy_scale.
+
+    Static check of the max-pressure unit bridge: upstream pressure is vehicle
+    counts, so a full out-edge (occ=1) contributes exactly ``scale`` vehicle-eq.
+    Out-of-range occupancy is clipped into [0, 1].
+    """
+    info = _groups()
+    cfg = load_config()
+    scale = 7.5
+    mp = MaxPressureController(
+        cfg=cfg, groups=info["groups"], n_links=info["n_links"],
+        downstream_edges={"NS_TL": ["S_out"], "NS_R": [], "EW_TL": [], "EW_R": []},
+        params={"downstream_occupancy_scale": scale},
+    )
+    assert MaxPressureController.DOWNSTREAM_OCCUPANCY_SCALE_DEFAULT == 10.0
+
+    for occ, expected in [
+        (0.0, 0.0),
+        (0.5, 0.5 * scale),
+        (1.0, 1.0 * scale),
+        (-0.25, 0.0),       # clipped
+        (1.5, 1.0 * scale),  # clipped
+    ]:
+        world = World(n=0, occupancy_edges={"S_out": occ})
+        assert mp._downstream_count(world, "NS_TL") == pytest.approx(expected)
+
+    # Fallback path: when occupancy API is missing, use vehicle count unscaled.
+    class _NoOcc(World):
+        def getLastStepOccupancy(self, edge):
+            raise RuntimeError("occupancy unavailable")
+
+    fb = _NoOcc(n=0, halting_edges={"S_out": 4})
+    assert mp._downstream_count(fb, "NS_TL") == pytest.approx(4.0)
+
+
+def test_weight_sensitivity_variants_do_not_cancel():
+    from experiments.weight_sensitivity import (
+        STRETCHES,
+        _base_weights,
+        _variant,
+        variants_are_distinct,
+    )
+    base = _base_weights()
+    assert variants_are_distinct(base) == []
+    # Uniform multiply + /car would cancel; stretch must change ratios.
+    cal = _variant("calibrated_stretch", 1.0, base)
+    half = _variant("calibrated_stretch", 0.5, base)
+    hot = _variant("calibrated_stretch", 2.0, base)
+    flat = _variant("equal", 1.0, base)
+    assert all(v == 1.0 for v in flat.values())
+    assert cal["two_wheeler"] != hot["two_wheeler"]
+    assert cal["truck"] != half["truck"]
+    assert half["truck"] != flat["truck"]
+    # Explicit stretch=0 matches equal (not scheduled, but API contract).
+    assert _variant("calibrated_stretch", 0.0, base) == flat
+    # auto_as_truck must differ from calibrated (auto==car under the proxy).
+    stress = _variant("auto_as_truck", 1.0, base)
+    assert stress["auto_rickshaw"] == pytest.approx(cal["truck"])
+    assert stress["auto_rickshaw"] != pytest.approx(cal["auto_rickshaw"])
+    # Every stretch in the study schedule is unique.
+    sigs = {
+        tuple(round(_variant("calibrated_stretch", s, base)[k], 8) for k in sorted(base))
+        for s in STRETCHES
+    }
+    assert len(sigs) == len(STRETCHES)
+
+
+def test_mix_override_tag_is_process_stable():
+    """Mix tripinfo tags must not use salted builtin hash()."""
+    import hashlib
+    from sim.run_sim import run_one
+    import inspect
+    src = inspect.getsource(run_one)
+    assert "hash(mix_key)" not in src
+    assert "hashlib.md5" in src
+    mix = {"car": 0.3, "two_wheeler": 0.4, "auto_rickshaw": 0.1, "bus": 0.05, "truck": 0.15}
+    mix_key = ",".join(f"{k}={float(mix[k]):.4f}" for k in sorted(mix))
+    a = hashlib.md5(mix_key.encode("utf-8")).hexdigest()[:8]
+    b = hashlib.md5(mix_key.encode("utf-8")).hexdigest()[:8]
+    assert a == b
+    assert len(a) == 8
+
+
 def test_maxpressure_differs_from_queue_when_downstream_occupied():
-    """Vehicle count on out-edges must change phase choice vs queue_pressure."""
+    """Occupancy on out-edges must change phase choice vs queue_pressure."""
     info = _groups()
     cfg = load_config()
     cfg = {**cfg, "signals": {**cfg["signals"], "min_green_s": 1, "max_green_s": 90, "starvation_s": 1000}}

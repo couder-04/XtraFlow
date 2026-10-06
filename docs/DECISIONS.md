@@ -118,5 +118,18 @@ All non-sourced parameters are labelled **assumed**. Choices below record engine
 
 **Published TEST (2026-10-06):** `maxpressure` and `queue_pressure` are **bit-identical** in `raw_runs.csv` on every metric. The controller used `getLastStepHaltingNumber` on out-edges, which are almost never queued, so the downstream penalty was ~0. **Do not treat max-pressure as an independent baseline in those tables.**
 
-**Code fix (2026-10-07, results not re-run):** `maxpressure` subtracts out-edge **occupancy** (falling back to `getLastStepVehicleNumber`) on the phase's movement out-edges from `phase_groups.json` / `DEFAULT_DOWNSTREAM`. Gap-out may switch to the least-negative phase when every pressure is non-positive. **Stale until a TEST re-sweep.**  
-**Rationale:** Classic max-pressure needs a real downstream queue / occupancy term relative to the movements a phase serves.
+**Code fix (2026-10-07, results not re-run):** `maxpressure` pressure is
+
+`P(phase) = Σ_upstream w·(1 if halt else α) − Σ_out occupancy·scale`
+
+with units:
+
+| Term | Source | Unit |
+|---|---|---|
+| Upstream | detector vehicles | vehicle-count (fuel-weighted if enabled) |
+| Occupancy | TraCI `getLastStepOccupancy` | fraction in **[0, 1]** (clipped) |
+| Scale | `downstream_occupancy_scale` (default **10**) | vehicle-equivalent per full edge |
+| Fallback | `getLastStepVehicleNumber` | vehicle-count (no scale) |
+
+Out-edges come from `phase_groups.json` / `DEFAULT_DOWNSTREAM`. Gap-out may switch to the least-negative phase when every pressure is non-positive. **Stale until a TEST re-sweep.**  
+**Rationale:** Classic max-pressure needs a real downstream queue / occupancy term relative to the movements a phase serves. Occupancy must be scaled because it is dimensionless while upstream pressure is not.

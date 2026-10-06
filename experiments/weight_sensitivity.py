@@ -1,7 +1,10 @@
 """Sensitivity of XtraFlow fuel to the class fuel weights.
 
-Scales the calibrated w_type vector and a few ablations on a small seed set
-without retuning. Writes results/weight_sensitivity.json.
+Uniformly scaling every w_type by the same constant leaves phase argmax unchanged
+(pressure is linear in w). This study therefore only varies *relative* weights:
+stretching deviations from car=1, and named ablations that change class ratios.
+
+Writes results/weight_sensitivity.json.
 """
 from __future__ import annotations
 
@@ -14,8 +17,11 @@ import numpy as np
 from sim.util import ROOT, load_config, load_json, save_json
 
 
-SCALES = [0.5, 0.75, 1.0, 1.25, 1.5]
-ABLATIONS = ("calibrated", "equal", "no_2w_discount", "car_like_auto")
+# Stretch of (w/w_car - 1). 1 → calibrated; >1 exaggerates gaps; 0.5 half-gaps.
+# stretch=0 is identical to the "equal" ablation, so it is not scheduled here.
+STRETCHES = [0.5, 1.0, 1.5, 2.0]
+# Named ablations must change at least one class ratio vs calibrated (car=1).
+ABLATIONS = ("calibrated_stretch", "equal", "no_2w_discount", "auto_as_truck")
 
 
 def _base_weights() -> Dict[str, float]:
@@ -23,24 +29,61 @@ def _base_weights() -> Dict[str, float]:
     return {k: float(v) for k, v in data["w_type"].items()}
 
 
-def _variant(name: str, scale: float, base: Dict[str, float]) -> Dict[str, float]:
+def _normalize_to_car(w: Dict[str, float]) -> Dict[str, float]:
+    ref = float(w.get("car", 1.0)) or 1.0
+    return {k: float(v) / ref for k, v in w.items()}
+
+
+def _variant(name: str, stretch: float, base: Dict[str, float]) -> Dict[str, float]:
+    """Return class weights with car normalized to 1.0.
+
+    ``calibrated_stretch``: w_k = 1 + stretch * (base_k/base_car - 1).
+    stretch=0 → all ones; stretch=1 → calibrated ratios; stretch>1 exaggerates.
+    A uniform multiply-then-renormalize would cancel and is never used here.
+    """
+    rel = _normalize_to_car(base)
     if name == "equal":
-        w = {k: 1.0 for k in base}
-    elif name == "no_2w_discount":
-        w = dict(base)
-        w["two_wheeler"] = float(base.get("car", 1.0))
-    elif name == "car_like_auto":
-        # Documents the passenger-car emission proxy: auto already equals car.
-        w = dict(base)
-        w["auto_rickshaw"] = float(base.get("car", 1.0))
-    else:
-        w = {k: float(v) * float(scale) for k, v in base.items()}
-        ref = float(w.get("car", 1.0)) or 1.0
-        w = {k: float(v) / ref for k, v in w.items()}
-    return w
+        return {k: 1.0 for k in rel}
+    if name == "no_2w_discount":
+        w = dict(rel)
+        w["two_wheeler"] = 1.0
+        return w
+    if name == "auto_as_truck":
+        # Stress-test the passenger-car emission proxy by giving auto the truck weight.
+        w = dict(rel)
+        w["auto_rickshaw"] = float(rel.get("truck", rel["car"]))
+        return w
+    if name == "calibrated_stretch":
+        s = float(stretch)
+        return {k: 1.0 + s * (float(v) - 1.0) for k, v in rel.items()}
+    raise ValueError(f"unknown weight variant: {name}")
 
 
-def _run_with_weights(scenario, seed, smoke, weights, variant, scale) -> Dict[str, Any]:
+def variants_are_distinct(base: Dict[str, float] | None = None) -> List[str]:
+    """Return human-readable failures if any scheduled (name, stretch) collides."""
+    base = base or _base_weights()
+    seen: Dict[Tuple[float, ...], str] = {}
+    failures: List[str] = []
+    keys = sorted(base)
+    for name in ABLATIONS:
+        stretches = STRETCHES if name == "calibrated_stretch" else [1.0]
+        for stretch in stretches:
+            w = _variant(name, stretch, base)
+            sig = tuple(round(w[k], 8) for k in keys)
+            label = f"{name}@stretch={stretch:g}"
+            if sig in seen:
+                failures.append(f"{label} identical to {seen[sig]}")
+            else:
+                seen[sig] = label
+            # Guard: uniform global scale of calibrated must not appear as a "scale".
+            if name == "calibrated_stretch" and abs(stretch - 1.0) > 1e-12:
+                cal = _variant("calibrated_stretch", 1.0, base)
+                if all(abs(w[k] - cal[k]) < 1e-12 for k in keys):
+                    failures.append(f"{label} collapsed to calibrated (cancel bug)")
+    return failures
+
+
+def _run_with_weights(scenario, seed, smoke, weights, variant, stretch) -> Dict[str, Any]:
     import sim.run_sim as run_mod
 
     orig = run_mod.make_controller
@@ -57,13 +100,14 @@ def _run_with_weights(scenario, seed, smoke, weights, variant, scale) -> Dict[st
             "XtraFlow",
             seed=int(seed),
             smoke=smoke,
-            run_id=f"wsens_{variant}_s{float(scale):g}",
+            run_id=f"wsens_{variant}_s{float(stretch):g}",
         )
     finally:
         run_mod.make_controller = orig  # type: ignore[assignment]
     return {
         "variant": variant,
-        "scale": float(scale),
+        "stretch": float(stretch),
+        "scale": float(stretch),  # alias kept for older readers
         "scenario": scenario,
         "seed": int(seed),
         "weights": weights,
@@ -75,15 +119,19 @@ def _run_with_weights(scenario, seed, smoke, weights, variant, scale) -> Dict[st
 
 
 def _task(task: Tuple[Any, ...]) -> Dict[str, Any]:
-    variant, scale, scenario, seed, smoke = task
-    weights = _variant(variant, scale, _base_weights())
-    return _run_with_weights(scenario, seed, smoke, weights, variant, scale)
+    variant, stretch, scenario, seed, smoke = task
+    weights = _variant(variant, stretch, _base_weights())
+    return _run_with_weights(scenario, seed, smoke, weights, variant, stretch)
 
 
 def main(smoke: bool = False, max_seeds: int | None = None) -> None:
     from multiprocessing import get_context
 
     base = _base_weights()
+    bad = variants_are_distinct(base)
+    if bad:
+        raise SystemExit("weight variants cancel or collide: " + "; ".join(bad))
+
     scenarios = ["low_demand"] if smoke else ["balanced", "low_demand"]
     seeds = [1] if smoke else [1, 2, 3]
     if max_seeds is not None:
@@ -91,11 +139,11 @@ def main(smoke: bool = False, max_seeds: int | None = None) -> None:
 
     tasks: List[Tuple[Any, ...]] = []
     for variant in ABLATIONS:
-        scales = SCALES if variant == "calibrated" else [1.0]
-        for scale in scales:
+        stretches = STRETCHES if variant == "calibrated_stretch" else [1.0]
+        for stretch in stretches:
             for sc in scenarios:
                 for seed in seeds:
-                    tasks.append((variant, scale, sc, seed, smoke))
+                    tasks.append((variant, stretch, sc, seed, smoke))
 
     workers = 1 if smoke else min(6, max(1, (os.cpu_count() or 2) - 1))
     print(f"weight_sensitivity tasks={len(tasks)} workers={workers}", flush=True)
@@ -108,32 +156,37 @@ def main(smoke: bool = False, max_seeds: int | None = None) -> None:
 
     summary = []
     for variant in ABLATIONS:
-        scales = SCALES if variant == "calibrated" else [1.0]
-        for scale in scales:
+        stretches = STRETCHES if variant == "calibrated_stretch" else [1.0]
+        for stretch in stretches:
             for sc in scenarios:
                 vals = [
                     r["fuel_per_vehicle_L"] for r in rows
-                    if r["variant"] == variant and abs(r["scale"] - float(scale)) < 1e-12
+                    if r["variant"] == variant and abs(r["stretch"] - float(stretch)) < 1e-12
                     and r["scenario"] == sc and r["status"] == "ok"
                 ]
                 if not vals:
                     continue
                 summary.append({
                     "variant": variant,
-                    "scale": float(scale),
+                    "stretch": float(stretch),
                     "scenario": sc,
                     "n": len(vals),
                     "fuel_per_vehicle_L_mean": float(np.mean(vals)),
                     "fuel_per_vehicle_L_std": float(np.std(vals, ddof=1)) if len(vals) > 1 else 0.0,
+                    "weights": _variant(variant, stretch, base),
                 })
 
     out = {
         "label": "assumed weight sensitivity",
         "base_weights": base,
         "note": (
-            "auto_rickshaw weight equals car under the passenger-car emission proxy; "
-            "two_wheeler uses LDV_G_EU4 when that class loads. This study scales the "
-            "calibrated relative vector and ablations; it does not retune the controller."
+            "Pressure is linear in class weights, so a global scale of w_type cancels in "
+            "phase choice. calibrated_stretch varies deviations from car=1 "
+            "(stretch=1 calibrated; stretch≠1 changes relative gaps). "
+            "equal is the all-ones ablation (same as stretch=0). "
+            "auto_as_truck replaces the no-op car_like_auto ablation "
+            "(auto already equals car under the emission proxy). "
+            "Does not retune the controller."
         ),
         "rows": rows,
         "summary": summary,
