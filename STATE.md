@@ -45,6 +45,11 @@ Published time-cut study is on `main`. Simulation-based estimate; assumed traffi
 - **`sensitivity.json` waiting times are invalid** for many rows (zeros next to normal fuel; mix rows missing `mean_waiting_s`). Code fixed in `experiments/sensitivity.py` / unique tripinfo tags in `sim/run_sim.py`; **re-run required** before quoting wait sensitivity.
 - INR figures in the extrapolation are a placeholder.
 
+- **Whole `raw_runs.csv` predates controller edits.** The gap-out change in `_adaptive_step` applies to every adaptive controller (XtraFlow, ours_count, queue_pressure, maxpressure), not only maxpressure. Until TEST is re-run, published numbers do not strictly reproduce from HEAD.
+- **Safety:** decreases are vs fixed / fixed_tuned / actuated / webster. Vs maxpressure and queue_pressure the CI includes 0; vs `ours_count`, XtraFlow shows *more* conflicts (CI +6 to +35 per 1000). Do not summarize safety as "fewer conflicts" without the baseline.
+- The max-pressure downstream penalty sums the same four out-edges for NS_TL and EW_TL, so it cannot separate those two phases; a per-movement formulation is still to do.
+- `sensitivity.json` fuel values may also be affected by the tripinfo clobbering; treat the whole file as suspect until re-run. The `vi_gain_vs_saturation` figure derives from it.
+
 ## Not done in this publish
 
 - Re-run TEST after the max-pressure occupancy fix (so `maxpressure` diverges from `queue_pressure`)

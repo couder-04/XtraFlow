@@ -1250,7 +1250,7 @@ FIGURE_CATALOG = [
     ("iii_dynamic_queue_ts.png", "Dynamic queue series", "Queue time series on the dynamic scenario"),
     ("iv_green_allocation.png", "Green allocation", "XtraFlow green share versus fixed timing"),
     ("v_fuel_by_type.png", "Fuel by vehicle type", "Mean fuel split across the assumed mix"),
-    ("vi_gain_vs_saturation.png", "Gain vs saturation", "Fuel gain versus demand multiplier proxy"),
+    ("vi_gain_vs_saturation.png", "Gain vs saturation", "Fuel gain vs demand multiplier proxy (sensitivity data; re-run pending)"),
     ("vii_robustness.png", "Detection-miss robustness", "Fuel under rising detector miss rates"),
     ("viii_rl_training.png", "RL training", "PPO training curve (unscored on TEST)"),
     ("ix_emission_xcheck.png", "Emission cross-check", "Primary vs alternate emission classes"),
@@ -1527,12 +1527,24 @@ def slide_yolo_overlays(prs, data, page, _total):
     )
 
 
+def _safety_by_baseline(safety: dict) -> dict:
+    return {c.get("baseline"): c.get("verdict", "") for c in (safety.get("comparisons") or [])}
+
+
+def _safety_headline(safety: dict) -> str:
+    """Short headline; detail by baseline lives in the Safety card."""
+    v = _safety_by_baseline(safety)
+    if not v:
+        return "Safety: see results/safety.json."
+    return "Safety: mixed."
+
+
 def slide_checks(prs, data, page, _total):
     slide = blank(prs)
     chrome(
         slide,
         "Beside the headline",
-        f"Safety: {_plain_verdict(data['safety'].get('verdict', ''))}. Emissions: {_plain_verdict(data['xcheck'].get('verdict', ''))}.",
+        _safety_headline(data["safety"]) + f" Emissions: {_plain_verdict(data['xcheck'].get('verdict', ''))}.",
         "Both lines are the verdict fields in the loaded JSON, not a fixed sentence.",
         page,
     )
@@ -1548,8 +1560,14 @@ def slide_checks(prs, data, page, _total):
     safety_body = "Time-to-collision conflicts from the simulator."
     if delta is not None:
         safety_body += f" XtraFlow minus fixed time averages {delta:.0f}."
+    _v = _safety_by_baseline(safety)
+    safety_body += (
+        " Verdict vs fixed only; vs max-pressure/queue-pressure the CI includes 0"
+        + ("; vs count-only (ours_count) XtraFlow shows MORE conflicts" if _v.get("ours_count") == "increase" else "")
+        + "."
+    )
     safety_body += " A model count, not a crash record."
-    cards.append((TEAL, _plain_verdict(safety.get("verdict", "")), "Safety", safety_body))
+    cards.append((AMBER, "Mixed", "Safety", safety_body))
     primary = xcheck.get("pct_reduction_primary")
     alternate = xcheck.get("pct_reduction_alternate")
     emis = "Peak scenario, cross-check seeds."
@@ -1606,7 +1624,7 @@ def slide_scale(prs, data, page, _total):
         slide,
         "Scaling",
         "Per vehicle is measured. Per year is a range.",
-        "The wide bar is the assumed city size, not uncertainty in the junction test.",
+        "Illustrative only: built from a 0.3–1.9% gap whose CIs include 0 on 2 of 4 scenarios (n=5). Not a forecast.",
         page,
     )
     saving = extra.get("measured_saving_L_per_veh") or {}
