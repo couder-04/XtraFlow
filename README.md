@@ -8,6 +8,12 @@ XtraFlow is a SUMO-based signal control stack for mixed urban traffic. It scores
 
 <p align="center"><em>Same demand seed · fixed timing (left) · XtraFlow (right)</em></p>
 
+### Story video — which roads move when
+
+[![YOLO story: GO/WAIT mosaic](results/demo/yolo/yolo_story_still.jpg)](results/demo/yolo/yolo_story.mp4)
+
+<p align="center"><em><a href="results/demo/yolo/yolo_story.mp4">Watch yolo_story.mp4</a> · four CCTV cams · green = served · dim = wait · input feasibility, not a fuel claim</em></p>
+
 > Simulation-based estimate · assumed traffic mix · oracle detector unless camera mode is on · proxy emission classes. Not a field deployment result.
 
 ---
