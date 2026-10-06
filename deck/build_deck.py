@@ -62,8 +62,10 @@ MIX_NAME = {
 }
 CTRL = {
     "fixed": "Fixed time",
+    "fixed_tuned": "Tuned fixed",
     "webster": "Webster",
     "actuated": "Actuated",
+    "queue_pressure": "Queue pressure",
     "maxpressure": "Max-pressure",
     "ours_count": "Count only",
     "XtraFlow": "XtraFlow",
@@ -106,6 +108,32 @@ def _means(path: Path) -> dict:
     return out
 
 
+def _test_seeds(path: Path) -> list[int]:
+    if not path.exists():
+        return []
+    seeds: set[int] = set()
+    with path.open(encoding="utf-8") as handle:
+        for row in csv.DictReader(handle):
+            try:
+                seeds.add(int(row["seed"]))
+            except (KeyError, TypeError, ValueError):
+                continue
+    return sorted(seeds)
+
+
+def _headline_pct(row: dict) -> float:
+    if row.get("pct_fuel_reduction_vs_best") is not None:
+        return float(row["pct_fuel_reduction_vs_best"])
+    return float(row.get("pct_fuel_reduction_vs_fixed") or 0)
+
+
+def _legacy_pct(row: dict) -> float | None:
+    value = row.get("pct_fuel_reduction_vs_fixed_legacy")
+    if value is None:
+        return None
+    return float(value)
+
+
 def _robust(blob: dict | None) -> list[dict]:
     if not blob:
         return []
@@ -140,12 +168,15 @@ def load() -> dict:
     extra = _load(ROOT / "results" / "extrapolation.json") or {}
     perc = _load(ROOT / "results" / "perception_smoke.json") or {}
     sublane = _load(ROOT / "results" / "sublane_fallback.json") or {}
+    rl_meta = _load(ROOT / "results" / "rl" / "rl_selection.json") or {}
     headlines = list(summary.get("headlines") or _load(ROOT / "results" / "headlines.json") or [])
-    headlines.sort(key=lambda row: -float(row.get("pct_fuel_reduction_vs_best") or row.get("pct_fuel_reduction_vs_fixed") or 0))
+    headlines.sort(key=lambda row: -_headline_pct(row))
     comps = {}
     for row in summary.get("comparisons", []):
         if row.get("metric") == "fuel_per_vehicle_L":
             comps[(row["scenario"], row["baseline"])] = row
+    test_seeds = _test_seeds(ROOT / "results" / "raw_runs.csv")
+    controllers = list(summary.get("controllers") or [])
     return {
         "cfg": cfg,
         "summary": summary,
@@ -157,10 +188,13 @@ def load() -> dict:
         "extra": extra,
         "perc": perc,
         "sublane": sublane,
+        "rl_meta": rl_meta,
         "headlines": headlines,
         "comps": comps,
         "means": _means(ROOT / "results" / "tables" / "summary_mean_std.csv"),
         "robust": _robust(_load(ROOT / "results" / "robustness.json")),
+        "test_seeds": test_seeds,
+        "controllers": controllers,
         "url": _repo_url(),
         "label": summary.get("label")
         or extra.get("label")
@@ -278,6 +312,16 @@ def _card(slide, l, t, w, h, fill=WHITE):
     return rect(slide, l, t, w, h, fill, line=LINE, radius=0.08)
 
 
+def picture(slide, path: Path, l, t, w, h=None):
+    path = Path(path)
+    if not path.exists() or path.stat().st_size == 0:
+        return None
+    kwargs = {"left": Inches(l), "top": Inches(t), "width": Inches(w)}
+    if h is not None:
+        kwargs["height"] = Inches(h)
+    return slide.shapes.add_picture(str(path), **kwargs)
+
+
 def _fmt_pct(value, digits=1) -> str:
     return f"{value:.{digits}f}%"
 
@@ -286,10 +330,20 @@ def _scenario(name: str) -> str:
     return SCENARIO.get(name, name.replace("_", " "))
 
 
+def _baseline_name(key: str | None) -> str:
+    if not key:
+        return "best baseline"
+    return CTRL.get(key, key.replace("_", " "))
+
+
 def _focus(data) -> str:
     tuned = data["tuned"].get("scenario")
     if tuned:
         return tuned
+    # Prefer the peak scenario for the rider-experience slide when no single tune target exists.
+    names = {row["scenario"] for row in data["headlines"]}
+    if "peak_unbalanced" in names:
+        return "peak_unbalanced"
     if data["headlines"]:
         return data["headlines"][0]["scenario"]
     return "peak_unbalanced"
@@ -306,6 +360,21 @@ def _comp(data, scenario, baseline):
     return data["comps"].get((scenario, baseline))
 
 
+def _scope_bits(data) -> tuple[str, str, str]:
+    n_sc = len(data["summary"].get("scenarios") or data["cfg"].get("demand") or {})
+    n_ctrl = len(data["controllers"] or data["summary"].get("controllers") or [])
+    seeds = data["test_seeds"]
+    if seeds:
+        if seeds[0] == seeds[-1]:
+            seed_bit = f"{len(seeds)} test seed ({seeds[0]})"
+        else:
+            seed_bit = f"{len(seeds)} test seeds ({seeds[0]}–{seeds[-1]})"
+    else:
+        test = (data["cfg"].get("seed_protocol") or {}).get("test") or [1, 30]
+        seed_bit = f"{int(test[1]) - int(test[0]) + 1} test seeds (config)"
+    return str(n_sc or "—"), seed_bit, str(n_ctrl or "—")
+
+
 def slide_title(prs, data, page, _total):
     slide = blank(prs, dark=True)
     write(slide, 0.78, 1.42, 10, 0.28, [[("SIMULATION STUDY", 13, AMBER, True, BODY)]])
@@ -319,6 +388,7 @@ def slide_title(prs, data, page, _total):
         0.5,
         [[("Fuel-weighted traffic signals", 26, RGBColor(0xF0, 0xC2, 0x6A), False, TITLE)]],
     )
+    n_sc, seed_bit, n_ctrl = _scope_bits(data)
     write(
         slide,
         0.78,
@@ -326,20 +396,18 @@ def slide_title(prs, data, page, _total):
         9.2,
         0.85,
         [[(
-            "A locked comparison on mixed Indian traffic. Same cars, seven controllers, "
-            "four demand patterns. Not a field deployment.",
+            f"A locked comparison on mixed Indian traffic. Same demand, {n_ctrl} controllers, "
+            f"{n_sc} demand patterns. Not a field deployment.",
             18,
             MIST,
             False,
             BODY,
         )]],
     )
-    cfg = data["cfg"]
-    test = cfg.get("seed_protocol", {}).get("test", [1, 30])
     facts = [
-        (str(len(data["summary"].get("scenarios") or cfg.get("demand", {}))), "scenarios"),
-        (str(int(test[1]) - int(test[0]) + 1), "test seeds, scored once"),
-        (str(len(data["summary"].get("controllers") or [])), "controllers"),
+        (n_sc, "scenarios"),
+        (seed_bit.split()[0], "test seeds, scored once"),
+        (n_ctrl, "controllers in TEST"),
     ]
     x = 0.78
     for value, label in facts:
@@ -352,7 +420,7 @@ def slide_title(prs, data, page, _total):
     notes(
         slide,
         "Open on energy, not on travel time. Say out loud that this is a simulation before the first percentage. "
-        f"Source label: {data['label']}",
+        f"Scope: {seed_bit}. Source label: {data['label']}",
     )
 
 
@@ -567,18 +635,27 @@ def _demand_blurb(name, demand) -> str:
 
 def slide_design(prs, data, page, _total):
     slide = blank(prs)
+    _, seed_bit, n_ctrl = _scope_bits(data)
     chrome(
         slide,
         "The experiment",
         "Same cars for every controller",
-        "Settings are frozen before the test. A seed is one hour of the same demand, replayed.",
+        f"Settings are frozen before the test. {seed_bit.capitalize()}. A seed is one hour of the same demand, replayed.",
         page,
     )
     protocol = data["cfg"].get("seed_protocol") or {}
+    seeds = data["test_seeds"]
+    if seeds:
+        test_label = f"{seeds[0]} – {seeds[-1]}" if len(seeds) > 1 else str(seeds[0])
+        test_role = f"{len(seeds)} locked seeds in raw_runs.csv"
+    else:
+        span = protocol.get("test")
+        test_label = f"{span[0]} – {span[1]}" if span and len(span) == 2 else "—"
+        test_role = "The numbers in the rest of this deck"
     roles = [
         ("Train", protocol.get("train"), "Reinforcement-learning baseline only"),
         ("Validation", protocol.get("validation"), "Settings chosen here, then frozen"),
-        ("Test", protocol.get("test"), "The numbers in the rest of this deck"),
+        ("Test", test_label, test_role),
     ]
     gap = 0.16
     width = (CONTENT_W - 2 * gap) / 3
@@ -586,7 +663,10 @@ def slide_design(prs, data, page, _total):
         x = L + i * (width + gap)
         _card(slide, x, 1.7, width, 1.55)
         write(slide, x + 0.22, 1.82, width - 0.4, 0.26, [[(name.upper(), 12, AMBER, True, BODY)]])
-        label = f"{span[0]} – {span[1]}" if span and len(span) == 2 else "—"
+        if name == "Test":
+            label = span if isinstance(span, str) else "—"
+        else:
+            label = f"{span[0]} – {span[1]}" if span and len(span) == 2 else "—"
         write(slide, x + 0.22, 2.1, width - 0.4, 0.42, [[(label, 22, INK, True, TITLE)]])
         write(slide, x + 0.22, 2.58, width - 0.4, 0.48, [[(role, 13, MUTED, False, BODY)]])
     demand = data["cfg"].get("demand") or {}
@@ -598,21 +678,18 @@ def slide_design(prs, data, page, _total):
         _card(slide, x, 3.45, width, 1.85)
         write(slide, x + 0.18, 3.58, width - 0.32, 0.45, [[(_scenario(name), 16, INK, True, TITLE)]])
         write(slide, x + 0.18, 4.12, width - 0.34, 0.95, [[(_demand_blurb(name, demand), 13, MUTED, False, BODY)]])
-    present = data["summary"].get("controllers") or []
-    others = [CTRL.get(name, name) for name in ("fixed", "webster", "actuated", "maxpressure", "ours_count", "rl_ppo") if name in present]
+    present = set(data["controllers"] or data["summary"].get("controllers") or [])
+    others = [CTRL.get(name, name) for name in ("fixed", "fixed_tuned", "webster", "actuated", "queue_pressure", "maxpressure", "ours_count") if name in present]
+    compared = "Compared with " + ", ".join(others) + "." if others else f"{n_ctrl} controllers in the locked TEST."
+    if "rl_ppo" not in present:
+        compared += " PPO was trained to the config budget and is not in this TEST table."
     write(
         slide,
         L,
         5.5,
         CONTENT_W,
         0.7,
-        [[(
-            "Compared with " + ", ".join(others) + ".",
-            15,
-            INK,
-            False,
-            BODY,
-        )]],
+        [[(compared, 15, INK, False, BODY)]],
     )
     sub = data["sublane"]
     if sub and sub.get("used_sublane") is False:
@@ -624,10 +701,20 @@ def slide_design(prs, data, page, _total):
             0.35,
             [[("Built with standard lanes.", 13, MUTED, False, BODY)]],
         )
+    elif sub and sub.get("used_sublane") is True:
+        write(
+            slide,
+            L,
+            6.2,
+            CONTENT_W,
+            0.35,
+            [[("Sublane probe used. Full-demand stability under that setting is not re-claimed here.", 13, MUTED, False, BODY)]],
+        )
     notes(
         slide,
         "Same seed means identical demand. Test seeds are the ones stored in results/raw_runs.csv. "
-        "Sublane use is the used_sublane field in results/sublane_fallback.json.",
+        "Sublane use is the used_sublane field in results/sublane_fallback.json. "
+        f"RL note: {(data.get('rl_meta') or {}).get('note') or 'see rl_selection.json'}",
     )
 
 
@@ -636,60 +723,88 @@ def slide_headlines(prs, data, page, _total):
     headlines = data["headlines"]
     n_pairs = None
     if headlines:
-        comp = _comp(data, headlines[0]["scenario"], "fixed")
+        best = headlines[0].get("best_baseline") or "maxpressure"
+        comp = _comp(data, headlines[0]["scenario"], best) or _comp(data, headlines[0]["scenario"], "fixed")
         if comp:
             n_pairs = comp.get("n_pairs")
-    dek = "Fuel per completed vehicle against fixed time. Bootstrap 95% intervals."
+    dek = "Fuel per completed vehicle versus the best tuned baseline. Bootstrap 95% intervals."
     if n_pairs:
-        dek = f"Fuel per completed vehicle against fixed time. {n_pairs:.0f} paired seeds. Bootstrap 95% intervals."
-    chrome(slide, "Test set", "Less fuel than fixed time, every scenario", dek, page)
+        dek = (
+            f"Fuel per completed vehicle versus the best tuned baseline. "
+            f"{n_pairs:.0f} paired seeds. Bootstrap 95% intervals."
+        )
+    if headlines and all(_headline_pct(row) > 0 for row in headlines):
+        title = "Lower mean fuel than the strongest baseline"
+    elif headlines:
+        title = "Headline fuel change versus the strongest baseline"
+    else:
+        title = "Headline fuel change"
+    chrome(slide, "Test set", title, dek, page)
     if not headlines:
         write(slide, L, 2.4, CONTENT_W, 0.5, [[("Run analyze.py to fill results/headlines.json.", 16, MUTED, False, BODY)]])
         return
     gap = 0.16
     width = (CONTENT_W - 3 * gap) / 4
-    peak = max(row["pct_fuel_reduction_vs_fixed"] for row in headlines) or 1
+    peak = max(abs(_headline_pct(row)) for row in headlines) or 1
     for i, row in enumerate(headlines[:4]):
         x = L + i * (width + gap)
+        pct = _headline_pct(row)
+        legacy = _legacy_pct(row)
+        best = _baseline_name(row.get("best_baseline"))
+        tone = TEAL if pct > 0 else CORAL
         _card(slide, x, 1.75, width, 3.85)
         rect(slide, x + 0.24, 1.98, 0.55, 0.045, AMBER)
-        write(slide, x + 0.22, 2.15, width - 0.4, 0.55, [[(_scenario(row["scenario"]), 16, INK, True, TITLE)]])
+        write(slide, x + 0.22, 2.15, width - 0.4, 0.45, [[(_scenario(row["scenario"]), 15, INK, True, TITLE)]])
         write(
             slide,
             x + 0.22,
-            2.85,
+            2.7,
             width - 0.4,
-            0.7,
+            0.65,
             [[
-                (f"{row['pct_fuel_reduction_vs_fixed']:.1f}", 36, TEAL, True, TITLE),
-                ("%", 18, TEAL, True, TITLE),
+                (f"{pct:.1f}", 34, tone, True, TITLE),
+                ("%", 16, tone, True, TITLE),
             ]],
         )
         write(
             slide,
             x + 0.22,
-            3.65,
+            3.4,
             width - 0.4,
-            0.55,
-            [[(f"{row['ci_lo']:.1f}  –  {row['ci_hi']:.1f}", 14, MUTED, False, BODY)]],
+            0.45,
+            [[(f"{row.get('ci_lo', 0):.1f}  –  {row.get('ci_hi', 0):.1f}", 13, MUTED, False, BODY)]],
         )
-        write(slide, x + 0.22, 4.15, width - 0.4, 0.3, [[("95% interval", 12, MUTED, False, BODY)]])
-        bar = (width - 0.48) * (row["pct_fuel_reduction_vs_fixed"] / peak)
+        write(slide, x + 0.22, 3.85, width - 0.4, 0.28, [[(f"vs {best}", 12, MUTED, False, BODY)]])
+        if legacy is not None:
+            write(
+                slide,
+                x + 0.22,
+                4.25,
+                width - 0.4,
+                0.45,
+                [[(f"vs legacy fixed  {_fmt_pct(legacy)}", 12, INK, False, BODY)]],
+            )
+        bar = (width - 0.48) * (abs(pct) / peak)
         rect(slide, x + 0.24, 5.15, width - 0.48, 0.08, LINE)
-        rect(slide, x + 0.24, 5.15, max(bar, 0.08), 0.08, TEAL)
+        rect(slide, x + 0.24, 5.15, max(bar, 0.08), 0.08, tone)
         flag = row.get("sanity_flag", "")
         if flag != "OK":
-            write(slide, x + 0.22, 4.7, width - 0.4, 0.28, [[(str(flag), 12, CORAL, True, BODY)]])
-    flags_ok = all(row.get("sanity_flag") == "OK" for row in headlines)
-    note = "All four scenarios are flagged OK. Tuning stopped before these seeds were scored."
-    if not flags_ok:
-        note = "Read any flag that is not OK before quoting the percentage."
+            write(slide, x + 0.22, 4.85, width - 0.4, 0.28, [[(str(flag), 12, CORAL, True, BODY)]])
+    above = all(float(row.get("ci_lo") or 0) > 0 for row in headlines)
+    if above:
+        note = "Every 95% interval versus the best baseline sits above zero. Tuning stopped before these seeds were scored."
+    else:
+        note = (
+            "Mean fuel is lower than the best baseline in every scenario. "
+            "Some 95% intervals still cross zero — read the interval, not only the point estimate."
+        )
     rect(slide, L, 5.85, CONTENT_W, 1.0, SOFT_TEAL, radius=0.08)
-    write(slide, L + 0.28, 6.12, CONTENT_W - 0.5, 0.5, [[(note, 15, INK, False, BODY)]], anchor="ctr")
+    write(slide, L + 0.28, 6.12, CONTENT_W - 0.5, 0.5, [[(note, 14, INK, False, BODY)]], anchor="ctr")
     notes(
         slide,
-        "Read the peak interval, not a rounded-up slogan. All numbers are from results/headlines.json. "
-        "Completed-trip counts match fixed time in the summary table, so the cut is not from stranded vehicles.",
+        "Primary headline is versus the best of fixed_tuned, actuated, queue_pressure, and maxpressure. "
+        "Legacy fixed is secondary (pct_fuel_reduction_vs_fixed_legacy). "
+        "Numbers are from results/headlines.json.",
     )
 
 
@@ -698,13 +813,19 @@ def slide_baselines(prs, data, page, _total):
     chrome(
         slide,
         "The honest comparison",
-        "The gap that matters is versus fixed time",
-        "Against a strong adaptive controller, fuel weighting is a smaller edge. It is still on the same side every time.",
+        "Versus strong adaptive controllers, the edge is small",
+        "Legacy fixed is the easy win. The test that matters is against tuned fixed, actuated, and max-pressure.",
         page,
     )
     scenarios = [row["scenario"] for row in data["headlines"]]
-    columns = [("Scenario", 2.55), ("vs fixed", 2.43), ("vs actuated", 2.43), ("vs max-pressure", 2.55), ("vs count only", 2.32)]
-    baselines = [None, "fixed", "actuated", "maxpressure", "ours_count"]
+    columns = [
+        ("Scenario", 2.35),
+        ("vs legacy fixed", 2.35),
+        ("vs tuned fixed", 2.35),
+        ("vs actuated", 2.35),
+        ("vs max-pressure", 2.88),
+    ]
+    baselines = [None, "fixed", "fixed_tuned", "actuated", "maxpressure"]
     top = 1.72
     header_h = 0.46
     row_h = 0.78
@@ -712,7 +833,7 @@ def slide_baselines(prs, data, page, _total):
     rect(slide, x0, top, CONTENT_W, header_h, NAVY)
     x = x0
     for title, width in columns:
-        write(slide, x + 0.12, top, width - 0.16, header_h, [[(title, 13, WHITE, True, BODY)]], anchor="ctr")
+        write(slide, x + 0.12, top, width - 0.16, header_h, [[(title, 12, WHITE, True, BODY)]], anchor="ctr")
         x += width
     for r, scenario in enumerate(scenarios):
         y = top + header_h + r * row_h
@@ -755,16 +876,15 @@ def slide_baselines(prs, data, page, _total):
         lo = min(row["pct_reduction_mean"] for row in mp)
         hi = max(row["pct_reduction_mean"] for row in mp)
         above = all(row["pct_reduction_ci_lo"] > 0 for row in mp)
-        tail = " Every 95% interval is above zero." if above else ""
+        tail = " Every 95% interval is above zero." if above else " Some intervals still cross zero."
         bits.append(f"Versus max-pressure: {_fmt_pct(lo)} to {_fmt_pct(hi)}.{tail}")
     if ct:
         lo = min(row["pct_reduction_mean"] for row in ct)
         hi = max(row["pct_reduction_mean"] for row in ct)
         bits.append(f"Versus the count-only ablation: {_fmt_pct(lo)} to {_fmt_pct(hi)}.")
-    ppo = [_comp(data, s, "rl_ppo") for s in scenarios]
-    ppo = [row for row in ppo if row]
-    if ppo and all(row["pct_reduction_mean"] > 0 for row in ppo):
-        bits.append("PPO used more fuel than XtraFlow in every scenario.")
+    present = set(data["controllers"] or [])
+    if "rl_ppo" not in present:
+        bits.append("PPO is trained but not scored in this TEST table.")
     y = top + header_h + len(scenarios) * row_h + 0.16
     if bits:
         rect(slide, L, y, CONTENT_W, 0.95, SOFT_AMBER, radius=0.08)
@@ -782,12 +902,21 @@ def slide_experience(prs, data, page, _total):
     fixed_n = _mean(data, focus, "fixed", "n_completed_mean")
     ours_n = _mean(data, focus, "XtraFlow", "n_completed_mean")
     matched = fixed_n is not None and ours_n is not None and abs(fixed_n - ours_n) < 0.05
-    dek = f"{_scenario(focus)}. This is the scenario the settings were tuned on. Figures are the locked test."
-    if matched:
-        dek = (
-            f"{_scenario(focus)}, the tuning scenario, on the locked test. "
-            f"Completed trips match fixed time ({fixed_n:,.0f})."
-        )
+    tuned_one = data["tuned"].get("scenario")
+    if tuned_one == focus:
+        dek = f"{_scenario(focus)}. This is the scenario the settings were tuned on. Figures are the locked test."
+        if matched:
+            dek = (
+                f"{_scenario(focus)}, the tuning scenario, on the locked test. "
+                f"Completed trips match fixed time ({fixed_n:,.0f})."
+            )
+    else:
+        dek = f"{_scenario(focus)} on the locked test, versus legacy fixed time."
+        if matched:
+            dek = (
+                f"{_scenario(focus)} on the locked test. "
+                f"Completed trips match fixed time ({fixed_n:,.0f})."
+            )
     chrome(slide, "What changes", "Shorter waits, shorter queues, less CO₂", dek, page)
     specs = [
         ("Fuel / vehicle", "fuel_per_vehicle_L_mean", "L", 3),
@@ -943,6 +1072,47 @@ def slide_grid(prs, data, page, _total):
         and "XtraFlow_coord" in means
         and abs(means["XtraFlow"] - means["XtraFlow_coord"]) < 1e-9
     )
+    note = data["grid"].get("note") or ""
+    scored = bool(means) or bool(rows)
+    if not scored:
+        chrome(
+            slide,
+            "Where it does not transfer",
+            "The 2×2 grid was not scored in this publish",
+            "A corridor result is only quoted from results/grid_results.json after a successful sweep.",
+            page,
+        )
+        rect(slide, L, 1.9, CONTENT_W, 3.6, NAVY, radius=0.08)
+        write(slide, L + 0.4, 2.25, CONTENT_W - 0.8, 0.4, [[("NO NUMERIC GRID CLAIM", 14, AMBER, True, BODY)]])
+        write(
+            slide,
+            L + 0.4,
+            2.85,
+            CONTENT_W - 0.8,
+            1.8,
+            [[(
+                note
+                or "The grid network and the single-intersection signal file do not match. SUMO aborts before a fair comparison.",
+                18,
+                WHITE,
+                False,
+                BODY,
+            )]],
+        )
+        write(
+            slide,
+            L + 0.4,
+            4.85,
+            CONTENT_W - 0.8,
+            0.4,
+            [[("Do not scale the single-junction result to a city.", 15, MIST, False, BODY)]],
+        )
+        notes(
+            slide,
+            "Read results/grid_results.json. If rows and summary_means are empty, say the grid was not scored. "
+            "Label: simulation-based estimate; assumed traffic mix.",
+        )
+        return
     dek = "A 2×2 network. The controller was tuned for a single junction."
     if n:
         dek = f"A 2×2 network, {n} seeds. The controller was tuned for a single junction."
@@ -999,8 +1169,93 @@ def _plain_verdict(value: str) -> str:
     mapping = {
         "no_increase": "No increase",
         "unchanged_direction": "Same direction",
+        "decrease": "Fewer conflicts",
+        "increase": "More conflicts",
+        "ci_overlap": "Intervals overlap",
+        "same_sign": "Same direction",
     }
     return mapping.get(value, (value or "Not loaded").replace("_", " "))
+
+
+def slide_figures(prs, data, page, _total):
+    slide = blank(prs)
+    chrome(
+        slide,
+        "Evidence on disk",
+        "Figures are regenerated from the locked TEST",
+        "Nothing on this slide is typed by hand. Open results/figures/ if you want the source PNGs.",
+        page,
+    )
+    left = ROOT / "results" / "figures" / "ii_pct_reduction.png"
+    right = ROOT / "results" / "figures" / "i_grouped_bars.png"
+    _card(slide, L, 1.7, 6.0, 4.85)
+    write(slide, L + 0.22, 1.85, 5.5, 0.3, [[("FUEL CUT VS BASELINES", 12, AMBER, True, BODY)]])
+    if not picture(slide, left, L + 0.25, 2.25, 5.5, 3.9):
+        write(slide, L + 0.3, 3.5, 5.4, 0.4, [[("ii_pct_reduction.png not found", 14, MUTED, False, BODY)]])
+    _card(slide, L + 6.28, 1.7, 6.0, 4.85)
+    write(slide, L + 6.5, 1.85, 5.5, 0.3, [[("FUEL, CO₂, WAIT, QUEUE", 12, AMBER, True, BODY)]])
+    if not picture(slide, right, L + 6.5, 2.25, 5.5, 3.9):
+        write(slide, L + 6.55, 3.5, 5.4, 0.4, [[("i_grouped_bars.png not found", 14, MUTED, False, BODY)]])
+    notes(
+        slide,
+        "These PNGs are written by analyze.py after the locked TEST. "
+        "Do not describe a trend that is not visible in the figure.",
+    )
+
+
+def slide_demo(prs, data, page, _total):
+    slide = blank(prs)
+    chrome(
+        slide,
+        "Same demand, side by side",
+        "Fixed timing on the left. XtraFlow on the right.",
+        "One seed, same arrivals. The clip is a feasibility demo, not a fuel-saving proof.",
+        page,
+    )
+    demo = ROOT / "results" / "demo" / "demo.mp4"
+    gif = ROOT / "results" / "demo" / "demo.gif"
+    path = demo if demo.exists() else gif
+    rect(slide, L, 1.7, CONTENT_W, 4.85, NAVY, radius=0.08)
+    write(slide, L + 0.4, 2.35, CONTENT_W - 0.8, 0.35, [[("SIDE-BY-SIDE DEMO", 13, AMBER, True, BODY)]])
+    if path.exists():
+        rel = path.relative_to(ROOT).as_posix()
+        write(
+            slide,
+            L + 0.4,
+            3.0,
+            CONTENT_W - 0.8,
+            0.7,
+            [[(rel, 28, WHITE, True, TITLE)]],
+        )
+        write(
+            slide,
+            L + 0.4,
+            3.9,
+            CONTENT_W - 0.8,
+            1.2,
+            [[(
+                "Play this file beside the talk. PowerPoint does not need the binary embedded here. "
+                "Same demand seed: fixed timing versus XtraFlow.",
+                16,
+                MIST,
+                False,
+                BODY,
+            )]],
+        )
+    else:
+        write(
+            slide,
+            L + 0.4,
+            3.2,
+            CONTENT_W - 0.8,
+            0.5,
+            [[("Run make demo to fill results/demo/demo.mp4.", 18, MIST, False, BODY)]],
+        )
+    notes(
+        slide,
+        "Open results/demo/demo.mp4 (or demo.gif) while presenting. "
+        "Say that the demo is qualitative; the headline numbers are on the previous slides.",
+    )
 
 
 def slide_checks(prs, data, page, _total):
@@ -1078,10 +1333,14 @@ def slide_scale(prs, data, page, _total):
     saving = extra.get("measured_saving_L_per_veh") or {}
     annual = extra.get("annual_litres") or {}
     co2 = extra.get("annual_tonnes_CO2") or {}
-    basis = _scenario(extra.get("scenario_basis", ""))
+    basis_key = extra.get("scenario_basis")
+    if basis_key:
+        measure_label = f"MEASURED ON {_scenario(basis_key).upper()}"
+    else:
+        measure_label = "MEASURED VS BEST BASELINE (SCENARIO-WEIGHTED)"
     _card(slide, L, 1.72, 7.35, 2.15)
     if saving:
-        write(slide, L + 0.28, 1.88, 6.8, 0.28, [[(f"MEASURED ON {basis.upper()}", 12, AMBER, True, BODY)]])
+        write(slide, L + 0.28, 1.88, 6.8, 0.28, [[(measure_label, 12, AMBER, True, BODY)]])
         write(
             slide,
             L + 0.28,
@@ -1175,6 +1434,7 @@ def slide_scale(prs, data, page, _total):
 
 def slide_close(prs, data, page, _total):
     slide = blank(prs, dark=True)
+    _, seed_bit, n_ctrl = _scope_bits(data)
     write(slide, 0.78, 0.85, 8, 0.28, [[("BEFORE A STRONGER CLAIM", 13, AMBER, True, BODY)]])
     write(slide, 0.75, 1.2, 11, 0.8, [[("XtraFlow", 44, WHITE, True, TITLE)]])
     write(
@@ -1188,18 +1448,26 @@ def slide_close(prs, data, page, _total):
     steps = [
         ("01", "Count the junction", "Replace the assumed flows with observed demand before quoting a site."),
         ("02", "Film the queue", "A real video replaces the assumed detector-error model."),
-        ("03", "Read the grid file", "Quote a corridor result only from results/grid_results.json."),
+        ("03", "Score the corridor", "Quote a grid result only from results/grid_results.json after a successful sweep."),
     ]
     gap = 0.16
     width = (CONTENT_W - 2 * gap) / 3
     for i, (num, title, body) in enumerate(steps):
         x = L + i * (width + gap)
-        rect(slide, x, 3.15, width, 2.35, NAVY_2, radius=0.08)
+        rect(slide, x, 3.15, width, 2.2, NAVY_2, radius=0.08)
         write(slide, x + 0.22, 3.32, width - 0.4, 0.3, [[(num, 14, AMBER, True, TITLE)]])
         write(slide, x + 0.22, 3.7, width - 0.42, 0.55, [[(title, 18, WHITE, True, TITLE)]])
-        write(slide, x + 0.22, 4.35, width - 0.42, 0.9, [[(body, 14, MIST, False, BODY)]])
-    write(slide, 0.78, 5.8, 10, 0.3, [[(data["url"] or "", 14, MIST, False, BODY)]])
-    write(slide, 0.78, 6.2, 11, 0.4, [[(data["label"], 14, RGBColor(0x8A, 0x9B, 0xA8), False, BODY)]])
+        write(slide, x + 0.22, 4.35, width - 0.42, 0.8, [[(body, 14, MIST, False, BODY)]])
+    write(
+        slide,
+        0.78,
+        5.55,
+        11,
+        0.35,
+        [[(f"This deck: {n_ctrl} controllers · {seed_bit} · oracle detector unless camera mode is on.", 13, MIST, False, BODY)]],
+    )
+    write(slide, 0.78, 5.95, 10, 0.3, [[(data["url"] or "", 14, MIST, False, BODY)]])
+    write(slide, 0.78, 6.3, 11, 0.4, [[(data["label"], 14, RGBColor(0x8A, 0x9B, 0xA8), False, BODY)]])
     footer(slide, page, dark=True)
     notes(
         slide,
@@ -1225,6 +1493,8 @@ def main():
         slide_headlines,
         slide_baselines,
         slide_experience,
+        slide_figures,
+        slide_demo,
         slide_robust,
         slide_grid,
         slide_checks,
