@@ -1,55 +1,42 @@
 {
-  "label": "Simulation-based estimate; not a real-world deployment result",
-  "scenario_basis": "peak_unbalanced",
-  "measured_saving_L_per_veh": {
-    "mean": 0.03501746060996848,
-    "p05": 0.031876198162417345,
-    "p95": 0.03825006931643624
+  "label": "Simulation-based estimate; assumed traffic mix",
+  "scenario_weights_assumption": {
+    "balanced": 0.25,
+    "peak_unbalanced": 0.25,
+    "dynamic": 0.25,
+    "low_demand": 0.25
   },
+  "baseline_per_scenario": {
+    "balanced": "maxpressure",
+    "peak_unbalanced": "maxpressure",
+    "dynamic": "maxpressure",
+    "low_demand": "maxpressure"
+  },
+  "measured_saving_L_per_veh": {
+    "mean": 0.0012414041332105704,
+    "p05": 0.0005689789336791061,
+    "p95": 0.001903998664543465
+  },
+  "vehicles_per_peak_hour_assumption": {
+    "low": 800,
+    "base": 1400,
+    "high": 2200
+  },
+  "co2_kg_per_L_from_fuel_split": 2.501871473827247,
   "annual_litres": {
-    "median": 27737080.86558083,
-    "p05": 8997338.18625999,
-    "p95": 66756793.494768
+    "median": 917831.6670066761,
+    "p05": 251338.50959340282,
+    "p95": 2654039.690850678
   },
   "annual_INR_PLACEHOLDER_price": {
-    "median": 2771289723.9756203,
-    "p05": 889032470.6741536,
-    "p95": 6643839880.766568
+    "median": 91434539.62161177,
+    "p05": 24929251.680866595,
+    "p95": 268704801.39816594
   },
   "annual_tonnes_CO2": {
-    "median": 67151.4727755712,
-    "p05": 21782.555748935436,
-    "p95": 161618.19705083338
+    "median": 2296.296865459312,
+    "p05": 628.8166474259905,
+    "p95": 6640.066192944597
   },
-  "fuel_price_note": "INR/L is a user-editable PLACEHOLDER in config.yaml",
-  "headlines_ref": [
-    {
-      "scenario": "balanced",
-      "pct_fuel_reduction_vs_fixed": 8.606437261931198,
-      "ci_lo": 8.22501997578311,
-      "ci_hi": 8.997435659549451,
-      "sanity_flag": "OK"
-    },
-    {
-      "scenario": "dynamic",
-      "pct_fuel_reduction_vs_fixed": 16.50048788855564,
-      "ci_lo": 15.72146557801056,
-      "ci_hi": 17.30676814742321,
-      "sanity_flag": "OK"
-    },
-    {
-      "scenario": "low_demand",
-      "pct_fuel_reduction_vs_fixed": 14.458181031777709,
-      "ci_lo": 13.983862977178838,
-      "ci_hi": 14.907851787963828,
-      "sanity_flag": "OK"
-    },
-    {
-      "scenario": "peak_unbalanced",
-      "pct_fuel_reduction_vs_fixed": 21.759596013455283,
-      "ci_lo": 20.048127006637706,
-      "ci_hi": 23.538508826993734,
-      "sanity_flag": "OK"
-    }
-  ]
+  "fuel_price_note": "INR/L is a user-editable PLACEHOLDER in config.yaml"
 }

@@ -12,11 +12,13 @@ from sim.controllers import PerceptionNoise
 from sim.util import ROOT, load_config, save_json, seed_range
 
 
-def main(smoke: bool = False) -> None:
+def main(smoke: bool = False, max_seeds: int | None = None) -> None:
     cfg = load_config()
     seeds = seed_range(cfg["seed_protocol"]["test"])
     if smoke:
         seeds = seeds[:1]
+    elif max_seeds:
+        seeds = seeds[: int(max_seeds)]
     rates = cfg["robustness"]["detect_miss_rates"]
     scenario = "peak_unbalanced"
     references = ["fixed_tuned", "actuated", "maxpressure"]
@@ -36,7 +38,7 @@ def main(smoke: bool = False) -> None:
 
     out = {
         "scenario": scenario,
-        "seeds": "TEST",
+        "seeds": list(seeds),
         "rows": rows,
         "label": "Simulation-based estimate; assumed traffic mix",
     }
@@ -110,5 +112,6 @@ if __name__ == "__main__":
     import argparse
     p = argparse.ArgumentParser()
     p.add_argument("--smoke", action="store_true")
+    p.add_argument("--max-seeds", type=int, default=None)
     args = p.parse_args()
-    main(smoke=args.smoke)
+    main(smoke=args.smoke, max_seeds=args.max_seeds)

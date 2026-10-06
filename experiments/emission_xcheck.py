@@ -59,9 +59,11 @@ def _verdict(lo_a, hi_a, lo_b, hi_b) -> str:
     return "sign_disagrees"
 
 
-def main(smoke: bool = False) -> None:
+def main(smoke: bool = False, max_seeds: int | None = None) -> None:
     cfg = load_config()
     seeds = seed_range(cfg["seed_protocol"]["test"])[:1] if smoke else seed_range(cfg["seed_protocol"]["test"])
+    if max_seeds and not smoke:
+        seeds = seeds[: int(max_seeds)]
     scenarios = ["balanced"] if smoke else list(SCENARIOS)
 
     tasks = [
@@ -129,5 +131,6 @@ if __name__ == "__main__":
     import argparse
     p = argparse.ArgumentParser()
     p.add_argument("--smoke", action="store_true")
+    p.add_argument("--max-seeds", type=int, default=None)
     args = p.parse_args()
-    main(smoke=args.smoke)
+    main(smoke=args.smoke, max_seeds=args.max_seeds)

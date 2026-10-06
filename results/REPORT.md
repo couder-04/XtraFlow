@@ -4,22 +4,23 @@
 
 ## Abstract
 
-We evaluate an adaptive, fuel-weighted pressure traffic signal controller (XtraFlow) against fixed-time, Webster, SUMO-actuated, max-pressure, count-only ablation, and PPO baselines under mixed Indian urban traffic in SUMO (left-hand traffic). Whether sublane ran is `results/sublane_fallback.json`. 
- On scenario `balanced`, mean fuel reduction vs fixed was 8.61% (95% CI [8.23, 9.00]; flag=OK).
- On scenario `dynamic`, mean fuel reduction vs fixed was 16.50% (95% CI [15.72, 17.31]; flag=OK).
- On scenario `low_demand`, mean fuel reduction vs fixed was 14.46% (95% CI [13.98, 14.91]; flag=OK).
- On scenario `peak_unbalanced`, mean fuel reduction vs fixed was 21.76% (95% CI [20.05, 23.54]; flag=OK).
+We evaluate an adaptive, fuel-weighted pressure traffic signal controller (XtraFlow) against legacy fixed-time, a validation-tuned fixed plan, Webster, SUMO-actuated, queue-pressure, max-pressure, and a count-only ablation. PPO was trained to the configured step budget and is not in this TEST comparison. Controllers use an oracle detector (SUMO speed, class, and route turn) unless info_mode is camera. Emission classes are proxies. Simulation-based estimate; assumed traffic mix. 
+Sublane actually used: True. 
+ On `balanced`, mean fuel change versus `maxpressure` was 0.30% (95% CI [-0.38, 1.01]; flag=OK).
+ On `dynamic`, mean fuel change versus `maxpressure` was 1.09% (95% CI [0.65, 1.70]; flag=OK).
+ On `low_demand`, mean fuel change versus `maxpressure` was 1.91% (95% CI [0.51, 3.04]; flag=OK).
+ On `peak_unbalanced`, mean fuel change versus `maxpressure` was 0.69% (95% CI [-0.35, 1.77]; flag=OK).
 
 
 ## Method
 
-- Single 4-arm intersection + 2×2 grid; left-hand traffic; yellow 3 s; all-red 2 s.
+- Single 4-arm intersection; left-hand traffic; yellow 3 s; all-red 2 s. Grid numbers are reported only from results/grid_results.json.
 
-- Seed protocol: TRAIN 1000–1049, VALIDATION 2000–2019, TEST 1–30 after config.lock.
+- Seed protocol: TRAIN 1000–1049, VALIDATION 2000–2019, TEST 1–5 (5 seeds in raw_runs.csv) after config.lock.
 
 - Metrics from tripinfo with device.emissions.probability=1; fuel mg→L via densities.
 
-- Sublane model used: False.
+- Sublane model used: True.
 
 - Emission class map (primary): `{"two_wheeler": "HBEFA3/LDV_G_EU4", "auto_rickshaw": "HBEFA3/PC_G_EU4", "car": "HBEFA3/PC_G_EU4", "bus": "HBEFA3/Bus", "truck": "HBEFA3/HDV"}`.
 
@@ -37,7 +38,7 @@ We evaluate an adaptive, fuel-weighted pressure traffic signal controller (XtraF
 
 | Geometry | 300 m approaches, 3 in / 2 out lanes | assumed |
 
-| Demand mode | assumed_demand | data/observed_counts.csv absent; using assumed demand from config.yaml. Flows chosen so fixed-time sits near 70-90% degree of saturation at peak. |
+| Demand mode | measured_on_validation | Approach veh/h are counts of vehicles seen on each incoming edge, scaled to an hour from the simulated duration. Degree of saturation uses an assumed 1800 veh/h/lane and the green fraction served. The config demand table is not copied into measured_approach_veh_h. |
 
 
 ## Weights (measured)
@@ -61,7 +62,7 @@ We evaluate an adaptive, fuel-weighted pressure traffic signal controller (XtraF
   },
   "reference": "car",
   "duration_s": 60.0,
-  "note": "Measured via TraCI getFuelConsumption while stopped; assumed emission classes."
+  "note": "Measured via TraCI getFuelConsumption while stopped. auto-rickshaw uses a passenger-car emission class and two-wheeler uses LDV_G_EU4 when that class loads; these idle-fuel weights inherit those proxies. Simulation-based estimate; assumed traffic mix."
 }
 
 ```
@@ -76,6 +77,12 @@ We evaluate an adaptive, fuel-weighted pressure traffic signal controller (XtraF
   "alpha_moving": 0.5,
   "hysteresis": 0.25,
   "selected_on": "VALIDATION seeds only",
+  "scenarios": [
+    "balanced",
+    "peak_unbalanced",
+    "dynamic",
+    "low_demand"
+  ],
   "screen_seeds": [
     2000,
     2001,
@@ -105,8 +112,9 @@ We evaluate an adaptive, fuel-weighted pressure traffic signal controller (XtraF
     2018,
     2019
   ],
-  "scenario": "peak_unbalanced",
-  "mean_fuel_per_vehicle_L": 0.12318790645640529,
+  "mean_fuel_per_vehicle_L": 0.12327643280361333,
+  "screen_relative_span": 0.013761764847601068,
+  "n_screen_combos": 27,
   "smoke": false
 }
 
@@ -116,99 +124,157 @@ We evaluate an adaptive, fuel-weighted pressure traffic signal controller (XtraF
 ## Per-scenario results (mean±std)
 
 
-| scenario        | controller   |   n |   fuel_per_vehicle_L_mean |   fuel_per_vehicle_L_std |   total_CO2_kg_mean |   total_CO2_kg_std |   mean_waiting_s_mean |   mean_waiting_s_std |   mean_queue_veh_mean |   mean_queue_veh_std |   n_completed_mean |   n_completed_std |   gridlock_flag_mean |   gridlock_flag_std |   ssm_conflicts_mean |   ssm_conflicts_std |
-|:----------------|:-------------|----:|--------------------------:|-------------------------:|--------------------:|-------------------:|----------------------:|---------------------:|----------------------:|---------------------:|-------------------:|------------------:|---------------------:|--------------------:|---------------------:|--------------------:|
-| balanced        | fixed        |  30 |                  0.141169 |               0.0029387  |             676.915 |           21.95    |               30.1199 |             1.19357  |              15.4526  |             0.721353 |             1919.6 |           43.0682 |            0         |            0        |                    0 |                   0 |
-| balanced        | webster      |  30 |                  0.140806 |               0.00256028 |             675.5   |           22.2377  |               27.9368 |             0.890794 |              14.4473  |             0.663884 |             1919.6 |           43.0682 |            0         |            0        |                    0 |                   0 |
-| balanced        | actuated     |  30 |                  0.136613 |               0.00215762 |             655.336 |           17.7491  |               25.8318 |             0.459819 |              13.396   |             0.382783 |             1919.6 |           43.0682 |            0         |            0        |                    0 |                   0 |
-| balanced        | maxpressure  |  30 |                  0.130644 |               0.00267534 |             627.065 |           19.4875  |               22.0118 |             0.770722 |              11.4078  |             0.466555 |             1919.6 |           43.0682 |            0         |            0        |                    0 |                   0 |
-| balanced        | ours_count   |  30 |                  0.129792 |               0.00267858 |             622.978 |           20.013   |               21.1584 |             0.653478 |              10.9655  |             0.431188 |             1919.6 |           43.0682 |            0         |            0        |                    0 |                   0 |
-| balanced        | XtraFlow     |  30 |                  0.129    |               0.00213502 |             618.178 |           17.6256  |               21.8567 |             0.706788 |              11.3185  |             0.3722   |             1919.6 |           43.0682 |            0         |            0        |                    0 |                   0 |
-| balanced        | rl_ppo       |  30 |                  0.140806 |               0.00256028 |             675.5   |           22.2377  |               27.9368 |             0.890794 |              14.4473  |             0.663884 |             1919.6 |           43.0682 |            0         |            0        |                    0 |                   0 |
-| peak_unbalanced | fixed        |  30 |                  0.158392 |               0.0118207  |             710.049 |           56.5572  |               41.7973 |             8.06152  |              19.4241  |             3.26828  |             1796.2 |           32.4573 |            0         |            0        |                    0 |                   0 |
-| peak_unbalanced | webster      |  30 |                  0.139037 |               0.00311075 |             624.035 |           17.8687  |               26.8579 |             0.960235 |              13.0146  |             0.543715 |             1796.2 |           32.4573 |            0         |            0        |                    0 |                   0 |
-| peak_unbalanced | actuated     |  30 |                  0.136598 |               0.0028488  |             613.11  |           16.1261  |               25.455  |             0.551707 |              12.3482  |             0.363724 |             1796.2 |           32.4573 |            0         |            0        |                    0 |                   0 |
-| peak_unbalanced | maxpressure  |  30 |                  0.124827 |               0.00282739 |             560.602 |           16.3713  |               18.5289 |             0.801428 |               8.99357 |             0.417676 |             1796.2 |           32.4573 |            0         |            0        |                    0 |                   0 |
-| peak_unbalanced | ours_count   |  30 |                  0.124985 |               0.0026718  |             561.485 |           15.4614  |               17.8022 |             0.739012 |               8.64743 |             0.422874 |             1796.2 |           32.4573 |            0         |            0        |                    0 |                   0 |
-| peak_unbalanced | XtraFlow     |  30 |                  0.123375 |               0.00246    |             553.292 |           15.0231  |               18.1187 |             0.624917 |               8.80502 |             0.372024 |             1796.2 |           32.4573 |            0         |            0        |                    0 |                   0 |
-| peak_unbalanced | rl_ppo       |  30 |                  0.271187 |               0.046093   |            1142.56  |          198.797   |              113.353  |            30.3052   |              60.8703  |            21.3476   |             1698.6 |          124.162  |            0.5       |            0.508548 |                    0 |                   0 |
-| dynamic         | fixed        |  30 |                  0.149025 |               0.00546442 |             654.469 |           30.2466  |               35.5058 |             2.82236  |              16.4629  |             1.30483  |             1759.2 |           36.5885 |            0         |            0        |                    0 |                   0 |
-| dynamic         | webster      |  30 |                  0.168141 |               0.0281838  |             738.216 |          122.45    |               46.2875 |            19.4124   |              21.3374  |             6.37385  |             1759.2 |           36.5885 |            0         |            0        |                    0 |                   0 |
-| dynamic         | actuated     |  30 |                  0.13649  |               0.00258493 |             600.068 |           17.9222  |               25.4648 |             0.487867 |              12.112   |             0.343319 |             1759.2 |           36.5885 |            0         |            0        |                    0 |                   0 |
-| dynamic         | maxpressure  |  30 |                  0.125129 |               0.00276454 |             550.443 |           18.2357  |               18.7768 |             0.601557 |               8.92663 |             0.355655 |             1759.2 |           36.5885 |            0         |            0        |                    0 |                   0 |
-| dynamic         | ours_count   |  30 |                  0.125085 |               0.00282584 |             550.338 |           18.6845  |               18.0982 |             0.553457 |               8.60387 |             0.352087 |             1759.2 |           36.5885 |            0         |            0        |                    0 |                   0 |
-| dynamic         | XtraFlow     |  30 |                  0.12434  |               0.00277639 |             546.049 |           18.6438  |               18.9957 |             0.913776 |               9.03525 |             0.498367 |             1759.2 |           36.5885 |            0         |            0        |                    0 |                   0 |
-| dynamic         | rl_ppo       |  30 |                  0.179564 |               0.0182211  |             786.25  |           82.4286  |               53.4149 |            11.8556   |              25.5582  |             9.27232  |             1755   |           38.2262 |            0.0333333 |            0.182574 |                    0 |                   0 |
-| low_demand      | fixed        |  30 |                  0.134646 |               0.0041531  |             201.852 |           10.3253  |               27.2516 |             1.18588  |               4.4181  |             0.23784  |              599.8 |           24.0106 |            0         |            0        |                    0 |                   0 |
-| low_demand      | webster      |  30 |                  0.132008 |               0.00415294 |             197.986 |           10.6006  |               24.1058 |             0.879206 |               3.92553 |             0.254691 |              599.8 |           24.0106 |            0         |            0        |                    0 |                   0 |
-| low_demand      | actuated     |  30 |                  0.130663 |               0.00418988 |             195.88  |            9.57219 |               23.4617 |             0.931351 |               3.81008 |             0.208033 |              599.8 |           24.0106 |            0         |            0        |                    0 |                   0 |
-| low_demand      | maxpressure  |  30 |                  0.117315 |               0.00375983 |             176.087 |            9.76869 |               15.4504 |             0.931256 |               2.52077 |             0.205702 |              599.8 |           24.0106 |            0         |            0        |                    0 |                   0 |
-| low_demand      | ours_count   |  30 |                  0.118236 |               0.00420807 |             177.417 |            9.53385 |               15.1824 |             0.961428 |               2.47884 |             0.186092 |              599.8 |           24.0106 |            0         |            0        |                    0 |                   0 |
-| low_demand      | XtraFlow     |  30 |                  0.115168 |               0.00362755 |             172.216 |            9.26048 |               15.9156 |             0.955137 |               2.60169 |             0.212963 |              599.8 |           24.0106 |            0         |            0        |                    0 |                   0 |
-| low_demand      | rl_ppo       |  30 |                  0.132008 |               0.00415294 |             197.986 |           10.6006  |               24.1058 |             0.879206 |               3.92553 |             0.254691 |              599.8 |           24.0106 |            0         |            0        |                    0 |                   0 |
+| scenario        | controller     |   n |   fuel_per_vehicle_L_mean |   fuel_per_vehicle_L_std |   total_CO2_kg_mean |   total_CO2_kg_std |   mean_waiting_s_mean |   mean_waiting_s_std |   p95_waiting_s_mean |   p95_waiting_s_std |   mean_queue_veh_mean |   mean_queue_veh_std |   n_completed_mean |   n_completed_std |   n_unfinished_mean |   n_unfinished_std |   gridlock_flag_mean |   gridlock_flag_std |   ssm_conflicts_mean |   ssm_conflicts_std |
+|:----------------|:---------------|----:|--------------------------:|-------------------------:|--------------------:|-------------------:|----------------------:|---------------------:|---------------------:|--------------------:|----------------------:|---------------------:|-------------------:|------------------:|--------------------:|-------------------:|---------------------:|--------------------:|---------------------:|--------------------:|
+| balanced        | fixed          |   5 |                  0.141919 |               0.00371389 |             685.837 |           31.1984  |               30.0277 |             1.26806  |                 73.8 |            4.43847  |              15.333   |             0.925331 |             1932.2 |           37.3323 |                   0 |                  0 |                    0 |                   0 |               2992   |            126.493  |
+| balanced        | fixed_tuned    |   5 |                  0.141359 |               0.00283377 |             683.303 |           26.287   |               28.7274 |             0.559475 |                 67.2 |            0.447214 |              14.9333  |             0.492688 |             1932.2 |           37.3323 |                   0 |                  0 |                    0 |                   0 |               3069.2 |            151.759  |
+| balanced        | actuated       |   5 |                  0.13723  |               0.00177556 |             663.123 |           21.1561  |               26.1047 |             0.445988 |                 62.2 |            0.83666  |              13.6325  |             0.354022 |             1932.2 |           37.3323 |                   0 |                  0 |                    0 |                   0 |               2928.8 |            133.618  |
+| balanced        | webster        |   5 |                  0.143443 |               0.00281791 |             693.587 |           27.1856  |               28.8671 |             0.448629 |                 61   |            0.707107 |              15.0257  |             0.457958 |             1932.2 |           37.3323 |                   0 |                  0 |                    0 |                   0 |               3266.8 |            116.076  |
+| balanced        | queue_pressure |   5 |                  0.131003 |               0.00179025 |             633.489 |           20.7878  |               21.3651 |             0.448953 |                 77.2 |            3.34664  |              11.1353  |             0.245167 |             1932.2 |           37.3323 |                   0 |                  0 |                    0 |                   0 |               2538.8 |            101.08   |
+| balanced        | maxpressure    |   5 |                  0.131003 |               0.00179025 |             633.489 |           20.7878  |               21.3651 |             0.448953 |                 77.2 |            3.34664  |              11.1353  |             0.245167 |             1932.2 |           37.3323 |                   0 |                  0 |                    0 |                   0 |               2538.8 |            101.08   |
+| balanced        | ours_count     |   5 |                  0.131089 |               0.00216344 |             633.928 |           21.5611  |               21.3428 |             0.436245 |                 78   |            2.54951  |              11.1094  |             0.306849 |             1932.2 |           37.3323 |                   0 |                  0 |                    0 |                   0 |               2546.8 |             94.7059 |
+| balanced        | XtraFlow       |   5 |                  0.130612 |               0.0017711  |             631.069 |           21.5792  |               21.7883 |             0.424012 |                 73.4 |            1.34164  |              11.3502  |             0.348273 |             1932.2 |           37.3323 |                   0 |                  0 |                    0 |                   0 |               2591.6 |             82.0658 |
+| peak_unbalanced | fixed          |   5 |                  0.151162 |               0.00591313 |             679.431 |           26.9478  |               36.9526 |             3.39836  |                110.2 |           27.3624   |              17.4575  |             1.46347  |             1801.4 |           21.2438 |                   0 |                  0 |                    0 |                   0 |               3125.8 |             96.9211 |
+| peak_unbalanced | fixed_tuned    |   5 |                  0.137858 |               0.00366985 |             619.991 |           12.0939  |               28.141  |             1.22182  |                 77.6 |            2.07364  |              13.6022  |             0.559678 |             1801.4 |           21.2438 |                   0 |                  0 |                    0 |                   0 |               2728   |             56.9517 |
+| peak_unbalanced | actuated       |   5 |                  0.13611  |               0.00190695 |             612.856 |            9.24416 |               25.3208 |             0.920304 |                 61.4 |            0.547723 |              12.314   |             0.538097 |             1801.4 |           21.2438 |                   0 |                  0 |                    0 |                   0 |               2792.4 |            102.478  |
+| peak_unbalanced | webster        |   5 |                  0.138243 |               0.00246212 |             622.258 |            7.33637 |               26.4179 |             0.517538 |                 61.8 |            1.09545  |              12.8414  |             0.263676 |             1801.4 |           21.2438 |                   0 |                  0 |                    0 |                   0 |               2920.2 |            136.023  |
+| peak_unbalanced | queue_pressure |   5 |                  0.125404 |               0.00292329 |             564.675 |            7.84695 |               18.1115 |             0.779773 |                 68.8 |            4.08656  |               8.82277 |             0.285753 |             1801.4 |           21.2438 |                   0 |                  0 |                    0 |                   0 |               2208.4 |             29.7456 |
+| peak_unbalanced | maxpressure    |   5 |                  0.125404 |               0.00292329 |             564.675 |            7.84695 |               18.1115 |             0.779773 |                 68.8 |            4.08656  |               8.82277 |             0.285753 |             1801.4 |           21.2438 |                   0 |                  0 |                    0 |                   0 |               2208.4 |             29.7456 |
+| peak_unbalanced | ours_count     |   5 |                  0.125603 |               0.00271913 |             565.715 |            7.02358 |               18.2265 |             0.507003 |                 70   |            2.54951  |               8.88026 |             0.17991  |             1801.4 |           21.2438 |                   0 |                  0 |                    0 |                   0 |               2168   |             62.8172 |
+| peak_unbalanced | XtraFlow       |   5 |                  0.124543 |               0.00351481 |             560.185 |           11.5141  |               18.3722 |             0.774463 |                 70.6 |            1.81659  |               8.95535 |             0.356174 |             1801.4 |           21.2438 |                   0 |                  0 |                    0 |                   0 |               2244.4 |             65.2403 |
+| dynamic         | fixed          |   5 |                  0.143904 |               0.00298723 |             631.549 |           22.1963  |               32.1862 |             1.12618  |                 81.4 |            6.10737  |              15.1496  |             0.578419 |             1757.2 |           29.201  |                   0 |                  0 |                    0 |                   0 |               2874.2 |            106.516  |
+| dynamic         | fixed_tuned    |   5 |                  0.150542 |               0.0029684  |             660.433 |           22.0436  |               36.9068 |             2.3681   |                 99   |            8        |              17.3349  |             0.994355 |             1757.2 |           29.201  |                   0 |                  0 |                    0 |                   0 |               2977.2 |             78.6174 |
+| dynamic         | actuated       |   5 |                  0.13643  |               0.00348899 |             599.261 |           26.2932  |               25.8703 |             0.632416 |                 61.2 |            1.09545  |              12.3169  |             0.389739 |             1757.2 |           29.201  |                   0 |                  0 |                    0 |                   0 |               2766.4 |             95.5945 |
+| dynamic         | webster        |   5 |                  0.151002 |               0.005122   |             663.016 |           34.1332  |               34.7427 |             2.04246  |                 83.8 |           13.3679   |              16.4352  |             1.16926  |             1757.2 |           29.201  |                   0 |                  0 |                    0 |                   0 |               3244.8 |            189.97   |
+| dynamic         | queue_pressure |   5 |                  0.126232 |               0.00317047 |             554.993 |           23.3084  |               18.5589 |             0.310273 |                 68.2 |            3.11448  |               8.82322 |             0.23784  |             1757.2 |           29.201  |                   0 |                  0 |                    0 |                   0 |               2139.6 |             70.5429 |
+| dynamic         | maxpressure    |   5 |                  0.126232 |               0.00317047 |             554.993 |           23.3084  |               18.5589 |             0.310273 |                 68.2 |            3.11448  |               8.82322 |             0.23784  |             1757.2 |           29.201  |                   0 |                  0 |                    0 |                   0 |               2139.6 |             70.5429 |
+| dynamic         | ours_count     |   5 |                  0.125022 |               0.00333375 |             549.221 |           23.4025  |               18.4312 |             0.592162 |                 68.8 |            4.91935  |               8.74413 |             0.32188  |             1757.2 |           29.201  |                   0 |                  0 |                    0 |                   0 |               2102.8 |             70.6767 |
+| dynamic         | XtraFlow       |   5 |                  0.124853 |               0.00325591 |             548.053 |           23.8466  |               18.81   |             0.332752 |                 70.6 |            1.81659  |               8.94317 |             0.175767 |             1757.2 |           29.201  |                   0 |                  0 |                    0 |                   0 |               2139.2 |            108.077  |
+| low_demand      | fixed          |   5 |                  0.136329 |               0.00535827 |             205.464 |            9.07916 |               27.2225 |             1.44494  |                 69   |            1.22474  |               4.44159 |             0.230881 |              602.8 |           30.3266 |                   0 |                  0 |                    0 |                   0 |                417.6 |             60.6201 |
+| low_demand      | fixed_tuned    |   5 |                  0.133118 |               0.0048656  |             200.781 |           12.2775  |               24.5415 |             1.16478  |                 60   |            1        |               4.02138 |             0.379656 |              602.8 |           30.3266 |                   0 |                  0 |                    0 |                   0 |                382.8 |             59.6423 |
+| low_demand      | actuated       |   5 |                  0.131084 |               0.00570023 |             197.746 |           13.7797  |               23.1748 |             1.03395  |                 56.4 |            0.547723 |               3.78633 |             0.317689 |              602.8 |           30.3266 |                   0 |                  0 |                    0 |                   0 |                397   |             54.1756 |
+| low_demand      | webster        |   5 |                  0.132538 |               0.00388561 |             199.775 |            9.71825 |               24.0416 |             0.921683 |                 57.6 |            0.547723 |               3.93945 |             0.298008 |              602.8 |           30.3266 |                   0 |                  0 |                    0 |                   0 |                394   |             61.3677 |
+| low_demand      | queue_pressure |   5 |                  0.119356 |               0.00581493 |             179.986 |           10.1886  |               15.2287 |             1.05288  |                 57.6 |            7.63544  |               2.50079 |             0.212638 |              602.8 |           30.3266 |                   0 |                  0 |                    0 |                   0 |                238   |             48.3529 |
+| low_demand      | maxpressure    |   5 |                  0.119356 |               0.00581493 |             179.986 |           10.1886  |               15.2287 |             1.05288  |                 57.6 |            7.63544  |               2.50079 |             0.212638 |              602.8 |           30.3266 |                   0 |                  0 |                    0 |                   0 |                238   |             48.3529 |
+| low_demand      | ours_count     |   5 |                  0.11951  |               0.0059792  |             180.208 |           10.3066  |               15.3518 |             1.05277  |                 58.4 |            7.95613  |               2.52017 |             0.202433 |              602.8 |           30.3266 |                   0 |                  0 |                    0 |                   0 |                237.2 |             49.5702 |
+| low_demand      | XtraFlow       |   5 |                  0.11702  |               0.00460451 |             175.992 |           10.0836  |               16.1693 |             0.667017 |                 59.4 |            1.14018  |               2.65471 |             0.23351  |              602.8 |           30.3266 |                   0 |                  0 |                    0 |                   0 |                234   |             38.704  |
 
 
 ## Statistical tests (XtraFlow vs baselines)
 
 
-| scenario        | baseline    | metric             |   pct_reduction_mean |   pct_reduction_ci_lo |   pct_reduction_ci_hi |   wilcoxon_stat |       p_raw |   cohens_dz |   n_pairs |      p_holm |
-|:----------------|:------------|:-------------------|---------------------:|----------------------:|----------------------:|----------------:|------------:|------------:|----------:|------------:|
-| balanced        | fixed       | fuel_per_vehicle_L |             8.60644  |              8.22502  |              8.99744  |               0 | 1.86265e-09 |   -7.05272  |        30 | 4.47035e-08 |
-| balanced        | webster     | fuel_per_vehicle_L |             8.37264  |              7.9115   |              8.84512  |               0 | 1.86265e-09 |   -5.94868  |        30 | 4.47035e-08 |
-| balanced        | actuated    | fuel_per_vehicle_L |             5.569    |              5.24303  |              5.89154  |               0 | 1.86265e-09 |   -5.84537  |        30 | 4.47035e-08 |
-| balanced        | maxpressure | fuel_per_vehicle_L |             1.24649  |              0.901382 |              1.60427  |              14 | 2.04891e-07 |   -1.24561  |        30 | 1.43424e-06 |
-| balanced        | ours_count  | fuel_per_vehicle_L |             0.59857  |              0.276763 |              0.943536 |              84 | 0.00158328  |   -0.628937 |        30 | 0.00474985  |
-| balanced        | rl_ppo      | fuel_per_vehicle_L |             8.37264  |              7.9115   |              8.84512  |               0 | 1.86265e-09 |   -5.94868  |        30 | 4.47035e-08 |
-| dynamic         | fixed       | fuel_per_vehicle_L |            16.5005   |             15.7215   |             17.3068   |               0 | 1.86265e-09 |   -5.88864  |        30 | 4.47035e-08 |
-| dynamic         | webster     | fuel_per_vehicle_L |            24.7916   |             22.3321   |             27.9838   |               0 | 1.86265e-09 |   -1.57466  |        30 | 4.47035e-08 |
-| dynamic         | actuated    | fuel_per_vehicle_L |             8.90099  |              8.49399  |              9.30014  |               0 | 1.86265e-09 |   -7.54931  |        30 | 4.47035e-08 |
-| dynamic         | maxpressure | fuel_per_vehicle_L |             0.624322 |              0.219586 |              1.0281   |             105 | 0.00761214  |   -0.539318 |        30 | 0.00806359  |
-| dynamic         | ours_count  | fuel_per_vehicle_L |             0.590258 |              0.258025 |              0.954554 |              96 | 0.00403179  |   -0.59719  |        30 | 0.00806359  |
-| dynamic         | rl_ppo      | fuel_per_vehicle_L |            30.1643   |             28.0346   |             32.3621   |               0 | 1.86265e-09 |   -3.10167  |        30 | 4.47035e-08 |
-| low_demand      | fixed       | fuel_per_vehicle_L |            14.4582   |             13.9839   |             14.9079   |               0 | 1.86265e-09 |   -9.79892  |        30 | 4.47035e-08 |
-| low_demand      | webster     | fuel_per_vehicle_L |            12.741    |             12.1536   |             13.358    |               0 | 1.86265e-09 |   -6.66068  |        30 | 4.47035e-08 |
-| low_demand      | actuated    | fuel_per_vehicle_L |            11.8417   |             11.2361   |             12.4384   |               0 | 1.86265e-09 |   -6.37297  |        30 | 4.47035e-08 |
-| low_demand      | maxpressure | fuel_per_vehicle_L |             1.81716  |              1.25765  |              2.35725  |              22 | 9.98378e-07 |   -1.17635  |        30 | 4.16301e-06 |
-| low_demand      | ours_count  | fuel_per_vehicle_L |             2.5738   |              2.10363  |              3.02517  |               2 | 5.58794e-09 |   -1.88426  |        30 | 4.47035e-08 |
-| low_demand      | rl_ppo      | fuel_per_vehicle_L |            12.741    |             12.1536   |             13.358    |               0 | 1.86265e-09 |   -6.66068  |        30 | 4.47035e-08 |
-| peak_unbalanced | fixed       | fuel_per_vehicle_L |            21.7596   |             20.0481   |             23.5385   |               0 | 1.86265e-09 |   -3.21574  |        30 | 4.47035e-08 |
-| peak_unbalanced | webster     | fuel_per_vehicle_L |            11.2536   |             10.8826   |             11.6369   |               0 | 1.86265e-09 |   -9.17751  |        30 | 4.47035e-08 |
-| peak_unbalanced | actuated    | fuel_per_vehicle_L |             9.67431  |              9.3721   |              9.98495  |               0 | 1.86265e-09 |  -10.0638   |        30 | 4.47035e-08 |
-| peak_unbalanced | maxpressure | fuel_per_vehicle_L |             1.15304  |              0.820211 |              1.49334  |              17 | 3.85568e-07 |   -1.19057  |        30 | 2.31341e-06 |
-| peak_unbalanced | ours_count  | fuel_per_vehicle_L |             1.27991  |              0.9015   |              1.64624  |              21 | 8.32602e-07 |   -1.18112  |        30 | 4.16301e-06 |
-| peak_unbalanced | rl_ppo      | fuel_per_vehicle_L |            53.3305   |             50.6473   |             55.8845   |               0 | 1.86265e-09 |   -3.25268  |        30 | 4.47035e-08 |
+| scenario        | baseline       | metric             |   pct_reduction_mean |   pct_reduction_ci_lo |   pct_reduction_ci_hi |   wilcoxon_stat |   p_raw |   cohens_dz |   n_pairs |   p_holm |
+|:----------------|:---------------|:-------------------|---------------------:|----------------------:|----------------------:|----------------:|--------:|------------:|----------:|---------:|
+| balanced        | fixed          | fuel_per_vehicle_L |             7.93819  |              6.71058  |               9.08539 |               0 |  0.0625 |   -4.65124  |         5 |        1 |
+| balanced        | fixed_tuned    | fuel_per_vehicle_L |             7.58857  |              6.65048  |               8.42523 |               0 |  0.0625 |   -5.89147  |         5 |        1 |
+| balanced        | webster        | fuel_per_vehicle_L |             8.93394  |              8.43444  |               9.71167 |               0 |  0.0625 |   -8.73082  |         5 |        1 |
+| balanced        | actuated       | fuel_per_vehicle_L |             4.82153  |              4.29527  |               5.25047 |               0 |  0.0625 |   -7.80534  |         5 |        1 |
+| balanced        | queue_pressure | fuel_per_vehicle_L |             0.295165 |             -0.380924 |               1.0131  |               5 |  0.625  |   -0.332978 |         5 |        1 |
+| balanced        | maxpressure    | fuel_per_vehicle_L |             0.295165 |             -0.380924 |               1.0131  |               5 |  0.625  |   -0.332978 |         5 |        1 |
+| balanced        | ours_count     | fuel_per_vehicle_L |             0.353543 |             -0.755788 |               1.24958 |               5 |  0.625  |   -0.285252 |         5 |        1 |
+| dynamic         | fixed          | fuel_per_vehicle_L |            13.2395   |             12.3303   |              14.308   |               0 |  0.0625 |  -10.3006   |         5 |        1 |
+| dynamic         | fixed_tuned    | fuel_per_vehicle_L |            17.0438   |             15.0953   |              18.9426  |               0 |  0.0625 |   -6.35245  |         5 |        1 |
+| dynamic         | webster        | fuel_per_vehicle_L |            17.2855   |             15.8235   |              18.7444  |               0 |  0.0625 |   -7.72593  |         5 |        1 |
+| dynamic         | actuated       | fuel_per_vehicle_L |             8.48254  |              7.76617  |               9.21374 |               0 |  0.0625 |   -8.28822  |         5 |        1 |
+| dynamic         | queue_pressure | fuel_per_vehicle_L |             1.09237  |              0.647048 |               1.70239 |               0 |  0.0625 |   -1.61694  |         5 |        1 |
+| dynamic         | maxpressure    | fuel_per_vehicle_L |             1.09237  |              0.647048 |               1.70239 |               0 |  0.0625 |   -1.61694  |         5 |        1 |
+| dynamic         | ours_count     | fuel_per_vehicle_L |             0.132786 |             -0.359609 |               0.62518 |               6 |  0.8125 |   -0.21331  |         5 |        1 |
+| low_demand      | fixed          | fuel_per_vehicle_L |            14.1478   |             12.715    |              15.4877  |               0 |  0.0625 |   -6.87583  |         5 |        1 |
+| low_demand      | fixed_tuned    | fuel_per_vehicle_L |            12.0972   |             11.3836   |              12.8108  |               0 |  0.0625 |  -12.7132   |         5 |        1 |
+| low_demand      | webster        | fuel_per_vehicle_L |            11.7264   |             10.9117   |              12.7308  |               0 |  0.0625 |  -11.7439   |         5 |        1 |
+| low_demand      | actuated       | fuel_per_vehicle_L |            10.6947   |              8.95637  |              12.433   |               0 |  0.0625 |   -4.21333  |         5 |        1 |
+| low_demand      | queue_pressure | fuel_per_vehicle_L |             1.91393  |              0.50983  |               3.03893 |               1 |  0.125  |   -1.14308  |         5 |        1 |
+| low_demand      | maxpressure    | fuel_per_vehicle_L |             1.91393  |              0.50983  |               3.03893 |               1 |  0.125  |   -1.14308  |         5 |        1 |
+| low_demand      | ours_count     | fuel_per_vehicle_L |             2.03332  |              0.50983  |               3.27372 |               1 |  0.125  |   -1.13313  |         5 |        1 |
+| peak_unbalanced | fixed          | fuel_per_vehicle_L |            17.5162   |             14.4282   |              20.3266  |               0 |  0.0625 |   -3.97228  |         5 |        1 |
+| peak_unbalanced | fixed_tuned    | fuel_per_vehicle_L |             9.64293  |              8.03889  |              11.247   |               0 |  0.0625 |   -4.37266  |         5 |        1 |
+| peak_unbalanced | webster        | fuel_per_vehicle_L |             9.92109  |              8.87416  |              10.5582  |               0 |  0.0625 |   -9.12175  |         5 |        1 |
+| peak_unbalanced | actuated       | fuel_per_vehicle_L |             8.50188  |              6.64144  |              10.0216  |               0 |  0.0625 |   -4.11111  |         5 |        1 |
+| peak_unbalanced | queue_pressure | fuel_per_vehicle_L |             0.689012 |             -0.354357 |               1.76514 |               3 |  0.3125 |   -0.491294 |         5 |        1 |
+| peak_unbalanced | maxpressure    | fuel_per_vehicle_L |             0.689012 |             -0.354357 |               1.76514 |               3 |  0.3125 |   -0.491294 |         5 |        1 |
+| peak_unbalanced | ours_count     | fuel_per_vehicle_L |             0.85079  |             -0.13364  |               1.77265 |               3 |  0.3125 |   -0.655749 |         5 |        1 |
 
 
 
 ## Where XtraFlow loses or ties
 
 
-No non-positive mean fuel reductions found against listed baselines in loaded runs.
+- p95_waiting_s vs `fixed_tuned` on `balanced`: -9.24% (CI [-11.04, -7.11])
+
+- p95_waiting_s vs `webster` on `balanced`: -20.35% (CI [-22.78, -17.87])
+
+- p95_waiting_s vs `actuated` on `balanced`: -18.03% (CI [-20.40, -15.66])
+
+- mean_waiting_s vs `queue_pressure` on `balanced`: -2.00% (CI [-3.39, -0.19])
+
+- mean_waiting_s vs `maxpressure` on `balanced`: -2.00% (CI [-3.39, -0.19])
+
+- mean_waiting_s vs `ours_count` on `balanced`: -2.14% (CI [-4.88, 0.39])
+
+- p95_waiting_s vs `actuated` on `dynamic`: -15.41% (CI [-18.50, -12.31])
+
+- mean_waiting_s vs `queue_pressure` on `dynamic`: -1.36% (CI [-2.50, 0.16])
+
+- p95_waiting_s vs `queue_pressure` on `dynamic`: -3.74% (CI [-8.43, 1.49])
+
+- mean_waiting_s vs `maxpressure` on `dynamic`: -1.36% (CI [-2.50, 0.16])
+
+- p95_waiting_s vs `maxpressure` on `dynamic`: -3.74% (CI [-8.43, 1.49])
+
+- mean_waiting_s vs `ours_count` on `dynamic`: -2.12% (CI [-4.32, 0.36])
+
+- p95_waiting_s vs `ours_count` on `dynamic`: -3.06% (CI [-9.39, 3.27])
+
+- p95_waiting_s vs `webster` on `low_demand`: -3.14% (CI [-5.25, -1.38])
+
+- p95_waiting_s vs `actuated` on `low_demand`: -5.31% (CI [-6.33, -4.29])
+
+- mean_waiting_s vs `queue_pressure` on `low_demand`: -6.42% (CI [-10.48, -2.16])
+
+- p95_waiting_s vs `queue_pressure` on `low_demand`: -4.40% (CI [-13.69, 5.28])
+
+- mean_waiting_s vs `maxpressure` on `low_demand`: -6.42% (CI [-10.48, -2.16])
+
+- p95_waiting_s vs `maxpressure` on `low_demand`: -4.40% (CI [-13.69, 5.28])
+
+- mean_waiting_s vs `ours_count` on `low_demand`: -5.58% (CI [-9.96, -1.20])
+
+- p95_waiting_s vs `ours_count` on `low_demand`: -3.08% (CI [-13.23, 6.45])
+
+- p95_waiting_s vs `webster` on `peak_unbalanced`: -14.24% (CI [-15.86, -12.60])
+
+- p95_waiting_s vs `actuated` on `peak_unbalanced`: -14.98% (CI [-16.60, -13.11])
+
+- mean_waiting_s vs `queue_pressure` on `peak_unbalanced`: -1.52% (CI [-4.91, 1.87])
+
+- p95_waiting_s vs `queue_pressure` on `peak_unbalanced`: -3.02% (CI [-10.10, 3.68])
+
+- mean_waiting_s vs `maxpressure` on `peak_unbalanced`: -1.52% (CI [-4.91, 1.87])
+
+- p95_waiting_s vs `maxpressure` on `peak_unbalanced`: -3.02% (CI [-10.10, 3.68])
+
+- mean_waiting_s vs `ours_count` on `peak_unbalanced`: -0.81% (CI [-3.54, 2.10])
+
+- p95_waiting_s vs `ours_count` on `peak_unbalanced`: -1.01% (CI [-5.81, 2.52])
 
 
 ## Ablations
 
 
-| scenario        |   pct_reduction_fuel_vs_count_mean |    ci_lo |    ci_hi |
-|:----------------|-----------------------------------:|---------:|---------:|
-| balanced        |                           0.59857  | 0.276763 | 0.943536 |
-| dynamic         |                           0.590258 | 0.258025 | 0.954554 |
-| low_demand      |                           2.5738   | 2.10363  | 3.02517  |
-| peak_unbalanced |                           1.27991  | 0.9015   | 1.64624  |
+| scenario        |   pct_reduction_fuel_vs_count_mean |     ci_lo |   ci_hi | statement                |
+|:----------------|-----------------------------------:|----------:|--------:|:-------------------------|
+| balanced        |                           0.353543 | -0.755788 | 1.24958 | no_detectable_difference |
+| dynamic         |                           0.132786 | -0.359609 | 0.62518 | no_detectable_difference |
+| low_demand      |                           2.03332  |  0.50983  | 3.27372 | fuel_weights_lower_fuel  |
+| peak_unbalanced |                           0.85079  | -0.13364  | 1.77265 | no_detectable_difference |
 
 
 
 ## RL comparison
 
 
-RL selected on VALIDATION: `{"selected_on": "VALIDATION seeds", "confirm_seeds": [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019], "best_path": "results/rl/ppo_best.zip", "best_val_fuel_per_vehicle_L": 0.14054192781091826, "fuels": [0.13778186558313338, 0.14475136100664854, 0.1422604947379443, 0.13727005318522195, 0.1387308904741657, 0.13832981558301768, 0.13630073085460376, 0.1388412717943669, 0.14070995857927754, 0.1420681128651021, 0.14339000560338883, 0.14726891456061725, 0.14077461501748376, 0.14176600660923588, 0.1395943082612321, 0.14027819270704772, 0.13823100367183688, 0.1428328530378117, 0.14232536536795087, 0.1373327367182782]}`.
+RL selected on VALIDATION: `{"selected_on": "Final checkpoint at 200704 steps. VALIDATION scoring was stopped before it finished.", "train_seeds": [1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 1013, 1014, 1015, 1016, 1017, 1018, 1019, 1020, 1021, 1022, 1023, 1024, 1025, 1026, 1027, 1028, 1029, 1030, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038, 1039, 1040, 1041, 1042, 1043, 1044, 1045, 1046, 1047, 1048, 1049], "confirm_seeds": [], "scenarios": ["balanced", "peak_unbalanced", "dynamic", "low_demand"], "best_path": "results/rl/ppo_best.zip", "best_val_fuel_per_vehicle_L": null, "smoke": false, "timesteps_budget": 200704, "config_total_timesteps": 200000, "sha256": "277f555ade8cefea0e3ef9519b209ce495907cf9823d1f0e114a9dd1132c4280", "scored_checkpoints": [], "note": "Time cut. This zip is the 200000-step model. It was not scored on VALIDATION or TEST, so rl_ppo is not in raw_runs.csv."}`.
 
-| scenario        | baseline   | metric             |   pct_reduction_mean |   pct_reduction_ci_lo |   pct_reduction_ci_hi |   wilcoxon_stat |       p_raw |   cohens_dz |   n_pairs |      p_holm |
-|:----------------|:-----------|:-------------------|---------------------:|----------------------:|----------------------:|----------------:|------------:|------------:|----------:|------------:|
-| balanced        | rl_ppo     | fuel_per_vehicle_L |              8.37264 |                7.9115 |               8.84512 |               0 | 1.86265e-09 |    -5.94868 |        30 | 4.47035e-08 |
-| dynamic         | rl_ppo     | fuel_per_vehicle_L |             30.1643  |               28.0346 |              32.3621  |               0 | 1.86265e-09 |    -3.10167 |        30 | 4.47035e-08 |
-| low_demand      | rl_ppo     | fuel_per_vehicle_L |             12.741   |               12.1536 |              13.358   |               0 | 1.86265e-09 |    -6.66068 |        30 | 4.47035e-08 |
-| peak_unbalanced | rl_ppo     | fuel_per_vehicle_L |             53.3305  |               50.6473 |              55.8845  |               0 | 1.86265e-09 |    -3.25268 |        30 | 4.47035e-08 |
 
 
 
@@ -2412,26 +2478,26 @@ RL selected on VALIDATION: `{"selected_on": "VALIDATION seeds", "confirm_seeds":
 - External: Indian arterial heterogeneity not fully represented.
 
 
-## Q&A cheat sheet
+## Tuning landscape
 
 
-**How is fuel computed?** SUMO emission devices (HBEFA classes mapped at runtime); mg converted to litres via petrol/diesel densities in config.
+Relative span of screened hyperparameter means, (max-min)/min, was 0.0138. Selection used VALIDATION seeds across the scenarios listed in tuned_params.json.
 
 
-**Is it AI?** Perception path uses YOLO; controller is fuel-weighted pressure (interpretable). RL-PPO is an additional baseline.
+## Q&A
 
 
-**Why not RL?** See RL comparison tables; PPO is trained/selected on TRAIN/VALIDATION and reported honestly if it underperforms XtraFlow.
+**How is fuel computed?** SUMO emission devices using the classes in results/emission_class_map.json; milligrams converted with the densities in config. Fuel per vehicle uses departed vehicles, including unfinished trips.
 
 
-**What about deployment?** Requires detectors (or camera+YOLO), TraCI/edge controller, and local calibration; results are simulation-based estimates.
+**What do the controllers see?** Default info_mode is oracle: SUMO speed, class, and route turn. Camera mode applies perception/noise_model.json. The noise source field says whether that model is empirical or assumed.
 
 
-**What about Indian traffic?** Assumed mix with 2W/auto; sublane model when stable; left-hand traffic.
+**What is the headline comparison?** XtraFlow versus the lowest-fuel controller among fixed_tuned, actuated, queue_pressure, and maxpressure, with a paired bootstrap interval. Legacy fixed is a secondary row. Numbers are in results/headlines.json.
 
 
-**Biggest limitation?** Emission classes and mix are not field-calibrated.
+**Did you tune on test data?** Tuning, fixed-plan search, and RL checkpoint selection use VALIDATION seeds only. TEST seeds run once after the config lock.
 
 
-**Did you tune on test data?** No. Tuning and RL selection use VALIDATION seeds only; TEST seeds touched after config.lock.
+**What should not be claimed from this file?** Any sentence whose number is not in a results JSON or CSV loaded above. Grid, safety, and robustness verdicts are the fields in those JSON files.
 

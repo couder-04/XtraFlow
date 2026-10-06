@@ -52,11 +52,15 @@ def _sens_task(task):
     }
 
 
-def main(smoke: bool = False) -> None:
+def main(smoke: bool = False, max_seeds: int | None = None, mix_samples: int | None = None) -> None:
     cfg = load_config()
     mults = cfg["sensitivity"]["demand_multipliers"]
     n_mix = 3 if smoke else int(cfg["sensitivity"]["mix_lhs_samples"])
+    if mix_samples is not None and not smoke:
+        n_mix = int(mix_samples)
     seeds = [1, 2] if smoke else [1, 2, 3, 4, 5]
+    if max_seeds is not None and not smoke:
+        seeds = seeds[: int(max_seeds)]
     scenario = "balanced"
     mixes, ranges = lhs_mixes(n_mix)
     tasks = [("demand_mult", m, seed, ctrl, smoke, None) for m in mults for seed in seeds for ctrl in ["fixed", "XtraFlow"]]
@@ -99,5 +103,7 @@ if __name__ == "__main__":
     import argparse
     p = argparse.ArgumentParser()
     p.add_argument("--smoke", action="store_true")
+    p.add_argument("--max-seeds", type=int, default=None)
+    p.add_argument("--mix-samples", type=int, default=None)
     args = p.parse_args()
-    main(smoke=args.smoke)
+    main(smoke=args.smoke, max_seeds=args.max_seeds, mix_samples=args.mix_samples)

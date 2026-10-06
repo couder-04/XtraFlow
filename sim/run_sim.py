@@ -15,6 +15,14 @@ from sim.metrics import conflicts_per_1000, fuel_per_departed, parse_ssm_conflic
 from sim.util import ROOT, ensure_dirs, load_config, load_json, locate_sumo, mg_to_litres, save_json, tool_cmd
 
 
+def _free_port() -> int:
+    """A free localhost port so parallel SUMO processes do not share 8813."""
+    import socket
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.bind(("127.0.0.1", 0))
+        return int(sock.getsockname()[1])
+
+
 def _write_sumocfg(net: Path, routes: Path, additional: List[Path], out_cfg: Path,
                    tripinfo: Path, ssm: Optional[Path] = None, emission_prob: float = 1.0,
                    begin: int = 0, end: Optional[int] = None,
@@ -160,6 +168,7 @@ def run_one(
 
     t0 = time.time()
     label = f"{tag}_{os.getpid()}"
+    # Omit the port so a bind collision retries on a new port. A fixed port disables that.
     traci.start(sumo_cmd, label=label, numRetries=10)
     try:
         traci.switch(label)
@@ -348,6 +357,19 @@ def run_one(
     if save_timeseries:
         ts_path = ROOT / "results" / "timeseries" / f"{tag}.json"
         save_json(ts_path, {"rows": ts_rows, "green_alloc": green_alloc})
+
+    # Metrics are already in the row. Keeping every dump fills the disk on a full search.
+    for leftover in (tripinfo, ssm_out, cfg_path):
+        try:
+            leftover.unlink(missing_ok=True)
+        except OSError:
+            pass
+    if emission_model == "alternate":
+        alt_path = raw_dir / f"{tag}_vtypes_alt.add.xml"
+        try:
+            alt_path.unlink(missing_ok=True)
+        except OSError:
+            pass
 
     return row
 

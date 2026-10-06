@@ -453,12 +453,28 @@ def _fig_placeholder_from_headlines(headlines, path, title):
 def _fig_rl_curve(curve_path, path):
     data = json.loads(curve_path.read_text())
     curve = data.get("curve", [])
+    scored = {c.get("checkpoint"): c for c in data.get("scored", []) if isinstance(c, dict)}
     fig, ax = plt.subplots(figsize=(8, 4))
-    if curve:
-        ax.plot([c["timesteps"] for c in curve], [c["val_fuel_per_vehicle_L"] for c in curve], marker="o")
+    xs, ys = [], []
+    for c in curve:
+        if "val_fuel_per_vehicle_L" in c and np.isfinite(c["val_fuel_per_vehicle_L"]):
+            xs.append(c["timesteps"])
+            ys.append(c["val_fuel_per_vehicle_L"])
+            continue
+        sc = scored.get(c.get("checkpoint"), {})
+        v = sc.get("val_fuel_per_vehicle_L")
+        if v is not None and np.isfinite(v):
+            xs.append(c["timesteps"])
+            ys.append(v)
+    if xs:
+        ax.plot(xs, ys, marker="o")
+        ax.set_ylabel("Val fuel/veh (L)")
+        ax.set_title("RL training curve (VALIDATION fuel)")
+    else:
+        ax.plot([c["timesteps"] for c in curve], marker="o")
+        ax.set_ylabel("Checkpoint index")
+        ax.set_title("RL training checkpoints (no VALIDATION scores recorded)")
     ax.set_xlabel("Timesteps")
-    ax.set_ylabel("Val fuel/veh (L)")
-    ax.set_title("RL training curve (VALIDATION fuel)")
     fig.tight_layout()
     fig.savefig(path)
     plt.close(fig)
@@ -489,10 +505,17 @@ def write_report(df, summary_df, comp_df, headlines, abl_rows, cfg, wait_rows=No
 
     # Abstract with actual headlines
     lines.append("## Abstract\n")
+    has_ppo = "controller" in df.columns and "rl_ppo" in set(df["controller"])
+    ppo_clause = (
+        "PPO is included in the TEST comparison. "
+        if has_ppo
+        else "PPO was trained to the configured step budget and is not in this TEST comparison. "
+    )
     lines.append(
         "We evaluate an adaptive, fuel-weighted pressure traffic signal controller "
         "(XtraFlow) against legacy fixed-time, a validation-tuned fixed plan, Webster, "
-        "SUMO-actuated, queue-pressure, max-pressure, a count-only ablation, and PPO. "
+        "SUMO-actuated, queue-pressure, max-pressure, and a count-only ablation. "
+        + ppo_clause +
         "Controllers use an oracle detector (SUMO speed, class, and route turn) unless "
         "info_mode is camera. Emission classes are proxies. "
         "Simulation-based estimate; assumed traffic mix. "
@@ -514,7 +537,14 @@ def write_report(df, summary_df, comp_df, headlines, abl_rows, cfg, wait_rows=No
     lines.append("## Method\n")
     lines.append("- Single 4-arm intersection; left-hand traffic; yellow 3 s; all-red 2 s. "
                  "Grid numbers are reported only from results/grid_results.json.\n")
-    lines.append("- Seed protocol: TRAIN 1000–1049, VALIDATION 2000–2019, TEST 1–30 after config.lock.\n")
+    if "seed" in df.columns and len(df):
+        seeds = sorted(int(s) for s in df["seed"].dropna().unique())
+        seed_txt = f"{seeds[0]}–{seeds[-1]} ({len(seeds)} seeds in raw_runs.csv)"
+    else:
+        seed_txt = "see raw_runs.csv"
+    lines.append(
+        f"- Seed protocol: TRAIN 1000–1049, VALIDATION 2000–2019, TEST {seed_txt} after config.lock.\n"
+    )
     lines.append("- Metrics from tripinfo with device.emissions.probability=1; fuel mg→L via densities.\n")
     if sublane:
         lines.append(f"- Sublane model used: {sublane.get('used_sublane')}.\n")

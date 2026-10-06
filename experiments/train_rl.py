@@ -6,11 +6,12 @@ uses full-horizon VALIDATION runs on every scenario. TEST seeds are not used.
 from __future__ import annotations
 
 import hashlib
+import os
+from multiprocessing import get_context
 
 import numpy as np
 
 from sim.rl_env import SumoTrafficEnv
-from sim.run_sim import run_one
 from sim.util import ROOT, SCENARIOS, ensure_dirs, load_config, save_json, seed_range
 
 
@@ -18,13 +19,42 @@ def _sha256(path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def main(smoke: bool = False) -> None:
+def _val_job(task):
+    path, scenario, seed, smoke, horizon = task
+    from stable_baselines3 import PPO
+    from sim.run_sim import run_one
+    model = PPO.load(str(path))
+    row = run_one(
+        scenario, "rl_ppo", seed, smoke=smoke,
+        horizon_s=horizon, model=model, run_id="rlval",
+    )
+    if row.get("status") == "ok":
+        return float(row["fuel_per_vehicle_L"])
+    return None
+
+
+def _score_checkpoint(path, scenarios, seeds, smoke, horizon) -> list:
+    tasks = [(path, sc, sd, smoke, horizon) for sc in scenarios for sd in seeds]
+    workers = 1 if smoke else min(6, max(1, (os.cpu_count() or 2) - 1))
+    if workers <= 1 or len(tasks) <= 1:
+        fuels = [v for v in (_val_job(t) for t in tasks) if v is not None]
+    else:
+        print(f"rl validation {path.name}: {len(tasks)} runs, {workers} workers", flush=True)
+        ctx = get_context("spawn")
+        with ctx.Pool(workers) as pool:
+            fuels = [v for v in pool.imap_unordered(_val_job, tasks, chunksize=1) if v is not None]
+    return fuels
+
+
+def main(smoke: bool = False, resume: str | None = None, val_seeds_n: int | None = None) -> None:
     cfg = load_config()
     ensure_dirs()
     from stable_baselines3 import PPO
 
     train_seeds = seed_range(cfg["seed_protocol"]["train"])
     val_seeds = seed_range(cfg["seed_protocol"]["validation"])
+    if val_seeds_n and not smoke:
+        val_seeds = val_seeds[: int(val_seeds_n)]
     scenarios = list(SCENARIOS)
     budget = int(cfg["rl"]["total_timesteps"])
     if smoke:
@@ -58,21 +88,27 @@ def main(smoke: bool = False) -> None:
     env = MultiScenarioEnv()
     n_steps = 128 if smoke else int(cfg["rl"]["n_steps"])
     batch = min(int(cfg["rl"]["batch_size"]), n_steps)
-    model = PPO(
-        "MlpPolicy",
-        env,
-        learning_rate=float(cfg["rl"]["learning_rate"]),
-        n_steps=n_steps,
-        batch_size=batch,
-        gamma=float(cfg["rl"]["gamma"]),
-        verbose=1,
-        seed=42,
-    )
-
     # Train the full budget. Do not stop early below total_timesteps.
     chunk = max(n_steps, budget // 4)
-    done_steps = 0
     ckpts = []
+    if resume and not smoke:
+        resume_path = ROOT / resume
+        model = PPO.load(str(resume_path), env=env, device="cpu")
+        done_steps = int(model.num_timesteps)
+        ckpts.append(resume_path)
+        print(f"resume {resume} at {done_steps}/{budget}", flush=True)
+    else:
+        model = PPO(
+            "MlpPolicy",
+            env,
+            learning_rate=float(cfg["rl"]["learning_rate"]),
+            n_steps=n_steps,
+            batch_size=batch,
+            gamma=float(cfg["rl"]["gamma"]),
+            verbose=1,
+            seed=42,
+        )
+        done_steps = 0
     while done_steps < budget:
         step_now = min(chunk, budget - done_steps)
         model.learn(total_timesteps=step_now, reset_num_timesteps=False)
@@ -85,19 +121,8 @@ def main(smoke: bool = False) -> None:
 
     env.close()
 
-    def val_fuel(ppo) -> float:
-        fuels = []
-        for scenario in scenarios:
-            for sd in val_seeds:
-                row = run_one(
-                    scenario, "rl_ppo", sd, cfg=cfg,
-                    smoke=smoke,
-                    horizon_s=horizon if smoke else None,
-                    model=ppo,
-                    run_id="rlval",
-                )
-                if row.get("status") == "ok":
-                    fuels.append(row["fuel_per_vehicle_L"])
+    def val_fuel(path) -> float:
+        fuels = _score_checkpoint(path, scenarios, val_seeds, smoke, horizon if smoke else None)
         if not fuels:
             return float("inf")
         return float(np.mean(fuels))
@@ -105,21 +130,16 @@ def main(smoke: bool = False) -> None:
     best_path = out_dir / "ppo_best.zip"
     best_score = float("inf")
     wrote_best = False
-    # Score the final checkpoint and one midpoint on full VALIDATION episodes.
-    candidates = []
-    if ckpts:
-        candidates.append(ckpts[-1])
-        if len(ckpts) > 2:
-            candidates.append(ckpts[len(ckpts) // 2])
+    # Score the final checkpoint. A resumed run does not re-score earlier chunks.
+    candidates = [ckpts[-1]] if ckpts else []
     scored = []
     for path in candidates:
-        candidate = PPO.load(str(path))
-        score = val_fuel(candidate)
+        score = val_fuel(path)
         scored.append({"checkpoint": path.name, "val_fuel_per_vehicle_L": score})
         print(f"val {path.name} {score}")
         if score < best_score:
             best_score = score
-            candidate.save(str(best_path))
+            PPO.load(str(path)).save(str(best_path))
             wrote_best = True
 
     # An older zip must not block the checkpoint this run just trained.
@@ -128,7 +148,10 @@ def main(smoke: bool = False) -> None:
         wrote_best = True
 
     meta = {
-        "selected_on": "VALIDATION seeds, all scenarios, full horizon" if not smoke else "VALIDATION smoke horizon",
+        "selected_on": (
+            f"VALIDATION seeds {list(val_seeds)}, all scenarios, full horizon, final checkpoint"
+            if not smoke else "VALIDATION smoke horizon"
+        ),
         "train_seeds": list(train_seeds),
         "confirm_seeds": list(val_seeds),
         "scenarios": scenarios,
@@ -151,5 +174,7 @@ if __name__ == "__main__":
 
     p = argparse.ArgumentParser()
     p.add_argument("--smoke", action="store_true")
+    p.add_argument("--resume", default=None, help="Relative checkpoint to continue until the config budget")
+    p.add_argument("--val-seeds", type=int, default=None, help="Use only the first N VALIDATION seeds")
     args = p.parse_args()
-    main(smoke=args.smoke)
+    main(smoke=args.smoke, resume=args.resume, val_seeds_n=args.val_seeds)

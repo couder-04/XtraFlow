@@ -4,948 +4,292 @@
       "kind": "demand_mult",
       "mult": 0.5,
       "controller": "fixed",
+      "seed": 2,
+      "fuel_per_vehicle_L": 0.1332378094558267,
+      "mean_waiting_s": 28.19148936170213
+    },
+    {
+      "kind": "demand_mult",
+      "mult": 0.5,
+      "controller": "fixed",
       "seed": 1,
-      "fuel_per_vehicle_L": 0.1340920127897403,
-      "mean_waiting_s": 28.19453207150368
+      "fuel_per_vehicle_L": 0.1431390767456774,
+      "mean_waiting_s": 27.654753395282345
+    },
+    {
+      "kind": "demand_mult",
+      "mult": 0.75,
+      "controller": "fixed",
+      "seed": 1,
+      "fuel_per_vehicle_L": 0.14325535981717244,
+      "mean_waiting_s": 0.0
+    },
+    {
+      "kind": "demand_mult",
+      "mult": 0.5,
+      "controller": "XtraFlow",
+      "seed": 2,
+      "fuel_per_vehicle_L": 0.11677548038184646,
+      "mean_waiting_s": 17.98936170212766
     },
     {
       "kind": "demand_mult",
       "mult": 0.5,
       "controller": "XtraFlow",
       "seed": 1,
-      "fuel_per_vehicle_L": 0.11898033791396488,
-      "mean_waiting_s": 18.19558359621451
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 0.5,
-      "controller": "fixed",
-      "seed": 2,
-      "fuel_per_vehicle_L": 0.1332660070053294,
-      "mean_waiting_s": 28.19468085106383
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 0.5,
-      "controller": "XtraFlow",
-      "seed": 2,
-      "fuel_per_vehicle_L": 0.11697579378665464,
-      "mean_waiting_s": 18.28404255319149
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 0.5,
-      "controller": "fixed",
-      "seed": 3,
-      "fuel_per_vehicle_L": 0.131196206202634,
-      "mean_waiting_s": 27.13936170212766
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 0.5,
-      "controller": "XtraFlow",
-      "seed": 3,
-      "fuel_per_vehicle_L": 0.11981457837031627,
-      "mean_waiting_s": 18.961702127659574
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 0.5,
-      "controller": "fixed",
-      "seed": 4,
-      "fuel_per_vehicle_L": 0.1368575661966303,
-      "mean_waiting_s": 27.9188376753507
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 0.5,
-      "controller": "XtraFlow",
-      "seed": 4,
-      "fuel_per_vehicle_L": 0.1239293863855108,
-      "mean_waiting_s": 20.52304609218437
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 0.5,
-      "controller": "fixed",
-      "seed": 5,
-      "fuel_per_vehicle_L": 0.13469280452392998,
-      "mean_waiting_s": 27.922600619195048
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 0.5,
-      "controller": "XtraFlow",
-      "seed": 5,
-      "fuel_per_vehicle_L": 0.1193586822611547,
-      "mean_waiting_s": 17.977296181630546
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 0.75,
-      "controller": "fixed",
-      "seed": 1,
-      "fuel_per_vehicle_L": 0.14319508042437418,
-      "mean_waiting_s": 27.844889206576127
+      "fuel_per_vehicle_L": 0.1309645950811718,
+      "mean_waiting_s": 0.0
     },
     {
       "kind": "demand_mult",
       "mult": 0.75,
       "controller": "XtraFlow",
       "seed": 1,
-      "fuel_per_vehicle_L": 0.12798327587257172,
-      "mean_waiting_s": 19.04288777698356
+      "fuel_per_vehicle_L": 0.1309645950811718,
+      "mean_waiting_s": 0.0
     },
     {
       "kind": "demand_mult",
       "mult": 0.75,
       "controller": "fixed",
       "seed": 2,
-      "fuel_per_vehicle_L": 0.13807183605801504,
-      "mean_waiting_s": 28.80516759776536
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 0.75,
-      "controller": "XtraFlow",
-      "seed": 2,
-      "fuel_per_vehicle_L": 0.12757366243696558,
-      "mean_waiting_s": 20.88896648044693
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 0.75,
-      "controller": "fixed",
-      "seed": 3,
-      "fuel_per_vehicle_L": 0.14145490024528945,
-      "mean_waiting_s": 29.2534435261708
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 0.75,
-      "controller": "XtraFlow",
-      "seed": 3,
-      "fuel_per_vehicle_L": 0.12885533920528958,
-      "mean_waiting_s": 20.922865013774103
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 0.75,
-      "controller": "fixed",
-      "seed": 4,
-      "fuel_per_vehicle_L": 0.13622520865999513,
-      "mean_waiting_s": 28.63528591352859
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 0.75,
-      "controller": "XtraFlow",
-      "seed": 4,
-      "fuel_per_vehicle_L": 0.12549268634186347,
-      "mean_waiting_s": 20.880753138075313
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 0.75,
-      "controller": "fixed",
-      "seed": 5,
-      "fuel_per_vehicle_L": 0.13675487514407444,
-      "mean_waiting_s": 27.07284299858557
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 0.75,
-      "controller": "XtraFlow",
-      "seed": 5,
-      "fuel_per_vehicle_L": 0.12648845687127203,
-      "mean_waiting_s": 21.075671852899575
+      "fuel_per_vehicle_L": 0.1379938681527001,
+      "mean_waiting_s": 0.0
     },
     {
       "kind": "demand_mult",
       "mult": 1.0,
       "controller": "fixed",
       "seed": 1,
-      "fuel_per_vehicle_L": 0.1408789939783435,
-      "mean_waiting_s": 30.653072033898304
+      "fuel_per_vehicle_L": 0.13962373390567034,
+      "mean_waiting_s": 0.0
+    },
+    {
+      "kind": "demand_mult",
+      "mult": 0.75,
+      "controller": "XtraFlow",
+      "seed": 2,
+      "fuel_per_vehicle_L": 0.12582827008045933,
+      "mean_waiting_s": 0.0
+    },
+    {
+      "kind": "demand_mult",
+      "mult": 1.0,
+      "controller": "fixed",
+      "seed": 2,
+      "fuel_per_vehicle_L": 0.14132551193279075,
+      "mean_waiting_s": 0.0
     },
     {
       "kind": "demand_mult",
       "mult": 1.0,
       "controller": "XtraFlow",
       "seed": 1,
-      "fuel_per_vehicle_L": 0.12960714537091242,
-      "mean_waiting_s": 23.14936440677966
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 1.0,
-      "controller": "fixed",
-      "seed": 2,
-      "fuel_per_vehicle_L": 0.14222775663220727,
-      "mean_waiting_s": 29.111053450960043
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 1.0,
-      "controller": "XtraFlow",
-      "seed": 2,
-      "fuel_per_vehicle_L": 0.1292250013288761,
-      "mean_waiting_s": 21.080435910742086
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 1.0,
-      "controller": "fixed",
-      "seed": 3,
-      "fuel_per_vehicle_L": 0.145543171289666,
-      "mean_waiting_s": 31.563287947554212
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 1.0,
-      "controller": "XtraFlow",
-      "seed": 3,
-      "fuel_per_vehicle_L": 0.1328204821189694,
-      "mean_waiting_s": 22.157337367624812
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 1.0,
-      "controller": "fixed",
-      "seed": 4,
-      "fuel_per_vehicle_L": 0.14688927368248983,
-      "mean_waiting_s": 31.360798362333675
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 1.0,
-      "controller": "XtraFlow",
-      "seed": 4,
-      "fuel_per_vehicle_L": 0.13099166338867016,
-      "mean_waiting_s": 20.921187308085976
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 1.0,
-      "controller": "fixed",
-      "seed": 5,
-      "fuel_per_vehicle_L": 0.13738750439132089,
-      "mean_waiting_s": 28.853326348873757
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 1.0,
-      "controller": "XtraFlow",
-      "seed": 5,
-      "fuel_per_vehicle_L": 0.1278548323827615,
-      "mean_waiting_s": 21.400209533787322
+      "fuel_per_vehicle_L": 0.12828411566549222,
+      "mean_waiting_s": 0.0
     },
     {
       "kind": "demand_mult",
       "mult": 1.25,
       "controller": "fixed",
       "seed": 1,
-      "fuel_per_vehicle_L": 0.15170727398215952,
-      "mean_waiting_s": 36.68561872909699
+      "fuel_per_vehicle_L": 0.14922284309989636,
+      "mean_waiting_s": 0.0
+    },
+    {
+      "kind": "demand_mult",
+      "mult": 1.0,
+      "controller": "XtraFlow",
+      "seed": 2,
+      "fuel_per_vehicle_L": 0.1308740779743712,
+      "mean_waiting_s": 0.0
+    },
+    {
+      "kind": "demand_mult",
+      "mult": 1.25,
+      "controller": "fixed",
+      "seed": 2,
+      "fuel_per_vehicle_L": 0.1460236656739335,
+      "mean_waiting_s": 0.0
     },
     {
       "kind": "demand_mult",
       "mult": 1.25,
       "controller": "XtraFlow",
       "seed": 1,
-      "fuel_per_vehicle_L": 0.13702236997625922,
-      "mean_waiting_s": 26.835284280936456
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 1.25,
-      "controller": "fixed",
-      "seed": 2,
-      "fuel_per_vehicle_L": 0.1494513605464451,
-      "mean_waiting_s": 36.088003320880034
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 1.25,
-      "controller": "XtraFlow",
-      "seed": 2,
-      "fuel_per_vehicle_L": 0.1340184861046731,
-      "mean_waiting_s": 24.33167289331673
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 1.25,
-      "controller": "fixed",
-      "seed": 3,
-      "fuel_per_vehicle_L": 0.15389388848122962,
-      "mean_waiting_s": 37.312197092084006
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 1.25,
-      "controller": "XtraFlow",
-      "seed": 3,
-      "fuel_per_vehicle_L": 0.1379412607020046,
-      "mean_waiting_s": 25.299273021001614
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 1.25,
-      "controller": "fixed",
-      "seed": 4,
-      "fuel_per_vehicle_L": 0.16506826130067778,
-      "mean_waiting_s": 46.54047322540473
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 1.25,
-      "controller": "XtraFlow",
-      "seed": 4,
-      "fuel_per_vehicle_L": 0.1403361810459649,
-      "mean_waiting_s": 28.46367787463678
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 1.25,
-      "controller": "fixed",
-      "seed": 5,
-      "fuel_per_vehicle_L": 0.14076554323708054,
-      "mean_waiting_s": 31.671075085324233
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 1.25,
-      "controller": "XtraFlow",
-      "seed": 5,
-      "fuel_per_vehicle_L": 0.12935548832454338,
-      "mean_waiting_s": 23.113054607508534
+      "fuel_per_vehicle_L": 0.13494780542831156,
+      "mean_waiting_s": 0.0
     },
     {
       "kind": "demand_mult",
       "mult": 1.5,
       "controller": "fixed",
       "seed": 1,
-      "fuel_per_vehicle_L": 0.16221066020199823,
-      "mean_waiting_s": 44.3966303966304
+      "fuel_per_vehicle_L": 0.1543060154507785,
+      "mean_waiting_s": 0.0
     },
     {
       "kind": "demand_mult",
-      "mult": 1.5,
+      "mult": 1.25,
       "controller": "XtraFlow",
-      "seed": 1,
-      "fuel_per_vehicle_L": 0.14303084865524957,
-      "mean_waiting_s": 30.108459108459108
+      "seed": 2,
+      "fuel_per_vehicle_L": 0.13437074071863928,
+      "mean_waiting_s": 0.0
     },
     {
       "kind": "demand_mult",
       "mult": 1.5,
       "controller": "fixed",
       "seed": 2,
-      "fuel_per_vehicle_L": 0.15802299363050107,
-      "mean_waiting_s": 42.65236942234521
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 1.5,
-      "controller": "XtraFlow",
-      "seed": 2,
-      "fuel_per_vehicle_L": 0.14037142971436073,
-      "mean_waiting_s": 29.269111034244204
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 1.5,
-      "controller": "fixed",
-      "seed": 3,
-      "fuel_per_vehicle_L": 0.17349661743649597,
-      "mean_waiting_s": 53.870383275261325
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 1.5,
-      "controller": "XtraFlow",
-      "seed": 3,
-      "fuel_per_vehicle_L": 0.1446311236757915,
-      "mean_waiting_s": 31.193728222996516
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 1.5,
-      "controller": "fixed",
-      "seed": 4,
-      "fuel_per_vehicle_L": 0.19362997211443947,
-      "mean_waiting_s": 68.48244382022472
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 1.5,
-      "controller": "XtraFlow",
-      "seed": 4,
-      "fuel_per_vehicle_L": 0.14595701832706698,
-      "mean_waiting_s": 33.26825842696629
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 1.5,
-      "controller": "fixed",
-      "seed": 5,
-      "fuel_per_vehicle_L": 0.16230910715602567,
-      "mean_waiting_s": 44.69252271139064
-    },
-    {
-      "kind": "demand_mult",
-      "mult": 1.5,
-      "controller": "XtraFlow",
-      "seed": 5,
-      "fuel_per_vehicle_L": 0.14087572680499236,
-      "mean_waiting_s": 28.63067784765898
+      "fuel_per_vehicle_L": 0.1494578002127547,
+      "mean_waiting_s": 0.0
     },
     {
       "kind": "mix_lhs",
       "mix_id": 0,
       "mix": {
-        "two_wheeler": 0.4790500449399903,
-        "car": 0.3544947901159641,
-        "auto_rickshaw": 0.062666638024849,
-        "bus": 0.019969052559119536,
-        "truck": 0.08381947436007701
+        "two_wheeler": 0.4781368498658292,
+        "car": 0.2852831813082284,
+        "auto_rickshaw": 0.05343037734179477,
+        "bus": 0.0891543651239004,
+        "truck": 0.09399522636024729
       },
       "controller": "fixed",
-      "fuel_per_vehicle_L": 0.11287872134371556
+      "fuel_per_vehicle_L": 0.13219709330255897
+    },
+    {
+      "kind": "mix_lhs",
+      "mix_id": 1,
+      "mix": {
+        "two_wheeler": 0.43001426825990885,
+        "car": 0.22058092322959474,
+        "auto_rickshaw": 0.10117243746534813,
+        "bus": 0.05344342889914786,
+        "truck": 0.19478894214600034
+      },
+      "controller": "fixed",
+      "fuel_per_vehicle_L": 0.1536607414343959
+    },
+    {
+      "kind": "demand_mult",
+      "mult": 1.5,
+      "controller": "XtraFlow",
+      "seed": 1,
+      "fuel_per_vehicle_L": 0.14011297511064535,
+      "mean_waiting_s": 0.0
     },
     {
       "kind": "mix_lhs",
       "mix_id": 0,
       "mix": {
-        "two_wheeler": 0.4790500449399903,
-        "car": 0.3544947901159641,
-        "auto_rickshaw": 0.062666638024849,
-        "bus": 0.019969052559119536,
-        "truck": 0.08381947436007701
+        "two_wheeler": 0.4781368498658292,
+        "car": 0.2852831813082284,
+        "auto_rickshaw": 0.05343037734179477,
+        "bus": 0.0891543651239004,
+        "truck": 0.09399522636024729
       },
       "controller": "XtraFlow",
-      "fuel_per_vehicle_L": 0.10386091138094876
+      "fuel_per_vehicle_L": 0.1222391635078359
     },
     {
-      "kind": "mix_lhs",
-      "mix_id": 1,
-      "mix": {
-        "two_wheeler": 0.4579174365352388,
-        "car": 0.2601250058555112,
-        "auto_rickshaw": 0.09687927451136373,
-        "bus": 0.05345232799556214,
-        "truck": 0.1316259551023241
-      },
-      "controller": "fixed",
-      "fuel_per_vehicle_L": 0.1357165597789324
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 1,
-      "mix": {
-        "two_wheeler": 0.4579174365352388,
-        "car": 0.2601250058555112,
-        "auto_rickshaw": 0.09687927451136373,
-        "bus": 0.05345232799556214,
-        "truck": 0.1316259551023241
-      },
+      "kind": "demand_mult",
+      "mult": 1.5,
       "controller": "XtraFlow",
-      "fuel_per_vehicle_L": 0.1239161462711969
+      "seed": 2,
+      "fuel_per_vehicle_L": 0.13641815618119082,
+      "mean_waiting_s": 0.0
     },
     {
       "kind": "mix_lhs",
       "mix_id": 2,
       "mix": {
-        "two_wheeler": 0.3559101682459436,
-        "car": 0.18678888409321986,
-        "auto_rickshaw": 0.13939503624592436,
-        "bus": 0.05710139947637041,
-        "truck": 0.26080451193854187
+        "two_wheeler": 0.34523308444266276,
+        "car": 0.3434712053465223,
+        "auto_rickshaw": 0.13789141737919453,
+        "bus": 0.04463736783379652,
+        "truck": 0.1287669249978238
       },
       "controller": "fixed",
-      "fuel_per_vehicle_L": 0.18077224071498438
+      "fuel_per_vehicle_L": 0.13657207013078718
+    },
+    {
+      "kind": "mix_lhs",
+      "mix_id": 1,
+      "mix": {
+        "two_wheeler": 0.43001426825990885,
+        "car": 0.22058092322959474,
+        "auto_rickshaw": 0.10117243746534813,
+        "bus": 0.05344342889914786,
+        "truck": 0.19478894214600034
+      },
+      "controller": "XtraFlow",
+      "fuel_per_vehicle_L": 0.1453824802350091
+    },
+    {
+      "kind": "mix_lhs",
+      "mix_id": 3,
+      "mix": {
+        "two_wheeler": 0.34857648035722594,
+        "car": 0.1953307523216949,
+        "auto_rickshaw": 0.213994012927545,
+        "bus": 0.023799247396646423,
+        "truck": 0.21829950699688783
+      },
+      "controller": "fixed",
+      "fuel_per_vehicle_L": 0.15950607406851708
     },
     {
       "kind": "mix_lhs",
       "mix_id": 2,
       "mix": {
-        "two_wheeler": 0.3559101682459436,
-        "car": 0.18678888409321986,
-        "auto_rickshaw": 0.13939503624592436,
-        "bus": 0.05710139947637041,
-        "truck": 0.26080451193854187
+        "two_wheeler": 0.34523308444266276,
+        "car": 0.3434712053465223,
+        "auto_rickshaw": 0.13789141737919453,
+        "bus": 0.04463736783379652,
+        "truck": 0.1287669249978238
       },
       "controller": "XtraFlow",
-      "fuel_per_vehicle_L": 0.16320619178550722
+      "fuel_per_vehicle_L": 0.1234405664113021
     },
     {
       "kind": "mix_lhs",
       "mix_id": 3,
       "mix": {
-        "two_wheeler": 0.26505820865982943,
-        "car": 0.34372672232533774,
-        "auto_rickshaw": 0.20403131053121198,
-        "bus": 0.08899099023544356,
-        "truck": 0.09819276824817723
-      },
-      "controller": "fixed",
-      "fuel_per_vehicle_L": 0.14264803442152166
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 3,
-      "mix": {
-        "two_wheeler": 0.26505820865982943,
-        "car": 0.34372672232533774,
-        "auto_rickshaw": 0.20403131053121198,
-        "bus": 0.08899099023544356,
-        "truck": 0.09819276824817723
+        "two_wheeler": 0.34857648035722594,
+        "car": 0.1953307523216949,
+        "auto_rickshaw": 0.213994012927545,
+        "bus": 0.023799247396646423,
+        "truck": 0.21829950699688783
       },
       "controller": "XtraFlow",
-      "fuel_per_vehicle_L": 0.12860169597546345
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 4,
-      "mix": {
-        "two_wheeler": 0.438753450885188,
-        "car": 0.21193870146176025,
-        "auto_rickshaw": 0.1456073026196952,
-        "bus": 0.03490943701096463,
-        "truck": 0.16879110802239192
-      },
-      "controller": "fixed",
-      "fuel_per_vehicle_L": 0.13841233107550716
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 4,
-      "mix": {
-        "two_wheeler": 0.438753450885188,
-        "car": 0.21193870146176025,
-        "auto_rickshaw": 0.1456073026196952,
-        "bus": 0.03490943701096463,
-        "truck": 0.16879110802239192
-      },
-      "controller": "XtraFlow",
-      "fuel_per_vehicle_L": 0.12951182041315418
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 5,
-      "mix": {
-        "two_wheeler": 0.38783328226635205,
-        "car": 0.3173674201034499,
-        "auto_rickshaw": 0.0628520857399665,
-        "bus": 0.0646372664745872,
-        "truck": 0.1673099454156444
-      },
-      "controller": "fixed",
-      "fuel_per_vehicle_L": 0.1497150313281698
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 5,
-      "mix": {
-        "two_wheeler": 0.38783328226635205,
-        "car": 0.3173674201034499,
-        "auto_rickshaw": 0.0628520857399665,
-        "bus": 0.0646372664745872,
-        "truck": 0.1673099454156444
-      },
-      "controller": "XtraFlow",
-      "fuel_per_vehicle_L": 0.1388272056580339
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 6,
-      "mix": {
-        "two_wheeler": 0.3610331169039355,
-        "car": 0.3117256180086687,
-        "auto_rickshaw": 0.14498002190395795,
-        "bus": 0.10260241070557422,
-        "truck": 0.07965883247786351
-      },
-      "controller": "fixed",
-      "fuel_per_vehicle_L": 0.13309230854603996
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 6,
-      "mix": {
-        "two_wheeler": 0.3610331169039355,
-        "car": 0.3117256180086687,
-        "auto_rickshaw": 0.14498002190395795,
-        "bus": 0.10260241070557422,
-        "truck": 0.07965883247786351
-      },
-      "controller": "XtraFlow",
-      "fuel_per_vehicle_L": 0.12401578440434148
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 7,
-      "mix": {
-        "two_wheeler": 0.3759750336356286,
-        "car": 0.28417799392770615,
-        "auto_rickshaw": 0.19524898743538924,
-        "bus": 0.07116422585173585,
-        "truck": 0.07343375914954016
-      },
-      "controller": "fixed",
-      "fuel_per_vehicle_L": 0.12058702958296819
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 7,
-      "mix": {
-        "two_wheeler": 0.3759750336356286,
-        "car": 0.28417799392770615,
-        "auto_rickshaw": 0.19524898743538924,
-        "bus": 0.07116422585173585,
-        "truck": 0.07343375914954016
-      },
-      "controller": "XtraFlow",
-      "fuel_per_vehicle_L": 0.11212566788030957
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 8,
-      "mix": {
-        "two_wheeler": 0.31212306382123883,
-        "car": 0.43353536848809754,
-        "auto_rickshaw": 0.1473571657747223,
-        "bus": 0.029314385259374468,
-        "truck": 0.07767001665656682
-      },
-      "controller": "fixed",
-      "fuel_per_vehicle_L": 0.11591715102857639
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 8,
-      "mix": {
-        "two_wheeler": 0.31212306382123883,
-        "car": 0.43353536848809754,
-        "auto_rickshaw": 0.1473571657747223,
-        "bus": 0.029314385259374468,
-        "truck": 0.07767001665656682
-      },
-      "controller": "XtraFlow",
-      "fuel_per_vehicle_L": 0.10496406780264206
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 9,
-      "mix": {
-        "two_wheeler": 0.37556626500312745,
-        "car": 0.22515426513873876,
-        "auto_rickshaw": 0.10770750429590638,
-        "bus": 0.09514852560943775,
-        "truck": 0.19642343995278952
-      },
-      "controller": "fixed",
-      "fuel_per_vehicle_L": 0.16392458498948373
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 9,
-      "mix": {
-        "two_wheeler": 0.37556626500312745,
-        "car": 0.22515426513873876,
-        "auto_rickshaw": 0.10770750429590638,
-        "bus": 0.09514852560943775,
-        "truck": 0.19642343995278952
-      },
-      "controller": "XtraFlow",
-      "fuel_per_vehicle_L": 0.1502865972403595
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 10,
-      "mix": {
-        "two_wheeler": 0.3667689466326771,
-        "car": 0.22269437718735985,
-        "auto_rickshaw": 0.11836449018467854,
-        "bus": 0.051688127038861525,
-        "truck": 0.240484058956423
-      },
-      "controller": "fixed",
-      "fuel_per_vehicle_L": 0.16462893441514984
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 10,
-      "mix": {
-        "two_wheeler": 0.3667689466326771,
-        "car": 0.22269437718735985,
-        "auto_rickshaw": 0.11836449018467854,
-        "bus": 0.051688127038861525,
-        "truck": 0.240484058956423
-      },
-      "controller": "XtraFlow",
-      "fuel_per_vehicle_L": 0.1527018590075583
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 11,
-      "mix": {
-        "two_wheeler": 0.37395986756348387,
-        "car": 0.275894097177123,
-        "auto_rickshaw": 0.07427188334835215,
-        "bus": 0.07311855915266842,
-        "truck": 0.2027555927583726
-      },
-      "controller": "fixed",
-      "fuel_per_vehicle_L": 0.16012313848782656
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 11,
-      "mix": {
-        "two_wheeler": 0.37395986756348387,
-        "car": 0.275894097177123,
-        "auto_rickshaw": 0.07427188334835215,
-        "bus": 0.07311855915266842,
-        "truck": 0.2027555927583726
-      },
-      "controller": "XtraFlow",
-      "fuel_per_vehicle_L": 0.14747963576275397
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 12,
-      "mix": {
-        "two_wheeler": 0.38441707779861983,
-        "car": 0.20575198733607075,
-        "auto_rickshaw": 0.1563671696567344,
-        "bus": 0.0806327884143243,
-        "truck": 0.1728309767942508
-      },
-      "controller": "fixed",
-      "fuel_per_vehicle_L": 0.1550449732892946
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 12,
-      "mix": {
-        "two_wheeler": 0.38441707779861983,
-        "car": 0.20575198733607075,
-        "auto_rickshaw": 0.1563671696567344,
-        "bus": 0.0806327884143243,
-        "truck": 0.1728309767942508
-      },
-      "controller": "XtraFlow",
-      "fuel_per_vehicle_L": 0.14207398767244495
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 13,
-      "mix": {
-        "two_wheeler": 0.47011492733712523,
-        "car": 0.3270124230733235,
-        "auto_rickshaw": 0.06741278144131524,
-        "bus": 0.03397783336421716,
-        "truck": 0.10148203478401893
-      },
-      "controller": "fixed",
-      "fuel_per_vehicle_L": 0.12460942136183448
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 13,
-      "mix": {
-        "two_wheeler": 0.47011492733712523,
-        "car": 0.3270124230733235,
-        "auto_rickshaw": 0.06741278144131524,
-        "bus": 0.03397783336421716,
-        "truck": 0.10148203478401893
-      },
-      "controller": "XtraFlow",
-      "fuel_per_vehicle_L": 0.11456289096888442
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 14,
-      "mix": {
-        "two_wheeler": 0.48936936838201495,
-        "car": 0.15151023796442797,
-        "auto_rickshaw": 0.15140358810735308,
-        "bus": 0.07110236044248244,
-        "truck": 0.13661444510372142
-      },
-      "controller": "fixed",
-      "fuel_per_vehicle_L": 0.1386555672695958
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 14,
-      "mix": {
-        "two_wheeler": 0.48936936838201495,
-        "car": 0.15151023796442797,
-        "auto_rickshaw": 0.15140358810735308,
-        "bus": 0.07110236044248244,
-        "truck": 0.13661444510372142
-      },
-      "controller": "XtraFlow",
-      "fuel_per_vehicle_L": 0.12836520538986806
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 15,
-      "mix": {
-        "two_wheeler": 0.4628635829844354,
-        "car": 0.18578964713663235,
-        "auto_rickshaw": 0.09025454454351017,
-        "bus": 0.06891189836955368,
-        "truck": 0.19218032696586845
-      },
-      "controller": "fixed",
-      "fuel_per_vehicle_L": 0.15771669876323183
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 15,
-      "mix": {
-        "two_wheeler": 0.4628635829844354,
-        "car": 0.18578964713663235,
-        "auto_rickshaw": 0.09025454454351017,
-        "bus": 0.06891189836955368,
-        "truck": 0.19218032696586845
-      },
-      "controller": "XtraFlow",
-      "fuel_per_vehicle_L": 0.14561829524971953
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 16,
-      "mix": {
-        "two_wheeler": 0.43832838022962345,
-        "car": 0.24303971784577752,
-        "auto_rickshaw": 0.1612941642322598,
-        "bus": 0.06422414023833808,
-        "truck": 0.09311359745400115
-      },
-      "controller": "fixed",
-      "fuel_per_vehicle_L": 0.12436840845715838
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 16,
-      "mix": {
-        "two_wheeler": 0.43832838022962345,
-        "car": 0.24303971784577752,
-        "auto_rickshaw": 0.1612941642322598,
-        "bus": 0.06422414023833808,
-        "truck": 0.09311359745400115
-      },
-      "controller": "XtraFlow",
-      "fuel_per_vehicle_L": 0.11457100220948892
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 17,
-      "mix": {
-        "two_wheeler": 0.33029632274984894,
-        "car": 0.27691572070821424,
-        "auto_rickshaw": 0.1395354428856814,
-        "bus": 0.07095061760269473,
-        "truck": 0.1823018960535607
-      },
-      "controller": "fixed",
-      "fuel_per_vehicle_L": 0.16055854646188758
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 17,
-      "mix": {
-        "two_wheeler": 0.33029632274984894,
-        "car": 0.27691572070821424,
-        "auto_rickshaw": 0.1395354428856814,
-        "bus": 0.07095061760269473,
-        "truck": 0.1823018960535607
-      },
-      "controller": "XtraFlow",
-      "fuel_per_vehicle_L": 0.1442260877181922
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 18,
-      "mix": {
-        "two_wheeler": 0.4232767998970235,
-        "car": 0.2840205085733944,
-        "auto_rickshaw": 0.14273687128531426,
-        "bus": 0.03853931970160648,
-        "truck": 0.11142650054266141
-      },
-      "controller": "fixed",
-      "fuel_per_vehicle_L": 0.1258116285020269
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 18,
-      "mix": {
-        "two_wheeler": 0.4232767998970235,
-        "car": 0.2840205085733944,
-        "auto_rickshaw": 0.14273687128531426,
-        "bus": 0.03853931970160648,
-        "truck": 0.11142650054266141
-      },
-      "controller": "XtraFlow",
-      "fuel_per_vehicle_L": 0.11593529339515317
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 19,
-      "mix": {
-        "two_wheeler": 0.34589163100514714,
-        "car": 0.33808163310960637,
-        "auto_rickshaw": 0.08336846363600271,
-        "bus": 0.02442910258121678,
-        "truck": 0.2082291696680271
-      },
-      "controller": "fixed",
-      "fuel_per_vehicle_L": 0.1516568439213413
-    },
-    {
-      "kind": "mix_lhs",
-      "mix_id": 19,
-      "mix": {
-        "two_wheeler": 0.34589163100514714,
-        "car": 0.33808163310960637,
-        "auto_rickshaw": 0.08336846363600271,
-        "bus": 0.02442910258121678,
-        "truck": 0.2082291696680271
-      },
-      "controller": "XtraFlow",
-      "fuel_per_vehicle_L": 0.140154693376269
+      "fuel_per_vehicle_L": 0.14570883097862194
     }
   ],
   "gains": [
     {
       "demand_mult": 0.5,
       "dos_proxy": 0.5,
-      "pct_fuel_reduction": 10.602198276000301
+      "pct_fuel_reduction": 10.361507118799725
     },
     {
       "demand_mult": 0.75,
       "dos_proxy": 0.75,
-      "pct_fuel_reduction": 8.52498458872319
+      "pct_fuel_reduction": 8.695619534593405
     },
     {
       "demand_mult": 1.0,
       "dos_proxy": 1.0,
-      "pct_fuel_reduction": 8.756520885823504
+      "pct_fuel_reduction": 7.756223774000444
     },
     {
       "demand_mult": 1.25,
       "dos_proxy": 1.25,
-      "pct_fuel_reduction": 10.804838833039106
+      "pct_fuel_reduction": 8.781801598453729
     },
     {
       "demand_mult": 1.5,
       "dos_proxy": 1.5,
-      "pct_fuel_reduction": 15.865372015174115
+      "pct_fuel_reduction": 8.965085032333658
     }
   ],
   "mix_ranges_assumed": {

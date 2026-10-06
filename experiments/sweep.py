@@ -119,6 +119,7 @@ def main() -> None:
     parser.add_argument("--controllers", nargs="*", default=None)
     parser.add_argument("--scenarios", nargs="*", default=None)
     parser.add_argument("--workers", type=int, default=None)
+    parser.add_argument("--max-seeds", type=int, default=None)
     args = parser.parse_args()
 
     cfg = load_config()
@@ -139,7 +140,10 @@ def main() -> None:
         controllers = args.controllers or CONTROLLER_NAMES
         scenarios = args.scenarios or SCENARIOS
         seeds = seed_range(cfg["seed_protocol"]["test"])
+        if args.max_seeds:
+            seeds = seeds[: int(args.max_seeds)]
         out_csv = ROOT / "results" / "raw_runs.csv"
+        print(f"TEST seeds={list(seeds)}")
 
     if "rl_ppo" in controllers and not (ROOT / "results" / "rl" / "ppo_best.zip").exists():
         raise SystemExit(
@@ -157,8 +161,9 @@ def main() -> None:
                 save_ts = (not args.smoke) and seed == seeds[0]
                 tasks.append((sc, ctrl, seed, args.smoke, "primary", save_ts))
 
-    n_workers = args.workers or max(1, (os.cpu_count() or 2) - 1)
-    n_workers = min(n_workers, 4 if args.smoke else 6)
+    auto = min(6, max(1, (os.cpu_count() or 2) - 1))
+    n_workers = auto if args.workers is None else int(args.workers)
+    n_workers = max(1, min(n_workers, 4 if args.smoke else max(1, (os.cpu_count() or 2) - 1)))
 
     print(f"Sweep tasks={len(tasks)} workers={n_workers} smoke={args.smoke}")
     if not tasks:

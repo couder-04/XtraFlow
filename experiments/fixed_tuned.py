@@ -11,7 +11,7 @@ import os
 from multiprocessing import get_context
 from typing import Any, Dict, List
 
-from sim.util import ROOT, SCENARIOS, load_config, save_json, seed_range
+from sim.util import ROOT, SCENARIOS, load_config, load_json, save_json, seed_range
 
 
 def _green_values(min_green: float) -> List[int]:
@@ -32,40 +32,58 @@ def _candidates(min_green: float, smoke: bool) -> List[List[int]]:
     return plans
 
 
+# Coarse screen only. Finalists are scored on the full demand horizon.
+SCREEN_HORIZON_S = 900
+
+
 def _one_run(task):
-    scenario, greens, seed, smoke = task
+    scenario, greens, seed, smoke, horizon = task
     from sim.run_sim import run_one
     row = run_one(
         scenario, "fixed_tuned", seed, smoke=smoke,
         params={"greens": list(greens)},
         run_id="ft_" + "_".join(str(int(g)) for g in greens),
+        horizon_s=horizon,
     )
     return tuple(int(g) for g in greens), row
 
 
-def _usable(row: Dict[str, Any], smoke: bool) -> bool:
+def _usable(row: Dict[str, Any], smoke: bool, allow_unfinished: bool = False) -> bool:
     # A short smoke horizon often still has vehicles on the road. Those rows
-    # are usable for a smoke screen. The VALIDATION search keeps only finished runs.
-    if smoke:
+    # are usable for a smoke screen. The full-horizon search keeps only finished runs.
+    # The 900 s screen stops while demand remains, so timeout rows still count.
+    if smoke or allow_unfinished:
         ok = row.get("status") != "error" and not row.get("gridlock_flag")
     else:
         ok = row.get("status") == "ok"
     return bool(ok and row.get("n_departed"))
 
 
-def _score_plans(scenario: str, plans: List[List[int]], seeds: List[int], smoke: bool) -> List:
-    tasks = [(scenario, list(g), s, smoke) for g in plans for s in seeds]
+def _pool_size(smoke: bool, workers: int | None) -> int:
+    if smoke:
+        return 1
+    auto = min(6, max(1, (os.cpu_count() or 2) - 1))
+    n = auto if workers is None else int(workers)
+    return max(1, min(n, max(1, (os.cpu_count() or 2) - 1)))
+
+
+def _score_plans(scenario: str, plans: List[List[int]], seeds: List[int], smoke: bool, workers: int | None = None, horizon: int | None = None, allow_unfinished: bool = False) -> List:
+    tasks = [(scenario, list(g), s, smoke, horizon) for g in plans for s in seeds]
     grouped: Dict[tuple, List[float]] = {tuple(int(x) for x in g): [] for g in plans}
-    workers = 1 if smoke else min(6, max(1, (os.cpu_count() or 2) - 1))
+    workers = _pool_size(smoke, workers)
     if workers <= 1 or len(tasks) <= 1:
         results = [_one_run(t) for t in tasks]
     else:
         print(f"fixed_tuned {scenario}: {len(tasks)} runs, {workers} workers", flush=True)
         ctx = get_context("spawn")
+        results = []
         with ctx.Pool(workers) as pool:
-            results = list(pool.imap_unordered(_one_run, tasks, chunksize=1))
+            for item in pool.imap_unordered(_one_run, tasks, chunksize=1):
+                results.append(item)
+                if len(results) % 24 == 0 or len(results) == len(tasks):
+                    print(f"fixed_tuned {scenario} {len(results)}/{len(tasks)}", flush=True)
     for key, row in results:
-        if _usable(row, smoke):
+        if _usable(row, smoke, allow_unfinished=allow_unfinished):
             grouped[key].append(float(row["fuel_per_vehicle_L"]))
     scored = []
     for g in plans:
@@ -91,21 +109,63 @@ def _refine(best: List[int], values: List[int]) -> List[List[int]]:
     return [list(p) for p in neighborhood]
 
 
-def main(smoke: bool = False) -> Dict[str, Any]:
+def _write_out(payload: Dict[str, Any], out: str | None) -> None:
+    dest = ROOT / (out or "results/fixed_tuned.json")
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    save_json(dest, payload)
+    print(f"wrote {dest.relative_to(ROOT)}")
+
+
+def merge_shards(paths: List[str], out: str | None = None) -> Dict[str, Any]:
+    """Combine per-scenario fixed_tuned JSON files into one plan file."""
+    plans: Dict[str, Any] = {}
+    meta: Dict[str, Any] | None = None
+    for rel in paths:
+        data = load_json(ROOT / rel)
+        if data.get("smoke"):
+            raise SystemExit(f"{rel} is a smoke artifact")
+        plans.update(data.get("plans") or {})
+        meta = data
+    if meta is None:
+        raise SystemExit("no shard files")
+    missing = [s for s in SCENARIOS if s not in plans]
+    if missing:
+        raise SystemExit(f"missing scenarios: {missing}")
+    payload = {
+        "selected_on": "VALIDATION seeds only",
+        "green_grid_s": meta.get("green_grid_s"),
+        "min_green_s": meta.get("min_green_s"),
+        "smoke": False,
+        "plans": {s: plans[s] for s in SCENARIOS},
+        "label": "Simulation-based estimate; assumed traffic mix",
+    }
+    _write_out(payload, out)
+    return payload
+
+
+def main(smoke: bool = False, scenarios: List[str] | None = None, out_path: str | None = None, workers: int | None = None) -> Dict[str, Any]:
     cfg = load_config()
     val = seed_range(cfg["seed_protocol"]["validation"])
     screen_seeds = val[:1] if smoke else val[:3]
     confirm_seeds = val[:1] if smoke else val
-    scenarios = ["balanced"] if smoke else list(SCENARIOS)
+    if scenarios is None:
+        scenarios = ["balanced"] if smoke else list(SCENARIOS)
+    unknown = [s for s in scenarios if s not in SCENARIOS]
+    if unknown:
+        raise SystemExit(f"Unknown scenario: {unknown}")
     values = _green_values(float(cfg["signals"]["min_green_s"]))
     plans: Dict[str, Any] = {}
     for scenario in scenarios:
         cands = _candidates(float(cfg["signals"]["min_green_s"]), smoke=smoke)
-        ranked = _score_plans(scenario, cands, screen_seeds, smoke)
+        screen_horizon = None if smoke else SCREEN_HORIZON_S
+        ranked = _score_plans(
+            scenario, cands, screen_seeds, smoke, workers,
+            horizon=screen_horizon, allow_unfinished=screen_horizon is not None,
+        )
         best = ranked[0][1]
         if not smoke:
             refined = _refine(best, values)
-            ranked2 = _score_plans(scenario, refined, confirm_seeds, smoke)
+            ranked2 = _score_plans(scenario, refined, confirm_seeds, smoke, workers)
             best = ranked2[0][1]
             best_score = ranked2[0][0]
         else:
@@ -119,6 +179,8 @@ def main(smoke: bool = False) -> Dict[str, Any]:
             "mean_fuel_per_vehicle_L": None if best_score == float("inf") else best_score,
             "selected_on": "VALIDATION",
             "screen_seeds": screen_seeds,
+            "screen_horizon_s": screen_horizon,
+            "confirm_horizon_s": None if smoke else int(cfg["simulation"]["demand_horizon_s"]),
         }
         print(scenario, plans[scenario])
     out = {
@@ -129,7 +191,7 @@ def main(smoke: bool = False) -> Dict[str, Any]:
         "plans": plans,
         "label": "Simulation-based estimate; assumed traffic mix",
     }
-    save_json(ROOT / "results" / "fixed_tuned.json", out)
+    _write_out(out, out_path)
     return out
 
 
@@ -138,5 +200,12 @@ if __name__ == "__main__":
 
     p = argparse.ArgumentParser()
     p.add_argument("--smoke", action="store_true")
+    p.add_argument("--scenarios", nargs="*", default=None)
+    p.add_argument("--out", default=None, help="Relative output path. Default results/fixed_tuned.json")
+    p.add_argument("--workers", type=int, default=None)
+    p.add_argument("--merge", nargs="*", default=None, help="Shard JSON paths to combine")
     args = p.parse_args()
-    main(smoke=args.smoke)
+    if args.merge:
+        merge_shards(args.merge, args.out)
+    else:
+        main(smoke=args.smoke, scenarios=args.scenarios, out_path=args.out, workers=args.workers)

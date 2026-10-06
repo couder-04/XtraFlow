@@ -3,52 +3,56 @@
     "scenario": "balanced",
     "n_completed_mean_spread": 0.0,
     "means": {
-      "XtraFlow": 1919.6,
-      "actuated": 1919.6,
-      "fixed": 1919.6,
-      "maxpressure": 1919.6,
-      "ours_count": 1919.6,
-      "rl_ppo": 1919.6,
-      "webster": 1919.6
+      "XtraFlow": 1932.2,
+      "actuated": 1932.2,
+      "fixed": 1932.2,
+      "fixed_tuned": 1932.2,
+      "maxpressure": 1932.2,
+      "ours_count": 1932.2,
+      "queue_pressure": 1932.2,
+      "webster": 1932.2
     }
   },
   {
     "scenario": "peak_unbalanced",
-    "n_completed_mean_spread": 97.60000000000014,
+    "n_completed_mean_spread": 0.0,
     "means": {
-      "XtraFlow": 1796.2,
-      "actuated": 1796.2,
-      "fixed": 1796.2,
-      "maxpressure": 1796.2,
-      "ours_count": 1796.2,
-      "rl_ppo": 1698.6,
-      "webster": 1796.2
+      "XtraFlow": 1801.4,
+      "actuated": 1801.4,
+      "fixed": 1801.4,
+      "fixed_tuned": 1801.4,
+      "maxpressure": 1801.4,
+      "ours_count": 1801.4,
+      "queue_pressure": 1801.4,
+      "webster": 1801.4
     }
   },
   {
     "scenario": "dynamic",
-    "n_completed_mean_spread": 4.2000000000000455,
+    "n_completed_mean_spread": 0.0,
     "means": {
-      "XtraFlow": 1759.2,
-      "actuated": 1759.2,
-      "fixed": 1759.2,
-      "maxpressure": 1759.2,
-      "ours_count": 1759.2,
-      "rl_ppo": 1755.0,
-      "webster": 1759.2
+      "XtraFlow": 1757.2,
+      "actuated": 1757.2,
+      "fixed": 1757.2,
+      "fixed_tuned": 1757.2,
+      "maxpressure": 1757.2,
+      "ours_count": 1757.2,
+      "queue_pressure": 1757.2,
+      "webster": 1757.2
     }
   },
   {
     "scenario": "low_demand",
     "n_completed_mean_spread": 0.0,
     "means": {
-      "XtraFlow": 599.8,
-      "actuated": 599.8,
-      "fixed": 599.8,
-      "maxpressure": 599.8,
-      "ours_count": 599.8,
-      "rl_ppo": 599.8,
-      "webster": 599.8
+      "XtraFlow": 602.8,
+      "actuated": 602.8,
+      "fixed": 602.8,
+      "fixed_tuned": 602.8,
+      "maxpressure": 602.8,
+      "ours_count": 602.8,
+      "queue_pressure": 602.8,
+      "webster": 602.8
     }
   }
 ]

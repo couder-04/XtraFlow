@@ -185,11 +185,11 @@ def generate_grid(scenario: str, seed: int, cfg: Dict[str, Any] | None = None) -
     trips.append("</routes>")
     trip_path.write_text("\n".join(trips) + "\n", encoding="utf-8")
 
-    from sim.util import run_cmd
+    from sim.util import run_cmd, tool_cmd
     net = ROOT / "results" / "networks" / "grid2x2.net.xml"
     vtypes = ROOT / "results" / "networks" / "vtypes.add.xml"
     cmd = [
-        "duarouter",
+        *tool_cmd("duarouter"),
         "-n", str(net),
         "-r", str(trip_path),
         "-o", str(out_path),

@@ -58,9 +58,12 @@ def main(smoke: bool = False) -> Dict[str, Any]:
                 rows.append(_eval_task(t, stage))
         else:
             ctx = get_context("spawn")
+            print(f"tune {stage}: {len(tasks)} runs, {n_workers} workers", flush=True)
             with ctx.Pool(n_workers) as pool:
                 for r in pool.imap_unordered(_eval_task_mp, [(t, stage) for t in tasks]):
                     rows.append(r)
+                    if len(rows) % 24 == 0 or len(rows) == len(tasks):
+                        print(f"tune {stage} {len(rows)}/{len(tasks)}", flush=True)
         return rows
 
     def score_rows(rows: List[Dict[str, Any]]):

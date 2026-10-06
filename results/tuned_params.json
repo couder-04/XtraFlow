@@ -3,6 +3,12 @@
   "alpha_moving": 0.5,
   "hysteresis": 0.25,
   "selected_on": "VALIDATION seeds only",
+  "scenarios": [
+    "balanced",
+    "peak_unbalanced",
+    "dynamic",
+    "low_demand"
+  ],
   "screen_seeds": [
     2000,
     2001,
@@ -32,7 +38,8 @@
     2018,
     2019
   ],
-  "scenario": "peak_unbalanced",
-  "mean_fuel_per_vehicle_L": 0.12318790645640529,
+  "mean_fuel_per_vehicle_L": 0.12327643280361333,
+  "screen_relative_span": 0.013761764847601068,
+  "n_screen_combos": 27,
   "smoke": false
 }

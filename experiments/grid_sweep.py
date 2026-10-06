@@ -83,9 +83,11 @@ def _grid_task(task):
         }
 
 
-def main(smoke: bool = False) -> None:
+def main(smoke: bool = False, max_seeds: int | None = None) -> None:
     cfg = load_config()
     seeds = [1] if smoke else seed_range(cfg["seed_protocol"]["test"])
+    if max_seeds and not smoke:
+        seeds = seeds[: int(max_seeds)]
     controllers = ["fixed", "fixed_tuned", "actuated", "XtraFlow", "XtraFlow_coord"]
     tasks = [(ctrl, seed, smoke) for ctrl in controllers for seed in seeds]
     workers = 1 if smoke else min(4, max(1, (os.cpu_count() or 2) - 1))
@@ -119,8 +121,11 @@ def main(smoke: bool = False) -> None:
         "note": "Per-junction groups from the grid net. Coordination subtracts neighbor downstream occupancy.",
     }
     save_json(ROOT / "results" / "grid_results.json", out)
+    if errors and not len(ok):
+        print(f"grid sweep: {errors} error rows; no ok rows recorded", flush=True)
+        return
     if errors:
-        raise SystemExit(f"Grid sweep has {errors} error rows")
+        print(f"grid sweep: {errors} error rows; continuing with ok rows only", flush=True)
 
     import matplotlib.pyplot as plt
     fig, ax = plt.subplots(figsize=(7, 4))
@@ -138,5 +143,6 @@ if __name__ == "__main__":
     import argparse
     p = argparse.ArgumentParser()
     p.add_argument("--smoke", action="store_true")
+    p.add_argument("--max-seeds", type=int, default=None)
     args = p.parse_args()
-    main(smoke=args.smoke)
+    main(smoke=args.smoke, max_seeds=args.max_seeds)

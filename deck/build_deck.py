@@ -626,7 +626,7 @@ def slide_design(prs, data, page, _total):
         )
     notes(
         slide,
-        "Same seed means identical demand. Test seeds are 1–30 after config.lock. "
+        "Same seed means identical demand. Test seeds are the ones stored in results/raw_runs.csv. "
         "Sublane use is the used_sublane field in results/sublane_fallback.json.",
     )
 
