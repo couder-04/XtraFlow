@@ -1,6 +1,6 @@
 .PHONY: setup test smoke calibrate tune fixed_tuned train_rl sweep analyze robustness \
-	sensitivity emission_xcheck safety perception grid extrapolate demo \
-	dashboard deck report audit all freeze_config networks
+	sensitivity emission_xcheck safety perception grid extrapolate demo yolo_demo \
+	yolo_dashboard dashboard deck report audit all freeze_config networks
 
 PYTHON ?= .venv/bin/python
 PIP ?= .venv/bin/pip
@@ -68,6 +68,12 @@ extrapolate:
 
 demo:
 	$(PYTHON) -m demo.make_demo
+
+yolo_demo:
+	$(PYTHON) -m demo.run_yolo_demo
+
+yolo_dashboard:
+	$(PYTHON) -m streamlit run demo/yolo_dashboard.py --server.headless true
 
 dashboard:
 	$(PYTHON) -m streamlit run demo/dashboard.py --server.headless true

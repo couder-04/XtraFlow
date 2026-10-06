@@ -1,0 +1,1782 @@
+{
+  "label": "Input feasibility \u2014 not a fuel-saving result",
+  "source": "Mixed research CCTV \u2014 straight / one-way corridors",
+  "attribution": "Zenodo DOI 10.5281/zenodo.3986141 (CC BY 4.0); Seattle I-5 trafficdb (WSDOT / Chan\u2013Vasconcelos)",
+  "note": "Four independent corridor cameras mapped to N/E/S/W for a mosaic. Not synchronized approaches of one intersection. S is true southbound one-way highway; N/E/W are Zenodo arterial cams.",
+  "cameras": [
+    {
+      "approach": "N",
+      "file": "data/video/cam_N_hwy.mp4",
+      "title": "Straight multi-lane (Zenodo cam_10) / Bellevue Eastgate",
+      "kind": "hwy"
+    },
+    {
+      "approach": "E",
+      "file": "data/video/cam_E_hwy.mp4",
+      "title": "Straight street (Zenodo cam_16) / Bellevue Newport",
+      "kind": "hwy"
+    },
+    {
+      "approach": "S",
+      "file": "data/video/cam_S_hwy.mp4",
+      "title": "I-5 S @ 188th St (WSDOT) / Bellevue SE 38th",
+      "kind": "hwy"
+    },
+    {
+      "approach": "W",
+      "file": "data/video/cam_W_hwy.mp4",
+      "title": "Divided arterial (Zenodo cam_11) / Bellevue NE 8th",
+      "kind": "hwy"
+    }
+  ],
+  "outputs": {
+    "overlays": [
+      "results/demo/yolo/overlay_N.mp4",
+      "results/demo/yolo/overlay_E.mp4",
+      "results/demo/yolo/overlay_S.mp4",
+      "results/demo/yolo/overlay_W.mp4"
+    ],
+    "counts": [
+      "results/demo/yolo/counts_N.json",
+      "results/demo/yolo/counts_E.json",
+      "results/demo/yolo/counts_S.json",
+      "results/demo/yolo/counts_W.json"
+    ],
+    "mosaic": "results/demo/yolo/yolo_mosaic.mp4",
+    "primary_overlay": "results/demo/yolo_overlay.mp4"
+  },
+  "per_camera": {
+    "N": {
+      "title": "Straight multi-lane (Zenodo cam_10) / Bellevue Eastgate",
+      "kind": "hwy",
+      "source_video": "data/video/cam_N_hwy.mp4",
+      "overlay": "results/demo/yolo/overlay_N.mp4",
+      "counts": "results/demo/yolo/counts_N.json",
+      "n_samples": 40,
+      "peak_vehicles": 7,
+      "mean_vehicles": 3.3,
+      "mean_weighted_pressure": 3.52,
+      "last": {
+        "frame": 117,
+        "vehicles": 4,
+        "weighted_pressure": 4.0,
+        "car": 4,
+        "two_wheeler": 0,
+        "bus": 0,
+        "truck": 0,
+        "auto_rickshaw": 0
+      },
+      "totals_series": [
+        {
+          "frame": 0,
+          "vehicles": 7,
+          "weighted_pressure": 7.0,
+          "car": 7,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 3,
+          "vehicles": 4,
+          "weighted_pressure": 4.0,
+          "car": 4,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 6,
+          "vehicles": 5,
+          "weighted_pressure": 8.54611811546118,
+          "car": 3,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 2,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 9,
+          "vehicles": 6,
+          "weighted_pressure": 7.77305905773059,
+          "car": 5,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 1,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 12,
+          "vehicles": 5,
+          "weighted_pressure": 6.77305905773059,
+          "car": 4,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 1,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 15,
+          "vehicles": 5,
+          "weighted_pressure": 6.77305905773059,
+          "car": 4,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 1,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 18,
+          "vehicles": 3,
+          "weighted_pressure": 3.0,
+          "car": 3,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 21,
+          "vehicles": 4,
+          "weighted_pressure": 4.0,
+          "car": 4,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 24,
+          "vehicles": 4,
+          "weighted_pressure": 4.0,
+          "car": 4,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 27,
+          "vehicles": 4,
+          "weighted_pressure": 4.0,
+          "car": 4,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 30,
+          "vehicles": 4,
+          "weighted_pressure": 4.0,
+          "car": 4,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 33,
+          "vehicles": 4,
+          "weighted_pressure": 4.0,
+          "car": 4,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 36,
+          "vehicles": 4,
+          "weighted_pressure": 4.0,
+          "car": 4,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 39,
+          "vehicles": 4,
+          "weighted_pressure": 4.0,
+          "car": 4,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 42,
+          "vehicles": 3,
+          "weighted_pressure": 3.0,
+          "car": 3,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 45,
+          "vehicles": 4,
+          "weighted_pressure": 4.0,
+          "car": 4,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 48,
+          "vehicles": 2,
+          "weighted_pressure": 2.0,
+          "car": 2,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 51,
+          "vehicles": 2,
+          "weighted_pressure": 2.0,
+          "car": 2,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 54,
+          "vehicles": 2,
+          "weighted_pressure": 2.0,
+          "car": 2,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 57,
+          "vehicles": 2,
+          "weighted_pressure": 2.0,
+          "car": 2,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 60,
+          "vehicles": 3,
+          "weighted_pressure": 3.0,
+          "car": 3,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 63,
+          "vehicles": 2,
+          "weighted_pressure": 2.0,
+          "car": 2,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 66,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 69,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 72,
+          "vehicles": 2,
+          "weighted_pressure": 2.0,
+          "car": 2,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 75,
+          "vehicles": 3,
+          "weighted_pressure": 3.0,
+          "car": 3,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 78,
+          "vehicles": 3,
+          "weighted_pressure": 3.0,
+          "car": 3,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 81,
+          "vehicles": 3,
+          "weighted_pressure": 3.0,
+          "car": 3,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 84,
+          "vehicles": 2,
+          "weighted_pressure": 2.0,
+          "car": 2,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 87,
+          "vehicles": 3,
+          "weighted_pressure": 3.0,
+          "car": 3,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 90,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 93,
+          "vehicles": 2,
+          "weighted_pressure": 2.0,
+          "car": 2,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 96,
+          "vehicles": 2,
+          "weighted_pressure": 2.0,
+          "car": 2,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 99,
+          "vehicles": 3,
+          "weighted_pressure": 3.0,
+          "car": 3,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 102,
+          "vehicles": 3,
+          "weighted_pressure": 3.0,
+          "car": 3,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 105,
+          "vehicles": 5,
+          "weighted_pressure": 5.0,
+          "car": 5,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 108,
+          "vehicles": 5,
+          "weighted_pressure": 5.0,
+          "car": 5,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 111,
+          "vehicles": 5,
+          "weighted_pressure": 5.0,
+          "car": 5,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 114,
+          "vehicles": 4,
+          "weighted_pressure": 4.0,
+          "car": 4,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 117,
+          "vehicles": 4,
+          "weighted_pressure": 4.0,
+          "car": 4,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        }
+      ]
+    },
+    "E": {
+      "title": "Straight street (Zenodo cam_16) / Bellevue Newport",
+      "kind": "hwy",
+      "source_video": "data/video/cam_E_hwy.mp4",
+      "overlay": "results/demo/yolo/overlay_E.mp4",
+      "counts": "results/demo/yolo/counts_E.json",
+      "n_samples": 40,
+      "peak_vehicles": 11,
+      "mean_vehicles": 8.57,
+      "mean_weighted_pressure": 8.75,
+      "last": {
+        "frame": 117,
+        "vehicles": 8,
+        "weighted_pressure": 8.0,
+        "car": 8,
+        "two_wheeler": 0,
+        "bus": 0,
+        "truck": 0,
+        "auto_rickshaw": 0
+      },
+      "totals_series": [
+        {
+          "frame": 0,
+          "vehicles": 8,
+          "weighted_pressure": 8.0,
+          "car": 8,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 3,
+          "vehicles": 8,
+          "weighted_pressure": 8.0,
+          "car": 8,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 6,
+          "vehicles": 8,
+          "weighted_pressure": 8.0,
+          "car": 8,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 9,
+          "vehicles": 8,
+          "weighted_pressure": 8.0,
+          "car": 8,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 12,
+          "vehicles": 8,
+          "weighted_pressure": 8.0,
+          "car": 8,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 15,
+          "vehicles": 9,
+          "weighted_pressure": 9.0,
+          "car": 9,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 18,
+          "vehicles": 10,
+          "weighted_pressure": 10.0,
+          "car": 10,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 21,
+          "vehicles": 9,
+          "weighted_pressure": 9.0,
+          "car": 9,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 24,
+          "vehicles": 8,
+          "weighted_pressure": 8.0,
+          "car": 8,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 27,
+          "vehicles": 9,
+          "weighted_pressure": 9.0,
+          "car": 9,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 30,
+          "vehicles": 8,
+          "weighted_pressure": 8.0,
+          "car": 8,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 33,
+          "vehicles": 8,
+          "weighted_pressure": 8.0,
+          "car": 8,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 36,
+          "vehicles": 8,
+          "weighted_pressure": 8.0,
+          "car": 8,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 39,
+          "vehicles": 9,
+          "weighted_pressure": 9.0,
+          "car": 9,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 42,
+          "vehicles": 9,
+          "weighted_pressure": 9.0,
+          "car": 9,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 45,
+          "vehicles": 8,
+          "weighted_pressure": 8.0,
+          "car": 8,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 48,
+          "vehicles": 10,
+          "weighted_pressure": 10.0,
+          "car": 10,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 51,
+          "vehicles": 11,
+          "weighted_pressure": 11.0,
+          "car": 11,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 54,
+          "vehicles": 10,
+          "weighted_pressure": 11.77305905773059,
+          "car": 9,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 1,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 57,
+          "vehicles": 10,
+          "weighted_pressure": 10.0,
+          "car": 10,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 60,
+          "vehicles": 10,
+          "weighted_pressure": 10.0,
+          "car": 10,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 63,
+          "vehicles": 8,
+          "weighted_pressure": 9.77305905773059,
+          "car": 7,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 1,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 66,
+          "vehicles": 9,
+          "weighted_pressure": 9.0,
+          "car": 9,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 69,
+          "vehicles": 8,
+          "weighted_pressure": 9.77305905773059,
+          "car": 7,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 1,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 72,
+          "vehicles": 7,
+          "weighted_pressure": 7.0,
+          "car": 7,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 75,
+          "vehicles": 8,
+          "weighted_pressure": 8.0,
+          "car": 8,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 78,
+          "vehicles": 9,
+          "weighted_pressure": 10.77305905773059,
+          "car": 8,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 1,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 81,
+          "vehicles": 8,
+          "weighted_pressure": 8.0,
+          "car": 8,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 84,
+          "vehicles": 8,
+          "weighted_pressure": 8.0,
+          "car": 8,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 87,
+          "vehicles": 9,
+          "weighted_pressure": 9.0,
+          "car": 9,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 90,
+          "vehicles": 9,
+          "weighted_pressure": 9.0,
+          "car": 9,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 93,
+          "vehicles": 9,
+          "weighted_pressure": 9.0,
+          "car": 9,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 96,
+          "vehicles": 8,
+          "weighted_pressure": 8.0,
+          "car": 8,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 99,
+          "vehicles": 8,
+          "weighted_pressure": 8.0,
+          "car": 8,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 102,
+          "vehicles": 9,
+          "weighted_pressure": 9.0,
+          "car": 9,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 105,
+          "vehicles": 8,
+          "weighted_pressure": 8.0,
+          "car": 8,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 108,
+          "vehicles": 8,
+          "weighted_pressure": 8.0,
+          "car": 8,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 111,
+          "vehicles": 8,
+          "weighted_pressure": 8.0,
+          "car": 8,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 114,
+          "vehicles": 8,
+          "weighted_pressure": 8.0,
+          "car": 8,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 117,
+          "vehicles": 8,
+          "weighted_pressure": 8.0,
+          "car": 8,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        }
+      ]
+    },
+    "S": {
+      "title": "I-5 S @ 188th St (WSDOT) / Bellevue SE 38th",
+      "kind": "hwy",
+      "source_video": "data/video/cam_S_hwy.mp4",
+      "overlay": "results/demo/yolo/overlay_S.mp4",
+      "counts": "results/demo/yolo/counts_S.json",
+      "n_samples": 40,
+      "peak_vehicles": 1,
+      "mean_vehicles": 0.03,
+      "mean_weighted_pressure": 0.07,
+      "last": {
+        "frame": 117,
+        "vehicles": 0,
+        "weighted_pressure": 0.0,
+        "car": 0,
+        "two_wheeler": 0,
+        "bus": 0,
+        "truck": 0,
+        "auto_rickshaw": 0
+      },
+      "totals_series": [
+        {
+          "frame": 0,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 3,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 6,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 9,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 12,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 15,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 18,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 21,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 24,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 27,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 30,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 33,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 36,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 39,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 42,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 45,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 48,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 51,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 54,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 57,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 60,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 63,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 66,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 69,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 72,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 75,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 78,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 81,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 84,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 87,
+          "vehicles": 1,
+          "weighted_pressure": 2.77305905773059,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 1,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 90,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 93,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 96,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 99,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 102,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 105,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 108,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 111,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 114,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 117,
+          "vehicles": 0,
+          "weighted_pressure": 0.0,
+          "car": 0,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        }
+      ]
+    },
+    "W": {
+      "title": "Divided arterial (Zenodo cam_11) / Bellevue NE 8th",
+      "kind": "hwy",
+      "source_video": "data/video/cam_W_hwy.mp4",
+      "overlay": "results/demo/yolo/overlay_W.mp4",
+      "counts": "results/demo/yolo/counts_W.json",
+      "n_samples": 40,
+      "peak_vehicles": 5,
+      "mean_vehicles": 2.92,
+      "mean_weighted_pressure": 3.15,
+      "last": {
+        "frame": 117,
+        "vehicles": 2,
+        "weighted_pressure": 2.0,
+        "car": 2,
+        "two_wheeler": 0,
+        "bus": 0,
+        "truck": 0,
+        "auto_rickshaw": 0
+      },
+      "totals_series": [
+        {
+          "frame": 0,
+          "vehicles": 3,
+          "weighted_pressure": 2.5351692103516923,
+          "car": 2,
+          "two_wheeler": 1,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 3,
+          "vehicles": 2,
+          "weighted_pressure": 2.0,
+          "car": 2,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 6,
+          "vehicles": 3,
+          "weighted_pressure": 3.0,
+          "car": 3,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 9,
+          "vehicles": 3,
+          "weighted_pressure": 3.0,
+          "car": 3,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 12,
+          "vehicles": 5,
+          "weighted_pressure": 5.0,
+          "car": 5,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 15,
+          "vehicles": 3,
+          "weighted_pressure": 3.0,
+          "car": 3,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 18,
+          "vehicles": 3,
+          "weighted_pressure": 3.0,
+          "car": 3,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 21,
+          "vehicles": 3,
+          "weighted_pressure": 3.0,
+          "car": 3,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 24,
+          "vehicles": 3,
+          "weighted_pressure": 3.0,
+          "car": 3,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 27,
+          "vehicles": 3,
+          "weighted_pressure": 3.0,
+          "car": 3,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 30,
+          "vehicles": 4,
+          "weighted_pressure": 4.0,
+          "car": 4,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 33,
+          "vehicles": 3,
+          "weighted_pressure": 3.0,
+          "car": 3,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 36,
+          "vehicles": 4,
+          "weighted_pressure": 4.0,
+          "car": 4,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 39,
+          "vehicles": 5,
+          "weighted_pressure": 5.0,
+          "car": 5,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 42,
+          "vehicles": 4,
+          "weighted_pressure": 5.77305905773059,
+          "car": 3,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 1,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 45,
+          "vehicles": 4,
+          "weighted_pressure": 4.0,
+          "car": 4,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 48,
+          "vehicles": 4,
+          "weighted_pressure": 4.0,
+          "car": 4,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 51,
+          "vehicles": 4,
+          "weighted_pressure": 4.0,
+          "car": 4,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 54,
+          "vehicles": 4,
+          "weighted_pressure": 4.0,
+          "car": 4,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 57,
+          "vehicles": 4,
+          "weighted_pressure": 4.0,
+          "car": 4,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 60,
+          "vehicles": 4,
+          "weighted_pressure": 5.77305905773059,
+          "car": 3,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 1,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 63,
+          "vehicles": 3,
+          "weighted_pressure": 3.0,
+          "car": 3,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 66,
+          "vehicles": 2,
+          "weighted_pressure": 2.0,
+          "car": 2,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 69,
+          "vehicles": 3,
+          "weighted_pressure": 3.0,
+          "car": 3,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 72,
+          "vehicles": 2,
+          "weighted_pressure": 2.996018579960185,
+          "car": 1,
+          "two_wheeler": 0,
+          "bus": 1,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 75,
+          "vehicles": 3,
+          "weighted_pressure": 3.996018579960185,
+          "car": 2,
+          "two_wheeler": 0,
+          "bus": 1,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 78,
+          "vehicles": 2,
+          "weighted_pressure": 2.996018579960185,
+          "car": 1,
+          "two_wheeler": 0,
+          "bus": 1,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 81,
+          "vehicles": 2,
+          "weighted_pressure": 2.996018579960185,
+          "car": 1,
+          "two_wheeler": 0,
+          "bus": 1,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 84,
+          "vehicles": 2,
+          "weighted_pressure": 3.77305905773059,
+          "car": 1,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 1,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 87,
+          "vehicles": 2,
+          "weighted_pressure": 2.0,
+          "car": 2,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 90,
+          "vehicles": 2,
+          "weighted_pressure": 2.0,
+          "car": 2,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 93,
+          "vehicles": 2,
+          "weighted_pressure": 2.0,
+          "car": 2,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 96,
+          "vehicles": 2,
+          "weighted_pressure": 2.0,
+          "car": 2,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 99,
+          "vehicles": 2,
+          "weighted_pressure": 2.0,
+          "car": 2,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 102,
+          "vehicles": 2,
+          "weighted_pressure": 2.0,
+          "car": 2,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 105,
+          "vehicles": 2,
+          "weighted_pressure": 2.0,
+          "car": 2,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 108,
+          "vehicles": 2,
+          "weighted_pressure": 2.0,
+          "car": 2,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 111,
+          "vehicles": 2,
+          "weighted_pressure": 2.0,
+          "car": 2,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 114,
+          "vehicles": 3,
+          "weighted_pressure": 3.0,
+          "car": 3,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        },
+        {
+          "frame": 117,
+          "vehicles": 2,
+          "weighted_pressure": 2.0,
+          "car": 2,
+          "two_wheeler": 0,
+          "bus": 0,
+          "truck": 0,
+          "auto_rickshaw": 0
+        }
+      ]
+    }
+  },
+  "clubbed": {
+    "peak_vehicles": 24,
+    "mean_vehicles": 14.82,
+    "mean_weighted_pressure": 15.49,
+    "n_cameras": 4
+  },
+  "last_frame": {
+    "N": {
+      "vehicles": 4,
+      "weighted_pressure": 4.0,
+      "car": 4,
+      "truck": 0,
+      "bus": 0,
+      "two_wheeler": 0
+    },
+    "E": {
+      "vehicles": 8,
+      "weighted_pressure": 8.0,
+      "car": 8,
+      "truck": 0,
+      "bus": 0,
+      "two_wheeler": 0
+    },
+    "S": {
+      "vehicles": 0,
+      "weighted_pressure": 0.0,
+      "car": 0,
+      "truck": 0,
+      "bus": 0,
+      "two_wheeler": 0
+    },
+    "W": {
+      "vehicles": 2,
+      "weighted_pressure": 2.0,
+      "car": 2,
+      "truck": 0,
+      "bus": 0,
+      "two_wheeler": 0
+    }
+  }
+}

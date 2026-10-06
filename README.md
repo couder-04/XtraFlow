@@ -116,6 +116,8 @@ Controllers share the same network, demand files, and timing hard rules. Demand 
 ```bash
 python -m perception.yolo_counts --video data/video/YOUR.mp4 --roi perception/roi.yaml
 python -m perception.evaluate_detector
+make yolo_demo        # 4-cam overlay + mosaic → results/demo/yolo/
+make yolo_dashboard   # Streamlit: mosaic + per-cam videos & stats
 ```
 
 Only use datasets you are allowed to use. Nothing unlicensed is downloaded by this repo.
@@ -135,7 +137,7 @@ docs/          design decisions
 ```
 
 Common Make targets:  
-`setup` · `test` · `smoke` · `calibrate` · `tune` · `train_rl` · `sweep` · `analyze` · `robustness` · `sensitivity` · `emission_xcheck` · `safety` · `demo` · `deck` · `audit` · `all`
+`setup` · `test` · `smoke` · `calibrate` · `tune` · `train_rl` · `sweep` · `analyze` · `robustness` · `sensitivity` · `emission_xcheck` · `safety` · `demo` · `yolo_demo` · `yolo_dashboard` · `deck` · `audit` · `all`
 
 ---
 

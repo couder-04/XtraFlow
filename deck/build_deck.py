@@ -169,6 +169,7 @@ def load() -> dict:
     perc = _load(ROOT / "results" / "perception_smoke.json") or {}
     sublane = _load(ROOT / "results" / "sublane_fallback.json") or {}
     rl_meta = _load(ROOT / "results" / "rl" / "rl_selection.json") or {}
+    yolo = _load(ROOT / "results" / "demo" / "yolo" / "yolo_demo_summary.json") or {}
     headlines = list(summary.get("headlines") or _load(ROOT / "results" / "headlines.json") or [])
     headlines.sort(key=lambda row: -_headline_pct(row))
     comps = {}
@@ -189,6 +190,7 @@ def load() -> dict:
         "perc": perc,
         "sublane": sublane,
         "rl_meta": rl_meta,
+        "yolo": yolo,
         "headlines": headlines,
         "comps": comps,
         "means": _means(ROOT / "results" / "tables" / "summary_mean_std.csv"),
@@ -585,7 +587,18 @@ def slide_cycle(prs, data, page, _total):
     )
     miss = (data["perc"].get("noise_model") or {}).get("detect_miss_rate")
     assumed = "ASSUMED" in str(data["perc"].get("flag", "")) or "assumed" in flag
-    if assumed:
+    yolo = data.get("yolo") or {}
+    if yolo:
+        see = (
+            "Detectors on each approach, or a camera. A YOLO overlay demo is on a later slide — "
+            "input feasibility, not a fuel-saving result. Locked TEST scores still use the oracle detector"
+        )
+        if assumed:
+            see += "; detector-miss noise for robustness stays assumed"
+            see += f" ({miss:.0%} in the smoke check)." if isinstance(miss, (int, float)) else "."
+        else:
+            see += ". Detector error in this run comes from supplied video."
+    elif assumed:
         see = "Detectors on each approach, or a camera. YOLO with a region of interest can read the same queue. This run had no field video, so detector error is assumed"
         see += f" ({miss:.0%} miss in the smoke check)." if isinstance(miss, (int, float)) else "."
     else:
@@ -617,7 +630,8 @@ def slide_cycle(prs, data, page, _total):
         write(slide, x + 0.26, 3.2, width - 0.52, 2.4, [[(body, 15, INK, False, BODY)]])
     notes(
         slide,
-        "If asked about the camera: the noise model is assumed. Supply data/video and labels to replace it. "
+        "Play the YOLO mosaic after the side-by-side SUMO demo. "
+        "Say clearly: YOLO is input feasibility; headline fuel numbers are oracle TEST. "
         "Do not claim a field detector result.",
     )
 
@@ -1207,54 +1221,174 @@ def slide_demo(prs, data, page, _total):
     slide = blank(prs)
     chrome(
         slide,
-        "Same demand, side by side",
+        "Live clip 1 · control",
         "Fixed timing on the left. XtraFlow on the right.",
-        "One seed, same arrivals. The clip is a feasibility demo, not a fuel-saving proof.",
+        "One seed, same arrivals. Qualitative demo — the fuel numbers are on the previous slides.",
         page,
     )
     demo = ROOT / "results" / "demo" / "demo.mp4"
     gif = ROOT / "results" / "demo" / "demo.gif"
     path = demo if demo.exists() else gif
-    rect(slide, L, 1.7, CONTENT_W, 4.85, NAVY, radius=0.08)
-    write(slide, L + 0.4, 2.35, CONTENT_W - 0.8, 0.35, [[("SIDE-BY-SIDE DEMO", 13, AMBER, True, BODY)]])
+    rect(slide, L, 1.7, 7.7, 4.85, NAVY, radius=0.08)
+    write(slide, L + 0.35, 2.15, 7.0, 0.3, [[("PLAY NOW", 13, AMBER, True, BODY)]])
     if path.exists():
         rel = path.relative_to(ROOT).as_posix()
+        write(slide, L + 0.35, 2.65, 7.0, 0.55, [[(rel, 22, WHITE, True, TITLE)]])
         write(
             slide,
-            L + 0.4,
-            3.0,
-            CONTENT_W - 0.8,
-            0.7,
-            [[(rel, 28, WHITE, True, TITLE)]],
-        )
-        write(
-            slide,
-            L + 0.4,
-            3.9,
-            CONTENT_W - 0.8,
-            1.2,
+            L + 0.35,
+            3.45,
+            7.0,
+            1.4,
             [[(
-                "Play this file beside the talk. PowerPoint does not need the binary embedded here. "
-                "Same demand seed: fixed timing versus XtraFlow.",
+                "Open the file in a video player beside the deck. "
+                "Same demand seed: legacy fixed versus XtraFlow. "
+                "Do not treat the clip as a percentage claim.",
                 16,
                 MIST,
                 False,
                 BODY,
             )]],
         )
+        write(
+            slide,
+            L + 0.35,
+            5.3,
+            7.0,
+            0.7,
+            [[("Next: YOLO camera overlays — how the controller can see the queue.", 15, RGBColor(0xF0, 0xC2, 0x6A), False, BODY)]],
+        )
     else:
         write(
             slide,
-            L + 0.4,
+            L + 0.35,
             3.2,
-            CONTENT_W - 0.8,
+            7.0,
             0.5,
             [[("Run make demo to fill results/demo/demo.mp4.", 18, MIST, False, BODY)]],
         )
+    _card(slide, L + 8.0, 1.7, 4.28, 4.85)
+    write(slide, L + 8.22, 1.95, 3.9, 0.35, [[("WHAT TO SAY", 12, AMBER, True, BODY)]])
+    talking = [
+        "Same cars on both sides.",
+        "Left is fixed green.",
+        "Right is fuel-weighted pressure.",
+        "Watch which approach gets green when the queue is heavy.",
+    ]
+    y = 2.5
+    for i, line in enumerate(talking, start=1):
+        write(slide, L + 8.22, y, 3.9, 0.7, [[(f"{i}.  {line}", 15, INK, False, BODY)]])
+        y += 0.85
     notes(
         slide,
         "Open results/demo/demo.mp4 (or demo.gif) while presenting. "
-        "Say that the demo is qualitative; the headline numbers are on the previous slides.",
+        "Then advance to the YOLO slide and play the mosaic. "
+        "Say that the SUMO demo is qualitative; the headline numbers are on the previous slides.",
+    )
+
+
+def _yolo_still(approach: str) -> Path | None:
+    still_dir = ROOT / "results" / "demo" / "yolo_stills"
+    if not still_dir.exists():
+        return None
+    matches = sorted(still_dir.glob(f"cam_{approach}_*.jpg"))
+    return matches[0] if matches else None
+
+
+def slide_yolo(prs, data, page, _total):
+    slide = blank(prs)
+    yolo = data.get("yolo") or {}
+    label = yolo.get("label") or "Input feasibility — not a fuel-saving result"
+    chrome(
+        slide,
+        "Live clip 2 · perception",
+        "YOLO reads the approach from camera video",
+        label,
+        page,
+    )
+    cams = yolo.get("cameras") or [
+        {"approach": "N", "title": "North"},
+        {"approach": "E", "title": "East"},
+        {"approach": "S", "title": "South"},
+        {"approach": "W", "title": "West"},
+    ]
+    # 2×2 stills
+    cell_w, cell_h = 2.85, 1.7
+    gap_x, gap_y = 0.12, 0.12
+    origin_x, origin_y = L, 1.68
+    order = ["N", "E", "S", "W"]
+    by_approach = {c.get("approach"): c for c in cams}
+    for i, approach in enumerate(order):
+        col, row = i % 2, i // 2
+        x = origin_x + col * (cell_w + gap_x)
+        y = origin_y + row * (cell_h + gap_y)
+        cam = by_approach.get(approach) or {"approach": approach, "title": approach}
+        title = cam.get("title") or approach
+        still = _yolo_still(approach)
+        rect(slide, x, y, cell_w, cell_h, NAVY, radius=0.06)
+        if still and picture(slide, still, x + 0.08, y + 0.28, cell_w - 0.16, cell_h - 0.4):
+            write(slide, x + 0.1, y + 0.04, cell_w - 0.2, 0.24, [[(f"{approach}  ·  {title}", 11, WHITE, True, BODY)]])
+        else:
+            write(slide, x + 0.15, y + 0.55, cell_w - 0.3, 0.5, [[(f"{approach}  ·  {title}", 14, MIST, True, BODY)]])
+            write(slide, x + 0.15, y + 1.05, cell_w - 0.3, 0.35, [[("still missing — run make yolo_demo", 12, MIST, False, BODY)]])
+
+    # Play list panel
+    outputs = yolo.get("outputs") or {}
+    mosaic = outputs.get("mosaic") or "results/demo/yolo/yolo_mosaic.mp4"
+    primary = outputs.get("primary_overlay") or "results/demo/yolo_overlay.mp4"
+    overlays = outputs.get("overlays") or [
+        f"results/demo/yolo/overlay_{a}.mp4" for a in order
+    ]
+    panel_x = L + 2 * (cell_w + gap_x) + 0.2
+    panel_w = CONTENT_W - (panel_x - L)
+    _card(slide, panel_x, 1.68, panel_w, 3.52)
+    write(slide, panel_x + 0.22, 1.85, panel_w - 0.4, 0.28, [[("PLAY THESE", 12, AMBER, True, BODY)]])
+    play_rows = [
+        ("Mosaic (2×2)", mosaic),
+        ("Primary overlay", primary),
+    ]
+    for approach, path in zip(order, overlays):
+        play_rows.append((f"Cam {approach}", path))
+    y = 2.25
+    for name, path in play_rows:
+        exists = (ROOT / path).exists() if path else False
+        tone = TEAL if exists else CORAL
+        mark = "●" if exists else "○"
+        write(slide, panel_x + 0.22, y, panel_w - 0.4, 0.22, [[(f"{mark}  {name}", 13, tone, True, BODY)]])
+        write(slide, panel_x + 0.42, y + 0.22, panel_w - 0.6, 0.22, [[(path, 11, MUTED, False, BODY)]])
+        y += 0.48
+
+    note = yolo.get("note") or (
+        "Four cameras are four different junctions, mapped to N/E/S/W for a mosaic. "
+        "Not synchronized approaches of one intersection."
+    )
+    source = yolo.get("source") or ""
+    rect(slide, L, 5.35, CONTENT_W, 1.45, NAVY, radius=0.08)
+    write(slide, L + 0.32, 5.5, CONTENT_W - 0.6, 0.28, [[("SAY THIS OUT LOUD", 12, AMBER, True, BODY)]])
+    write(
+        slide,
+        L + 0.32,
+        5.85,
+        CONTENT_W - 0.6,
+        0.55,
+        [[(
+            "This shows the controller can ingest camera counts. "
+            "It is not the locked fuel result. TEST headlines still use the oracle detector.",
+            15,
+            WHITE,
+            False,
+            BODY,
+        )]],
+    )
+    attribution = note
+    if source:
+        attribution = f"{note}  ·  {source}"
+    write(slide, L + 0.32, 6.45, CONTENT_W - 0.6, 0.25, [[(attribution, 12, MIST, False, BODY)]])
+    notes(
+        slide,
+        "Play results/demo/yolo/yolo_mosaic.mp4 first, then one overlay if asked. "
+        "Attribution and caveats are in results/demo/yolo/SOURCE.md and yolo_demo_summary.json. "
+        "Do not present Bellevue clips as an Indian field site or as synchronized approaches.",
     )
 
 
@@ -1273,6 +1407,7 @@ def slide_checks(prs, data, page, _total):
     noise = perc.get("noise_model") or {}
     miss = noise.get("detect_miss_rate")
     assumed = "ASSUMED" in str(perc.get("flag", ""))
+    yolo = data.get("yolo") or {}
     cards = []
     delta = safety.get("ours_minus_fixed_mean_conflicts")
     safety_body = "Time-to-collision conflicts from the simulator."
@@ -1289,12 +1424,21 @@ def slide_checks(prs, data, page, _total):
             "The reduction shrinks. It does not flip."
         )
     cards.append((TEAL, _plain_verdict(xcheck.get("verdict", "")), "Emissions model", emis))
-    perc_title = "Assumed" if assumed else "From video"
-    perc_body = "No field video in this run." if assumed else "Noise model derived from supplied video."
-    if isinstance(miss, (int, float)):
-        perc_body += f" Smoke-test miss rate {miss:.0%}."
-    if noise.get("note"):
-        perc_body += " Treat detector error as assumed until labels exist."
+    if yolo:
+        perc_title = "YOLO demo ready"
+        perc_body = (
+            "Camera overlays exist under results/demo/yolo/. "
+            "They are input feasibility only. Locked TEST fuel still uses the oracle detector."
+        )
+        if assumed:
+            perc_body += " Robustness miss rates remain assumed until labeled video replaces the noise model."
+    else:
+        perc_title = "Assumed" if assumed else "From video"
+        perc_body = "No field video in this run." if assumed else "Noise model derived from supplied video."
+        if isinstance(miss, (int, float)):
+            perc_body += f" Smoke-test miss rate {miss:.0%}."
+        if noise.get("note"):
+            perc_body += " Treat detector error as assumed until labels exist."
     cards.append((AMBER, perc_title, "Perception", perc_body))
     gap = 0.18
     width = (CONTENT_W - 2 * gap) / 3
@@ -1308,7 +1452,7 @@ def slide_checks(prs, data, page, _total):
     notes(
         slide,
         "Safety verdict comes from results/safety.json. Emission cross-check is HBEFA3 versus PHEMlight on a smaller seed set "
-        "than the main test; quote both percentages. Perception flag is ASSUMED_NOISE_MODEL_NO_USER_VIDEO.",
+        "than the main test; quote both percentages. YOLO demo does not replace the oracle TEST claim.",
     )
 
 
@@ -1435,6 +1579,7 @@ def slide_scale(prs, data, page, _total):
 def slide_close(prs, data, page, _total):
     slide = blank(prs, dark=True)
     _, seed_bit, n_ctrl = _scope_bits(data)
+    yolo = data.get("yolo") or {}
     write(slide, 0.78, 0.85, 8, 0.28, [[("BEFORE A STRONGER CLAIM", 13, AMBER, True, BODY)]])
     write(slide, 0.75, 1.2, 11, 0.8, [[("XtraFlow", 44, WHITE, True, TITLE)]])
     write(
@@ -1445,9 +1590,14 @@ def slide_close(prs, data, page, _total):
         0.7,
         [[("Smarter signals should burn less fuel.", 24, RGBColor(0xF0, 0xC2, 0x6A), False, TITLE)]],
     )
+    film_body = (
+        "YOLO overlays are a feasibility demo. Replace assumed detector-error with labeled site video."
+        if yolo
+        else "A real video replaces the assumed detector-error model."
+    )
     steps = [
         ("01", "Count the junction", "Replace the assumed flows with observed demand before quoting a site."),
-        ("02", "Film the queue", "A real video replaces the assumed detector-error model."),
+        ("02", "Film the queue", film_body),
         ("03", "Score the corridor", "Quote a grid result only from results/grid_results.json after a successful sweep."),
     ]
     gap = 0.16
@@ -1458,21 +1608,24 @@ def slide_close(prs, data, page, _total):
         write(slide, x + 0.22, 3.32, width - 0.4, 0.3, [[(num, 14, AMBER, True, TITLE)]])
         write(slide, x + 0.22, 3.7, width - 0.42, 0.55, [[(title, 18, WHITE, True, TITLE)]])
         write(slide, x + 0.22, 4.35, width - 0.42, 0.8, [[(body, 14, MIST, False, BODY)]])
+    scope = f"This deck: {n_ctrl} controllers · {seed_bit} · oracle detector unless camera mode is on."
+    if yolo:
+        scope += " · YOLO demo included"
     write(
         slide,
         0.78,
         5.55,
         11,
         0.35,
-        [[(f"This deck: {n_ctrl} controllers · {seed_bit} · oracle detector unless camera mode is on.", 13, MIST, False, BODY)]],
+        [[(scope, 13, MIST, False, BODY)]],
     )
     write(slide, 0.78, 5.95, 10, 0.3, [[(data["url"] or "", 14, MIST, False, BODY)]])
     write(slide, 0.78, 6.3, 11, 0.4, [[(data["label"], 14, RGBColor(0x8A, 0x9B, 0xA8), False, BODY)]])
     footer(slide, page, dark=True)
     notes(
         slide,
-        "Close on the three conditions. Do not end on the annual litre range. "
-        "The headline comparison is in results/headlines.json.",
+        "Close on the three conditions. Demo order was: SUMO side-by-side, then YOLO mosaic. "
+        "Do not end on the annual litre range. The headline comparison is in results/headlines.json.",
     )
 
 
@@ -1495,6 +1648,7 @@ def main():
         slide_experience,
         slide_figures,
         slide_demo,
+        slide_yolo,
         slide_robust,
         slide_grid,
         slide_checks,

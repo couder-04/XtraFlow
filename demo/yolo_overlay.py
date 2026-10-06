@@ -9,7 +9,10 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
+import cv2
+import numpy as np
 import yaml
+from ultralytics import YOLO
 
 from perception.replay import replay_decision
 from perception.yolo_counts import CLASS_MAP, halted_from_track, point_in_poly, weighted_pressure
@@ -22,6 +25,7 @@ def main() -> None:
     p.add_argument("--roi", default=str(ROOT / "perception" / "roi.yaml"))
     p.add_argument("--model", default="yolov8n.pt")
     p.add_argument("--out", default=str(ROOT / "results" / "demo" / "yolo_overlay.mp4"))
+    p.add_argument("--max-frames", type=int, default=0, help="Stop after N processed frames (0 = all)")
     args = p.parse_args()
     video_dir = ROOT / "data" / "video"
     video = Path(args.video) if args.video else None
@@ -33,9 +37,6 @@ def main() -> None:
             "No video. Place a file you have rights to in data/video/ and pass --video. "
             "This tool does not download footage."
         )
-
-    import cv2
-    from ultralytics import YOLO
 
     roi = yaml.safe_load(Path(args.roi).read_text())
     model = YOLO(args.model)
@@ -54,12 +55,28 @@ def main() -> None:
     writer = cv2.VideoWriter(str(out_path), cv2.VideoWriter_fourcc(*"mp4v"), fps, (w, h))
     tracks: dict = {}
     label = "Input feasibility - not a fuel-saving result"
+    processed = 0
     while True:
         ret, frame = cap.read()
         if not ret:
             break
         results = model.track(frame, persist=True, tracker="bytetrack.yaml", verbose=False)
         annotated = results[0].plot()
+        for ap, spec in roi.get("approaches", {}).items():
+            pts = []
+            for x_f, y_f in spec.get("polygon") or []:
+                pts.append([int(float(x_f) * w), int(float(y_f) * h)])
+            if len(pts) >= 3:
+                cv2.polylines(annotated, [np.asarray(pts, dtype="int32")], True, (200, 180, 60), 2)
+                cv2.putText(
+                    annotated,
+                    ap,
+                    (pts[0][0] + 4, max(18, pts[0][1] + 18)),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.55,
+                    (200, 180, 60),
+                    2,
+                )
         per_ap = {a: {"car": 0, "two_wheeler": 0, "bus": 0, "truck": 0, "halting_est": 0} for a in roi["approaches"]}
         r0 = results[0]
         if r0.boxes is not None and r0.boxes.id is not None:
@@ -83,8 +100,13 @@ def main() -> None:
         pressure = weighted_pressure(per_ap, weights)
         cv2.putText(annotated, label, (16, 32), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
         cv2.putText(
-            annotated, f"next {decision['next_phase']}", (16, 64),
-            cv2.FONT_HERSHEY_SIMPLEX, 0.7, (80, 220, 180), 2,
+            annotated,
+            f"next {decision['next_phase']}",
+            (16, 64),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.7,
+            (80, 220, 180),
+            2,
         )
         x = 16
         for ap, value in pressure.items():
@@ -93,6 +115,9 @@ def main() -> None:
             cv2.putText(annotated, ap, (x, h - 4), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255, 255, 255), 1)
             x += 40
         writer.write(annotated)
+        processed += 1
+        if args.max_frames and processed >= args.max_frames:
+            break
     cap.release()
     writer.release()
     print(out_path)
