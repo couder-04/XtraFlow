@@ -32,7 +32,7 @@ data/video_labels/*
 !results/tables/.gitkeep
 !results/figures/.gitkeep
 
-# Local archives (GitHub 100MB limit)
-XtraFlow.zip
+# Zip archives stay local except the repo snapshot tracked via Git LFS.
 *.zip
+!XtraFlow.zip
 !results/rl/ppo_best.zip
