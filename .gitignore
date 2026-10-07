@@ -31,3 +31,8 @@ data/video_labels/*
 !data/video_labels/.gitkeep
 !results/tables/.gitkeep
 !results/figures/.gitkeep
+
+# Local archives (GitHub 100MB limit)
+XtraFlow.zip
+*.zip
+!results/rl/ppo_best.zip
